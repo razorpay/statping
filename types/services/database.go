@@ -11,6 +11,7 @@ import (
 
 var (
 	db          database.Database
+	dbRuns		database.Database
 	log         = utils.Log.WithField("type", "service")
 	allServices map[int64]*Service
 )
@@ -66,6 +67,7 @@ func Services() map[int64]*Service {
 
 func SetDB(database database.Database) {
 	db = database.Model(&Service{})
+	dbRuns = database.Model(&ServiceRuns{})
 }
 
 func Find(id int64) (*Service, error) {
@@ -160,3 +162,21 @@ func (s *Service) DeleteCheckins() error {
 	db.Model(s).Association("checkins").Clear()
 	return nil
 }
+
+func (S *Service) checkServiceRun() (*ServiceRuns, error){
+	 return nil, nil
+}
+
+func (s *Service) acquireServiceRun() (*ServiceRuns, error){
+	return nil, nil
+}
+
+func (s *Service) markServiceRunProcessed() {
+
+
+}
+
+func (s *Service) markServiceRunAsDue() {
+
+}
+
