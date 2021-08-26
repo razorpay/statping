@@ -23,9 +23,8 @@ var failureTypeStatusMap = map[string]string{
 	FAILURE_TYPE_DEGRADED: STATUS_DEGRADED,
 }
 
-
 func HandleEmptyStatus(status string) string {
-	if status == ""{
+	if status == "" {
 		return STATUS_DOWN
 	} else {
 		return status

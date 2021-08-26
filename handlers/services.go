@@ -162,7 +162,7 @@ func apiServiceFailureDataHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func apiServiceFailureDataHandlerCore(r *http.Request) ([]*database.TimeValue, error){
+func apiServiceFailureDataHandlerCore(r *http.Request) ([]*database.TimeValue, error) {
 	service, err := findService(r)
 	if err != nil {
 		return nil, err
@@ -210,7 +210,7 @@ func apiServiceTimeDataHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func apiServiceTimeDataHandlerCore(r *http.Request) (*services.UptimeSeries, error){
+func apiServiceTimeDataHandlerCore(r *http.Request) (*services.UptimeSeries, error) {
 	service, err := findService(r)
 	if err != nil {
 		return nil, err
@@ -252,7 +252,7 @@ func apiServiceBlockSeriesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func apiServiceBlockSeriesHandlerCore(r *http.Request) (*services.BlockSeries, error){
+func apiServiceBlockSeriesHandlerCore(r *http.Request) (*services.BlockSeries, error) {
 	service, err := findService(r)
 	if err != nil {
 		return nil, err
@@ -306,19 +306,19 @@ func apiServiceBlockSeriesHandlerCore(r *http.Request) (*services.BlockSeries, e
 
 	var nextFrameTime time.Time
 
-	for c:=0;c<len(objs);c++ {
+	for c := 0; c < len(objs); c++ {
 
 		currentFrame := objs[c]
-		currentFrameTime,_ := time.Parse("2006-01-02T15:04:05Z", currentFrame.Timeframe)
-		if c+1<len(objs) {
-			nextFrameTime,_ = time.Parse("2006-01-02T15:04:05Z", objs[c+1].Timeframe)
+		currentFrameTime, _ := time.Parse("2006-01-02T15:04:05Z", currentFrame.Timeframe)
+		if c+1 < len(objs) {
+			nextFrameTime, _ = time.Parse("2006-01-02T15:04:05Z", objs[c+1].Timeframe)
 		} else {
 			nextFrameTime = uptimeData.End
 		}
 
 		block := services.Block{
 			Timeframe: currentFrame.Timeframe,
-			Status: services.STATUS_UP,
+			Status:    services.STATUS_UP,
 			Downtimes: &[]services.Downtime{}}
 
 		for _, data := range uptimeData.Series {
@@ -332,7 +332,7 @@ func apiServiceBlockSeriesHandlerCore(r *http.Request) (*services.BlockSeries, e
 					SubStatus: services.HandleEmptyStatus(data.SubStatus),
 				})
 
-				if  block.Status != services.STATUS_DOWN {
+				if block.Status != services.STATUS_DOWN {
 					block.Status = services.HandleEmptyStatus(data.SubStatus)
 				}
 			}
@@ -342,7 +342,6 @@ func apiServiceBlockSeriesHandlerCore(r *http.Request) (*services.BlockSeries, e
 
 	return &blockSeries, nil
 }
-
 
 func apiServiceHitsDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	service, err := findService(r)

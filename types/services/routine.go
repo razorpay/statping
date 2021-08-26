@@ -411,7 +411,7 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 			failure := subService.LastFailure()
 			pingtime = hit.PingTime
 			if failure.CreatedAt.After(hit.CreatedAt) {
-				pingtime=failure.PingTime
+				pingtime = failure.PingTime
 				if combinedStatus != STATUS_DOWN {
 					switch subServiceDetail.DependencyType {
 					case CRITICAL:
@@ -423,14 +423,14 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 					}
 				}
 			}
-			latency+=pingtime
+			latency += pingtime
 		}
 	}
 
 	s.Latency = latency
 	s.PingTime = latency
 
-	if(combinedStatus == STATUS_DOWN || combinedStatus == STATUS_DEGRADED){
+	if combinedStatus == STATUS_DOWN || combinedStatus == STATUS_DEGRADED {
 		if record {
 			RecordFailure(s, fmt.Sprintf("Sub Service Impacted : %s", impactedSubService.DisplayName), "")
 		}

@@ -101,7 +101,7 @@ type BlockSeries struct {
 	End      time.Time `json:"end, omitempty"`
 	Uptime   int64     `json:"uptime, omitempty"`
 	Downtime int64     `json:"downtime, omitempty"`
-	Series   *[]Block   `json:"series, omitempty"`
+	Series   *[]Block  `json:"series, omitempty"`
 }
 
 type ByTime []ser
@@ -111,8 +111,8 @@ func (a ByTime) Less(i, j int) bool { return a[i].Time.Before(a[j].Time) }
 func (a ByTime) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
 type Block struct {
-	Timeframe string   `json:"timeframe"`
-	Status    string   `json:"status"`
+	Timeframe string      `json:"timeframe"`
+	Status    string      `json:"status"`
 	Downtimes *[]Downtime `json:"downtimes"`
 }
 

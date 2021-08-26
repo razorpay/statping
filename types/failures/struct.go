@@ -13,7 +13,7 @@ type Failure struct {
 	Service   int64     `gorm:"index;column:service" json:"-"`
 	Checkin   int64     `gorm:"index;column:checkin" json:"-"`
 	PingTime  int64     `gorm:"column:ping_time"  json:"ping"`
-	Type      string	`gorm:"column:type"  json:"type"`
+	Type      string    `gorm:"column:type"  json:"type"`
 	Reason    string    `gorm:"column:reason" json:"reason,omitempty"`
 	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
 }
