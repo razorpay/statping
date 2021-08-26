@@ -45,8 +45,19 @@ CheckLoop:
 			log.Infoln(fmt.Sprintf("Stopping service: %v", s.Name))
 			break CheckLoop
 		case <-time.After(s.SleepDuration):
-			s.CheckService(record)
-			s.UpdateStats()
+			r, _ := s.checkServiceRun()
+			if r != nil && r.LastProcessingTime.Add(time.Second * time.Duration(r.Interval)).After(time.Now()) {
+				if r.State == "due" {
+					a, _ := s.acquireServiceRun()
+					if a != nil {
+						s.CheckService(record)
+						s.UpdateStats()
+						s.markServiceRunProcessed()
+					}
+				} else {
+					s.markServiceRunAsDue()
+				}
+			}
 			s.Checkpoint = s.Checkpoint.Add(s.Duration())
 			if !s.Online {
 				s.SleepDuration = s.Duration()
