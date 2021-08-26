@@ -137,6 +137,7 @@ func Router() *mux.Router {
 	api.Handle("/api/services/{id}/failure_data", http.HandlerFunc(apiServiceFailureDataHandler)).Methods("GET")
 	api.Handle("/api/services/{id}/ping_data", http.HandlerFunc(apiServicePingDataHandler)).Methods("GET")
 	api.Handle("/api/services/{id}/uptime_data", http.HandlerFunc(apiServiceTimeDataHandler)).Methods("GET")
+	api.Handle("/api/services/{id}/block_series", http.HandlerFunc(apiServiceBlockSeriesHandler)).Methods("GET")
 
 	// API INCIDENTS Routes
 	api.Handle("/api/services/{id}/incidents", http.HandlerFunc(apiServiceIncidentsHandler)).Methods("GET")

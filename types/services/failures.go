@@ -21,6 +21,10 @@ func (s *Service) FailuresSince(t time.Time) failures.Failurer {
 	return failures.Since(t, s)
 }
 
+func (s *Service) LastFailure() *failures.Failure {
+	return failures.AllFailures(s).Last()
+}
+
 func (s Service) DowntimeText() string {
 	last := s.AllFailures().Last()
 	if last == nil {

@@ -393,6 +393,57 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 	return s, err
 }
 
+func CheckCollection(s *Service, record bool) (*Service, error) {
+	defer s.updateLastCheck()
+	timer := prometheus.NewTimer(metrics.ServiceTimer(s.Name))
+	defer timer.ObserveDuration()
+
+	combinedStatus := STATUS_UP
+	var impactedSubService SubService
+	var latency, pingtime int64
+
+	for id, subServiceDetail := range s.SubServicesDetails {
+		if subService, err := Find(id); err != nil {
+			log.Errorln(err)
+			return s, err
+		} else {
+			hit := subService.LastHit()
+			failure := subService.LastFailure()
+			pingtime = hit.PingTime
+			if failure.CreatedAt.After(hit.CreatedAt) {
+				pingtime=failure.PingTime
+				if combinedStatus != STATUS_DOWN {
+					switch subServiceDetail.DependencyType {
+					case CRITICAL:
+						combinedStatus = failureTypeStatusMap[failure.Type]
+						impactedSubService = subServiceDetail
+					case DELAYED, PARTIAL:
+						combinedStatus = STATUS_DEGRADED
+						impactedSubService = subServiceDetail
+					}
+				}
+			}
+			latency+=pingtime
+		}
+	}
+
+	s.Latency = latency
+	s.PingTime = latency
+
+	if(combinedStatus == STATUS_DOWN || combinedStatus == STATUS_DEGRADED){
+		if record {
+			RecordFailure(s, fmt.Sprintf("Sub Service Impacted : %s", impactedSubService.DisplayName), "")
+		}
+		return s, fmt.Errorf("Sub Service Impacted %s", impactedSubService.DisplayName)
+	}
+
+	if record {
+		RecordSuccess(s)
+	}
+	s.Online = true
+	return s, nil
+}
+
 // RecordSuccess will create a new 'hit' record in the database for a successful/online service
 func RecordSuccess(s *Service) {
 	s.LastOnline = utils.Now()
@@ -460,5 +511,7 @@ func (s *Service) CheckService(record bool) {
 		CheckGrpc(s, record)
 	case "icmp":
 		CheckIcmp(s, record)
+	case "collection":
+		CheckCollection(s, record)
 	}
 }

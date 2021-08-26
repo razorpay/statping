@@ -1,13 +1,14 @@
 package services
 
 import (
-	"time"
-
+	"database/sql/driver"
+	"encoding/json"
 	"github.com/statping/statping/types/checkins"
 	"github.com/statping/statping/types/failures"
 	"github.com/statping/statping/types/incidents"
 	"github.com/statping/statping/types/messages"
 	"github.com/statping/statping/types/null"
+	"time"
 )
 
 // Service is the main struct for Services
@@ -34,6 +35,7 @@ type Service struct {
 	Headers             null.NullString       `gorm:"column:headers" json:"headers" scope:"user,admin" yaml:"headers"`
 	Permalink           null.NullString       `gorm:"column:permalink" json:"permalink" yaml:"permalink"`
 	Redirect            null.NullBool         `gorm:"default:false;column:redirect" json:"redirect" scope:"user,admin" yaml:"redirect"`
+	SubServicesDetails  SubServicesDetail     `gorm:"column:sub_services_detail;type:json;DEFAULT:null" json:"sub_services_detail" yaml:"sub_services_detail"`
 	CreatedAt           time.Time             `gorm:"column:created_at" json:"created_at" yaml:"-"`
 	UpdatedAt           time.Time             `gorm:"column:updated_at" json:"updated_at" yaml:"-"`
 	Online              bool                  `gorm:"-" json:"online" yaml:"-"`
@@ -94,15 +96,56 @@ type UptimeSeries struct {
 	Series   []series  `json:"series"`
 }
 
+type BlockSeries struct {
+	Start    time.Time `json:"start, omitempty"`
+	End      time.Time `json:"end, omitempty"`
+	Uptime   int64     `json:"uptime, omitempty"`
+	Downtime int64     `json:"downtime, omitempty"`
+	Series   *[]Block   `json:"series, omitempty"`
+}
+
 type ByTime []ser
 
 func (a ByTime) Len() int           { return len(a) }
 func (a ByTime) Less(i, j int) bool { return a[i].Time.Before(a[j].Time) }
 func (a ByTime) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
+type Block struct {
+	Timeframe string   `json:"timeframe"`
+	Status    string   `json:"status"`
+	Downtimes *[]Downtime `json:"downtimes"`
+}
+
+type Downtime struct {
+	Start     time.Time `json:"start"`
+	End       time.Time `json:"end"`
+	Duration  int64     `json:"duration"`
+	SubStatus string    `json:"sub_status"`
+}
+
 type series struct {
-	Start    time.Time `json:"start"`
-	End      time.Time `json:"end"`
-	Duration int64     `json:"duration"`
-	Online   bool      `json:"online"`
+	Start     time.Time `json:"start"`
+	End       time.Time `json:"end"`
+	Duration  int64     `json:"duration"`
+	Online    bool      `json:"online"`
+	SubStatus string    `json:"sub_status"`
+}
+
+type SubServicesDetail map[int64]SubService
+
+type SubService struct {
+	DisplayName    string `json:"display_name" yaml:"display_name"`
+	DependencyType string `json:"dependency_type" yaml:"dependency_type"`
+}
+
+func (j *SubServicesDetail) Value() (driver.Value, error) {
+	valueString, err := json.Marshal(j)
+	return string(valueString), err
+}
+
+func (j *SubServicesDetail) Scan(value interface{}) error {
+	if err := json.Unmarshal(value.([]byte), &j); err != nil {
+		return err
+	}
+	return nil
 }
