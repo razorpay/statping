@@ -432,7 +432,7 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 
 	if combinedStatus == STATUS_DOWN || combinedStatus == STATUS_DEGRADED {
 		if record {
-			RecordFailure(s, fmt.Sprintf("Sub Service Impacted : %s", impactedSubService.DisplayName), "")
+			RecordFailureWithType(s, fmt.Sprintf("Sub Service Impacted : %s", impactedSubService.DisplayName), "", combinedStatus)
 		}
 		return s, fmt.Errorf("Sub Service Impacted %s", impactedSubService.DisplayName)
 	}
@@ -466,8 +466,12 @@ func RecordSuccess(s *Service) {
 	sendSuccess(s)
 }
 
-// RecordFailure will create a new 'Failure' record in the database for a offline service
 func RecordFailure(s *Service, issue, reason string) {
+	RecordFailureWithType(s, issue, reason, "")
+}
+
+// RecordFailure will create a new 'Failure' record in the database for a offline service
+func RecordFailureWithType(s *Service, issue, reason string, failureType string) {
 	s.LastOffline = utils.Now()
 
 	fail := &failures.Failure{
@@ -477,6 +481,7 @@ func RecordFailure(s *Service, issue, reason string) {
 		CreatedAt: utils.Now(),
 		ErrorCode: s.LastStatusCode,
 		Reason:    reason,
+		Type: failureType,
 	}
 	log.WithFields(utils.ToFields(fail, s)).
 		Warnln(fmt.Sprintf("Service %v Failing: %v | Lookup in: %v", s.Name, issue, humanMicro(fail.PingTime)))
