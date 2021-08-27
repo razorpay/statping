@@ -12,7 +12,6 @@ import (
 
 var (
 	db          database.Database
-	dbRuns		database.Database
 	log         = utils.Log.WithField("type", "service")
 	allServices map[int64]*Service
 )
@@ -68,7 +67,6 @@ func Services() map[int64]*Service {
 
 func SetDB(database database.Database) {
 	db = database.Model(&Service{})
-	dbRuns = database.Model(&ServiceRuns{})
 }
 
 func Find(id int64) (*Service, error) {
@@ -164,16 +162,9 @@ func (s *Service) DeleteCheckins() error {
 	return nil
 }
 
-func (s *Service) checkServiceRun() (*ServiceRuns, error){
-	var r ServiceRuns
-	resp := dbRuns.Where("service", s.Id).Find(&r)
- 	return &r, resp.Error()
-}
-
 func (s *Service) acquireServiceRun() error{
-	r := s.ServiceRun
-	r.State = "inProcess"
-	rows := dbRuns.Update(r)
+	s.State = "inProcess"
+	rows := db.Update(s)
 
 	if rows.RowsAffected() == 0 {
 		return  errors.New("Service already acquired")
@@ -182,17 +173,15 @@ func (s *Service) acquireServiceRun() error{
 }
 
 func (s *Service) markServiceRunProcessed() {
-	r := s.ServiceRun
-	r.State = "due"
-	r.LastProcessingTime = time.Now()
+	s.State = "due"
+	s.LastProcessingTime = time.Now()
 
-	dbRuns.Update(r)
+	db.Update(s)
 }
 
 func (s *Service) markServiceRunAsDue() {
-	r := s.ServiceRun
-	r.State = "due"
+	s.State = "due"
 
-	dbRuns.Update(r)
+	db.Update(s)
 }
 
