@@ -429,7 +429,7 @@ func apiAllSubServicesHandler(r *http.Request) interface{} {
 			if sub, err := services.Find(id); err == nil {
 				subClone := *sub
 				subClone.DisplayName = config.DisplayName
-				srvs = append(srvs, *sub)
+				srvs = append(srvs, subClone)
 			}
 		}
 	}
