@@ -123,6 +123,8 @@ func Router() *mux.Router {
 	api.Handle("/api/services", scoped(apiAllServicesHandler)).Methods("GET")
 	api.Handle("/api/services", authenticated(apiCreateServiceHandler, false)).Methods("POST")
 	api.Handle("/api/services/{id}", scoped(apiServiceHandler)).Methods("GET")
+	api.Handle("/api/services/{id}/sub_services", scoped(apiAllSubServicesHandler)).Methods("GET")
+	//api.Handle("/api/services/{id}/sub_services/{sub_id}", scoped(apiServiceHandler)).Methods("GET")
 	api.Handle("/api/reorder/services", authenticated(reorderServiceHandler, false)).Methods("POST")
 	api.Handle("/api/services/{id}", authenticated(apiServiceUpdateHandler, false)).Methods("POST")
 	api.Handle("/api/services/{id}", authenticated(apiServicePatchHandler, false)).Methods("PATCH")
@@ -138,6 +140,7 @@ func Router() *mux.Router {
 	api.Handle("/api/services/{id}/ping_data", http.HandlerFunc(apiServicePingDataHandler)).Methods("GET")
 	api.Handle("/api/services/{id}/uptime_data", http.HandlerFunc(apiServiceTimeDataHandler)).Methods("GET")
 	api.Handle("/api/services/{id}/block_series", http.HandlerFunc(apiServiceBlockSeriesHandler)).Methods("GET")
+	api.Handle("/api/services/{id}/sub_services/{sub_id}/block_series", http.HandlerFunc(apiSubServiceBlockSeriesHandler)).Methods("GET")
 
 	// API INCIDENTS Routes
 	api.Handle("/api/services/{id}/incidents", http.HandlerFunc(apiServiceIncidentsHandler)).Methods("GET")

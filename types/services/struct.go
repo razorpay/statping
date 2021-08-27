@@ -15,6 +15,7 @@ import (
 type Service struct {
 	Id                  int64                 `gorm:"primary_key;column:id" json:"id" yaml:"id"`
 	Name                string                `gorm:"column:name" json:"name" yaml:"name"`
+	DisplayName         string                `json:"display_name"`
 	Domain              string                `gorm:"column:domain" json:"domain" yaml:"domain" private:"true" scope:"user,admin"`
 	Expected            null.NullString       `gorm:"column:expected" json:"expected" yaml:"expected" scope:"user,admin"`
 	ExpectedStatus      int                   `gorm:"default:200;column:expected_status" json:"expected_status" yaml:"expected_status" scope:"user,admin"`

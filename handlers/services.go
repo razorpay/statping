@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/statping/statping/database"
 	"github.com/statping/statping/types/errors"
@@ -28,6 +29,19 @@ func findService(r *http.Request) (*services.Service, error) {
 		return nil, errors.NotAuthenticated
 	}
 	return servicer, nil
+}
+
+func findPublicSubService(r *http.Request, service *services.Service) (*services.Service, error) {
+	vars := mux.Vars(r)
+	id := utils.ToInt(vars["sub_id"])
+	if val, ok := service.SubServicesDetails[id]; ok && val.Public {
+		sub, err := services.Find(id)
+		if err != nil {
+			return nil, err
+		}
+		return sub, nil
+	}
+	return nil, fmt.Errorf("Public sub service not mapped to parent")
 }
 
 func reorderServiceHandler(w http.ResponseWriter, r *http.Request) {
@@ -244,19 +258,38 @@ func apiServiceTimeDataHandlerCore(r *http.Request) (*services.UptimeSeries, err
 	return uptimeData, err
 }
 
-func apiServiceBlockSeriesHandler(w http.ResponseWriter, r *http.Request) {
-	if objs, err := apiServiceBlockSeriesHandlerCore(r); err != nil {
+func apiSubServiceBlockSeriesHandler(w http.ResponseWriter, r *http.Request) {
+	service, err := findService(r)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+	subService, err := findPublicSubService(r, service)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+	if objs, err := apiServiceBlockSeriesHandlerCore(r, subService); err != nil {
 		sendErrorJson(err, w, r)
 	} else {
 		returnJson(objs, w, r)
 	}
 }
 
-func apiServiceBlockSeriesHandlerCore(r *http.Request) (*services.BlockSeries, error) {
+func apiServiceBlockSeriesHandler(w http.ResponseWriter, r *http.Request) {
 	service, err := findService(r)
 	if err != nil {
-		return nil, err
+		sendErrorJson(err, w, r)
+		return
 	}
+	if objs, err := apiServiceBlockSeriesHandlerCore(r, service); err != nil {
+		sendErrorJson(err, w, r)
+	} else {
+		returnJson(objs, w, r)
+	}
+}
+
+func apiServiceBlockSeriesHandlerCore(r *http.Request, service *services.Service) (*services.BlockSeries, error) {
 
 	groupHits, err := database.ParseQueries(r, service.AllHits())
 	if err != nil {
@@ -378,6 +411,27 @@ func apiAllServicesHandler(r *http.Request) interface{} {
 			continue
 		}
 		srvs = append(srvs, v)
+	}
+	return srvs
+}
+
+func apiAllSubServicesHandler(r *http.Request) interface{} {
+	var srvs []services.Service
+	service, err := findService(r)
+	if err != nil {
+		return err
+	}
+	if service.Type != "collection" {
+		return fmt.Errorf("Not a supported operation")
+	}
+	for id, config := range service.SubServicesDetails {
+		if config.Public {
+			if sub, err := services.Find(id); err == nil {
+				subClone := *sub
+				subClone.DisplayName = config.DisplayName
+				srvs = append(srvs, *sub)
+			}
+		}
 	}
 	return srvs
 }
