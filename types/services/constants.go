@@ -1,26 +1,46 @@
 package services
 
-var (
+const FAILURE_THRESHOLD = 3
+
+const (
 	CRITICAL = "critical"
 	PARTIAL  = "partial"
 	DELAYED  = "delayed"
 	NO       = "no"
 )
 
-var (
+const (
 	STATUS_UP       = "up"
 	STATUS_DOWN     = "down"
 	STATUS_DEGRADED = "degraded"
 )
 
-var (
+const (
 	FAILURE_TYPE_COMPLETE = "complete"
 	FAILURE_TYPE_DEGRADED = "degraded"
+	FAILURE_TYPE_DEFAULT  = ""
 )
 
-var failureTypeStatusMap = map[string]string{
+var FailureTypeStatusMap = map[string]string{
+	FAILURE_TYPE_DEFAULT: STATUS_DOWN,
 	FAILURE_TYPE_COMPLETE: STATUS_DOWN,
 	FAILURE_TYPE_DEGRADED: STATUS_DEGRADED,
+}
+
+func ApplyStatus(current string,  apply string) string{
+	switch current{
+	case STATUS_DOWN:
+		return STATUS_DOWN
+	case STATUS_DEGRADED:
+		if apply == STATUS_DOWN {
+			return apply
+		}
+		return STATUS_DEGRADED
+	case STATUS_UP:
+		return apply
+	default:
+		return STATUS_UP
+	}
 }
 
 func HandleEmptyStatus(status string) string {

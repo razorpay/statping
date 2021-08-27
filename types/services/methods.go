@@ -93,43 +93,61 @@ func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*Uptim
 		return out, nil
 	}
 
-	tMap := make(map[time.Time]bool)
+	var servs []ser
 
 	for _, v := range hits {
-		tMap[v.CreatedAt] = true
-	}
-	for _, v := range fails {
-		tMap[v.CreatedAt] = false
-	}
-
-	var servs []ser
-	for t, v := range tMap {
 		s := ser{
-			Time:   t,
-			Online: v,
+			Time:   v.CreatedAt,
+			Online: true,
+			SubStatus: STATUS_UP,
 		}
 		servs = append(servs, s)
 	}
+	for _, v := range fails {
+		s := ser{
+			Time:   v.CreatedAt,
+			Online: false,
+			SubStatus: FailureTypeStatusMap[v.Type],
+		}
+		servs = append(servs, s)
+	}
+
 	if len(servs) == 0 {
 		return nil, errors.New("error generating uptime data structure")
 	}
+
 	sort.Sort(ByTime(servs))
 
 	var allTimes []series
+	ftc := 0
+	subStatus := STATUS_UP
 	online := servs[0].Online
 	thisTime := servs[0].Time
 	for i := 0; i < len(servs); i++ {
 		v := servs[i]
 		if v.Online != online {
-			s := series{
-				Start:    thisTime,
-				End:      v.Time,
-				Duration: v.Time.Sub(thisTime).Milliseconds(),
-				Online:   online,
+			if ftc == 0 || ftc>s.GetFtc() {
+				s := series{
+					Start:    thisTime,
+					End:      v.Time,
+					Duration: v.Time.Sub(thisTime).Milliseconds(),
+					Online:   online,
+					SubStatus: subStatus,
+				}
+				allTimes = append(allTimes, s)
+				thisTime = v.Time
 			}
-			allTimes = append(allTimes, s)
-			thisTime = v.Time
+			ftc = 0;
 			online = v.Online
+			if v.Online {
+				subStatus = STATUS_UP
+			}
+		}
+
+		subStatus = ApplyStatus(subStatus, v.SubStatus)
+
+		if !v.Online {
+			ftc++
 		}
 	}
 	if len(allTimes) == 0 {
@@ -138,12 +156,13 @@ func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*Uptim
 
 	first := servs[0].Time
 	last := servs[len(servs)-1].Time
-	if !s.Online {
+	if ftc > s.GetFtc() {
 		s := series{
 			Start:    allTimes[len(allTimes)-1].End,
 			End:      utils.Now(),
-			Duration: utils.Now().Sub(last).Milliseconds(),
-			Online:   s.Online,
+			Duration: utils.Now().Sub(allTimes[len(allTimes)-1].Start).Milliseconds(),
+			Online:   false,
+			SubStatus: subStatus,
 		}
 		allTimes = append(allTimes, s)
 	} else {
@@ -153,6 +172,7 @@ func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*Uptim
 			End:      utils.Now(),
 			Duration: utils.Now().Sub(l.Start).Milliseconds(),
 			Online:   true,
+			SubStatus: subStatus,
 		}
 		allTimes = append(allTimes, s)
 	}

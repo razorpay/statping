@@ -415,7 +415,7 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 				if combinedStatus != STATUS_DOWN {
 					switch subServiceDetail.DependencyType {
 					case CRITICAL:
-						combinedStatus = failureTypeStatusMap[failure.Type]
+						combinedStatus = FailureTypeStatusMap[failure.Type]
 						impactedSubService = subServiceDetail
 					case DELAYED, PARTIAL:
 						combinedStatus = STATUS_DEGRADED
