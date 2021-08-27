@@ -22,13 +22,13 @@ const (
 )
 
 var FailureTypeStatusMap = map[string]string{
-	FAILURE_TYPE_DEFAULT: STATUS_DOWN,
+	FAILURE_TYPE_DEFAULT:  STATUS_DOWN,
 	FAILURE_TYPE_COMPLETE: STATUS_DOWN,
 	FAILURE_TYPE_DEGRADED: STATUS_DEGRADED,
 }
 
-func ApplyStatus(current string,  apply string) string{
-	switch current{
+func ApplyStatus(current string, apply string) string {
+	switch current {
 	case STATUS_DOWN:
 		return STATUS_DOWN
 	case STATUS_DEGRADED:

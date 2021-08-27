@@ -25,7 +25,7 @@ type Service struct {
 	Port                int                   `gorm:"not null;column:port" json:"port" scope:"user,admin" yaml:"port"`
 	Timeout             int                   `gorm:"default:30;column:timeout" json:"timeout" scope:"user,admin" yaml:"timeout"`
 	Order               int                   `gorm:"default:0;column:order_id" json:"order_id" yaml:"order_id"`
-	Ftc               	int                   `gorm:"default:3;column:ftc" json:"ftc" yaml:"ftc"`
+	Ftc                 int                   `gorm:"default:3;column:ftc" json:"ftc" yaml:"ftc"`
 	VerifySSL           null.NullBool         `gorm:"default:false;column:verify_ssl" json:"verify_ssl" scope:"user,admin" yaml:"verify_ssl"`
 	GrpcHealthCheck     null.NullBool         `gorm:"default:false;column:grpc_health_check" json:"grpc_health_check" scope:"user,admin" yaml:"grpc_health_check"`
 	Public              null.NullBool         `gorm:"default:true;column:public" json:"public" yaml:"public"`
@@ -85,8 +85,8 @@ type Stats struct {
 }
 
 type ser struct {
-	Time   time.Time
-	Online bool
+	Time      time.Time
+	Online    bool
 	SubStatus string
 }
 
@@ -112,8 +112,12 @@ func (a ByTime) Len() int           { return len(a) }
 func (a ByTime) Less(i, j int) bool { return a[i].Time.Before(a[j].Time) }
 func (a ByTime) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
-func (s *Service) GetFtc() int{
-	if s.Ftc < FAILURE_THRESHOLD {return FAILURE_THRESHOLD} else {return s.Ftc}
+func (s *Service) GetFtc() int {
+	if s.Ftc < FAILURE_THRESHOLD {
+		return FAILURE_THRESHOLD
+	} else {
+		return s.Ftc
+	}
 }
 
 type Block struct {

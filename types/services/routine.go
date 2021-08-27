@@ -481,7 +481,7 @@ func RecordFailureWithType(s *Service, issue, reason string, failureType string)
 		CreatedAt: utils.Now(),
 		ErrorCode: s.LastStatusCode,
 		Reason:    reason,
-		Type: failureType,
+		Type:      failureType,
 	}
 	log.WithFields(utils.ToFields(fail, s)).
 		Warnln(fmt.Sprintf("Service %v Failing: %v | Lookup in: %v", s.Name, issue, humanMicro(fail.PingTime)))

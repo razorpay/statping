@@ -97,16 +97,16 @@ func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*Uptim
 
 	for _, v := range hits {
 		s := ser{
-			Time:   v.CreatedAt,
-			Online: true,
+			Time:      v.CreatedAt,
+			Online:    true,
 			SubStatus: STATUS_UP,
 		}
 		servs = append(servs, s)
 	}
 	for _, v := range fails {
 		s := ser{
-			Time:   v.CreatedAt,
-			Online: false,
+			Time:      v.CreatedAt,
+			Online:    false,
 			SubStatus: FailureTypeStatusMap[v.Type],
 		}
 		servs = append(servs, s)
@@ -126,18 +126,18 @@ func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*Uptim
 	for i := 0; i < len(servs); i++ {
 		v := servs[i]
 		if v.Online != online {
-			if ftc == 0 || ftc>s.GetFtc() {
+			if ftc == 0 || ftc > s.GetFtc() {
 				s := series{
-					Start:    thisTime,
-					End:      v.Time,
-					Duration: v.Time.Sub(thisTime).Milliseconds(),
-					Online:   online,
+					Start:     thisTime,
+					End:       v.Time,
+					Duration:  v.Time.Sub(thisTime).Milliseconds(),
+					Online:    online,
 					SubStatus: subStatus,
 				}
 				allTimes = append(allTimes, s)
 				thisTime = v.Time
 			}
-			ftc = 0;
+			ftc = 0
 			online = v.Online
 			if v.Online {
 				subStatus = STATUS_UP
@@ -158,20 +158,20 @@ func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*Uptim
 	last := servs[len(servs)-1].Time
 	if ftc > s.GetFtc() {
 		s := series{
-			Start:    allTimes[len(allTimes)-1].End,
-			End:      utils.Now(),
-			Duration: utils.Now().Sub(allTimes[len(allTimes)-1].Start).Milliseconds(),
-			Online:   false,
+			Start:     allTimes[len(allTimes)-1].End,
+			End:       utils.Now(),
+			Duration:  utils.Now().Sub(allTimes[len(allTimes)-1].Start).Milliseconds(),
+			Online:    false,
 			SubStatus: subStatus,
 		}
 		allTimes = append(allTimes, s)
 	} else {
 		l := allTimes[len(allTimes)-1]
 		s := series{
-			Start:    l.Start,
-			End:      utils.Now(),
-			Duration: utils.Now().Sub(l.Start).Milliseconds(),
-			Online:   true,
+			Start:     l.Start,
+			End:       utils.Now(),
+			Duration:  utils.Now().Sub(l.Start).Milliseconds(),
+			Online:    true,
 			SubStatus: subStatus,
 		}
 		allTimes = append(allTimes, s)
