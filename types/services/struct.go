@@ -66,9 +66,11 @@ type Service struct {
 	Incidents           []*incidents.Incident `gorm:"foreignkey:service;association_foreignkey:id" json:"incidents,omitempty" yaml:"incidents"`
 	Checkins            []*checkins.Checkin   `gorm:"foreignkey:service;association_foreignkey:id" json:"checkins,omitempty" yaml:"-" scope:"user,admin"`
 	Failures            []*failures.Failure   `gorm:"-" json:"failures,omitempty" yaml:"-" scope:"user,admin"`
-
-	notifyAfterCount int64 `gorm:"-" json:"-" yaml:"-"`
-	prevOnline       bool  `gorm:"-" json:"-" yaml:"-"`
+	notifyAfterCount    int64                 `gorm:"-" json:"-" yaml:"-"`
+	prevOnline          bool                  `gorm:"-" json:"-" yaml:"-"`
+	FailureCounter      int                   `gorm:"failure_counter" json:"-" yaml:"-"`
+	CurrentDowntime     int64                 `gorm:"downtime" json:"-" yaml:"-"`
+	LastFailureType     string                `gorm:"-" json:"-" yaml:"-"`
 }
 
 // ServiceOrder will reorder the services based on 'order_id' (Order)

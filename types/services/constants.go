@@ -27,7 +27,7 @@ var FailureTypeStatusMap = map[string]string{
 	FAILURE_TYPE_DEGRADED: STATUS_DEGRADED,
 }
 
-func ApplyStatus(current string, apply string) string {
+func ApplyStatus(current string, apply string, defaultStatus string) string {
 	switch current {
 	case STATUS_DOWN:
 		return STATUS_DOWN
@@ -39,7 +39,7 @@ func ApplyStatus(current string, apply string) string {
 	case STATUS_UP:
 		return apply
 	default:
-		return STATUS_UP
+		return defaultStatus
 	}
 }
 

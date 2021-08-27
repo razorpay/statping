@@ -269,7 +269,7 @@ func apiSubServiceBlockSeriesHandler(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
-	if objs, err := apiServiceBlockSeriesHandlerCore(r, subService); err != nil {
+	if objs, err := apiServiceBlockSeriesHandlerCoreV2(r, subService); err != nil {
 		sendErrorJson(err, w, r)
 	} else {
 		returnJson(objs, w, r)
@@ -282,7 +282,7 @@ func apiServiceBlockSeriesHandler(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
-	if objs, err := apiServiceBlockSeriesHandlerCore(r, service); err != nil {
+	if objs, err := apiServiceBlockSeriesHandlerCoreV2(r, service); err != nil {
 		sendErrorJson(err, w, r)
 	} else {
 		returnJson(objs, w, r)
@@ -364,6 +364,74 @@ func apiServiceBlockSeriesHandlerCore(r *http.Request, service *services.Service
 					Start:     data.Start,
 					End:       data.End,
 					Duration:  data.Duration,
+					SubStatus: services.HandleEmptyStatus(data.SubStatus),
+				})
+
+				if block.Status != services.STATUS_DOWN {
+					block.Status = services.HandleEmptyStatus(data.SubStatus)
+				}
+			}
+		}
+		*blockSeries.Series = append(*blockSeries.Series, block)
+	}
+
+	return &blockSeries, nil
+}
+
+func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Service) (*services.BlockSeries, error) {
+
+	failuresData, err := database.ParseQueries(r, service.AllFailures())
+	if err != nil {
+		return nil, err
+	}
+
+	objs, err := failuresData.GraphData(database.ByCount)
+	if err != nil {
+		return nil, err
+	}
+
+	var blockSeries services.BlockSeries = services.BlockSeries{}
+
+	if len(objs) == 0 {
+		return &blockSeries, nil
+	}
+
+	uptimeData, downtimesList, err := service.DowntimeData(failuresData.Start, failuresData.End)
+	if err != nil {
+		return nil, err
+	}
+
+	blockSeries.Start = uptimeData.Start
+	blockSeries.End = uptimeData.End
+	blockSeries.Downtime = uptimeData.Downtime
+	blockSeries.Uptime = uptimeData.Uptime
+	blockSeries.Series = &[]services.Block{}
+
+	var nextFrameTime time.Time
+
+	for c := 0; c < len(objs); c++ {
+
+		currentFrame := objs[c]
+		currentFrameTime, _ := time.Parse("2006-01-02T15:04:05Z", currentFrame.Timeframe)
+		if c+1 < len(objs) {
+			nextFrameTime, _ = time.Parse("2006-01-02T15:04:05Z", objs[c+1].Timeframe)
+		} else {
+			nextFrameTime = uptimeData.End
+		}
+
+		block := services.Block{
+			Timeframe: currentFrame.Timeframe,
+			Status:    services.STATUS_UP,
+			Downtimes: &[]services.Downtime{}}
+
+		for _, data := range *downtimesList {
+
+			if currentFrameTime.Before(data.Start) && nextFrameTime.After(data.Start) {
+
+				*block.Downtimes = append(*block.Downtimes, services.Downtime{
+					Start:     data.Start,
+					End:       data.End,
+					Duration:  data.End.Sub(data.Start).Milliseconds(),
 					SubStatus: services.HandleEmptyStatus(data.SubStatus),
 				})
 

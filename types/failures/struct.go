@@ -15,7 +15,7 @@ type Failure struct {
 	PingTime  int64     `gorm:"column:ping_time"  json:"ping"`
 	Type      string    `gorm:"column:type"  json:"type"`
 	Reason    string    `gorm:"column:reason" json:"reason,omitempty"`
-	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
+	CreatedAt time.Time `gorm:"index;column:created_at" json:"created_at"`
 }
 
 type FailSort []Failure
