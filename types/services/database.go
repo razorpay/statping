@@ -7,6 +7,7 @@ import (
 	"github.com/statping/statping/types/metrics"
 	"github.com/statping/statping/utils"
 	"sort"
+	"time"
 )
 
 var (
@@ -163,20 +164,35 @@ func (s *Service) DeleteCheckins() error {
 	return nil
 }
 
-func (S *Service) checkServiceRun() (*ServiceRuns, error){
-	 return nil, nil
+func (s *Service) checkServiceRun() (*ServiceRuns, error){
+	var r ServiceRuns
+	resp := dbRuns.Where("service", s.Id).Find(&r)
+ 	return &r, resp.Error()
 }
 
-func (s *Service) acquireServiceRun() (*ServiceRuns, error){
-	return nil, nil
+func (s *Service) acquireServiceRun() error{
+	r := s.ServiceRun
+	r.State = "inProcess"
+	rows := dbRuns.Update(r)
+
+	if rows.RowsAffected() == 0 {
+		return  errors.New("Service already acquired")
+	}
+	return nil
 }
 
 func (s *Service) markServiceRunProcessed() {
+	r := s.ServiceRun
+	r.State = "due"
+	r.LastProcessingTime = time.Now()
 
-
+	dbRuns.Update(r)
 }
 
 func (s *Service) markServiceRunAsDue() {
+	r := s.ServiceRun
+	r.State = "due"
 
+	dbRuns.Update(r)
 }
 

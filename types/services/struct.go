@@ -69,10 +69,10 @@ type Service struct {
 }
 
 type ServiceRuns struct {
-	Service			int64     `gorm:"primary_key;column:service_" json:"service_id"`
-	State				string    `gorm:"column:state" json:"state"`
-	Interval      		int    `gorm:"column:interval" json:"interval"`
-	LastProcessingTime 	time.Time `gorm:"column:last_processing_time" json:"last_processing_time"`
+	Service				int64     	`gorm:"primary_key;column:service" json:"service"`
+	State				string    	`gorm:"column:state" json:"state"`
+	Interval      		int    		`gorm:"column:interval" json:"interval"`
+	LastProcessingTime 	time.Time 	`gorm:"column:last_processing_time" json:"last_processing_time"`
 }
 
 // ServiceOrder will reorder the services based on 'order_id' (Order)
