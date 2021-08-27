@@ -166,6 +166,8 @@ func (s *Service) acquireServiceRun() error{
 	s.State = "inProcess"
 	rows := db.Update(s)
 
+	rows = db.Model(s).Where("id = ?", s.Id).Where("state = ?", "due").Where("last_processing_time + (check_interval * interval '1 second' < ?", time.Now()).Update("state", "inProcess")
+
 	if rows.RowsAffected() == 0 {
 		return  errors.New("Service already acquired")
 	}
@@ -180,8 +182,6 @@ func (s *Service) markServiceRunProcessed() {
 }
 
 func (s *Service) markServiceRunAsDue() {
-	s.State = "due"
-
-	db.Update(s)
+	db.Model(s).Where("id = ?", s.Id).Where("state != ?", "due").Where("last_processing_time + (check_interval * interval '1 second' < ?", time.Now()).Update("state", "due")
 }
 
