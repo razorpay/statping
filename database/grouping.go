@@ -169,8 +169,8 @@ func ParseRequest(r *http.Request) (*GroupQuery, error) {
 	}
 
 	query := &GroupQuery{
-		Start:     time.Unix(startField, 0).UTC(),
-		End:       time.Unix(endField, 0).UTC(),
+		Start:     time.Unix(startField, 0).Local(),
+		End:       time.Unix(endField, 0).Local(),
 		Group:     groupDur,
 		Order:     orderBy,
 		Limit:     int(limit),
@@ -195,13 +195,13 @@ func ParseQueries(r *http.Request, o isObject) (*GroupQuery, error) {
 	fill, _ := strconv.ParseBool(fields.Get("fill"))
 	orderBy := fields.Get("order")
 	if limit == 0 {
-		limit = 10000
+		limit = 100000
 	}
 
 	q := o.Db()
 
 	if grouping == "" {
-		grouping = "1h"
+		grouping = "24h"
 	}
 	groupDur, err := time.ParseDuration(grouping)
 	if err != nil {
@@ -213,8 +213,8 @@ func ParseQueries(r *http.Request, o isObject) (*GroupQuery, error) {
 	}
 
 	query := &GroupQuery{
-		Start:     time.Unix(startField, 0).UTC(),
-		End:       time.Unix(endField, 0).UTC(),
+		Start:     time.Unix(startField, 0).Local(),
+		End:       time.Unix(endField, 0).Local(),
 		Group:     groupDur,
 		Order:     orderBy,
 		Limit:     int(limit),

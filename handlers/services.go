@@ -310,7 +310,9 @@ func apiServiceBlockSeriesHandlerCore(r *http.Request, service *services.Service
 	if err != nil {
 		return nil, err
 	}
+
 	var blockSeries services.BlockSeries = services.BlockSeries{}
+
 	if len(objs) == 0 {
 		return &blockSeries, nil
 	}
