@@ -63,11 +63,6 @@ func processSetupHandler(w http.ResponseWriter, r *http.Request) {
 			sendErrorJson(err, w, r)
 			return
 		}
-
-		if err := configs.TriggerSamples(); err != nil {
-			sendErrorJson(err, w, r)
-			return
-		}
 	}
 
 	if err = confgs.MigrateDatabase(); err != nil {

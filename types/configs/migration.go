@@ -41,16 +41,7 @@ func (d *DbConfig) ResetCore() error {
 	if err := CreateAdminUser(); err != nil {
 		return errors.Wrap(err, "error creating default admin user")
 	}
-	if utils.Params.GetBool("SAMPLE_DATA") {
-		log.Infoln("Adding Sample Data")
-		if err := TriggerSamples(); err != nil {
-			return errors.Wrap(err, "error adding sample data")
-		}
-	} else {
-		if err := core.Samples(); err != nil {
-			return errors.Wrap(err, "error added core details")
-		}
-	}
+
 	return nil
 }
 
