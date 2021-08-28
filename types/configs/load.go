@@ -39,6 +39,13 @@ func Save() error {
 }
 
 func LoadConfigs(cfgFile string) (*DbConfig, error) {
+	fileName := "/config.yml"
+	e, pr := os.LookupEnv("APP_MODE")
+	if pr && e == "stage" {
+		fileName = "/configs/stage.yml"
+	}
+
+	cfgFile = utils.Directory+fileName
 	writeAble, err := utils.DirWritable(utils.Directory)
 	if err != nil {
 		return nil, err
