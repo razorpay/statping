@@ -403,7 +403,7 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 	combinedStatus := STATUS_UP
 	var impactedSubService SubService
 	var latency, pingtime int64
-	partialImpactedCount := 0
+	downCount := 0
 
 	for id, subServiceDetail := range s.SubServicesDetails {
 		if subService, err := Find(id); err != nil {
@@ -418,11 +418,13 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 				if combinedStatus != STATUS_DOWN {
 					switch subServiceDetail.DependencyType {
 					case CRITICAL:
-						combinedStatus = FailureTypeStatusMap[failure.Type]
+						combinedStatus = HandleEmptyStatus(failure.Type)
 						impactedSubService = subServiceDetail
 					case DELAYED, PARTIAL:
 						combinedStatus = STATUS_DEGRADED
-						partialImpactedCount++
+						if failure.Type == STATUS_DOWN {
+							downCount++
+						}
 						impactedSubService = subServiceDetail
 					}
 				}
@@ -431,7 +433,7 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 		}
 	}
 
-	if combinedStatus == STATUS_DEGRADED && partialImpactedCount == len(s.SubServicesDetails) {
+	if combinedStatus == STATUS_DEGRADED && downCount == len(s.SubServicesDetails) {
 		combinedStatus = STATUS_DOWN
 	}
 
@@ -533,14 +535,21 @@ func (s *Service) CheckService(record bool) (err error) {
 func (s *Service) HandleDowntime(err error, record bool) {
 	if err != nil {
 		s.FailureCounter++
-		if s.FailureCounter >= s.Ftc {
+		if s.FailureCounter >= s.GetFtc() {
+
 			s.Online = false
-			downtime := &downtimes.Downtime{Start: time.Now(), ServiceId: s.Id} //sub ftc*interval to start
+
+			downtime := &downtimes.Downtime{
+				Start:     time.Now().Add(time.Duration(-s.FailureCounter*s.Interval) * (time.Second)),
+				ServiceId: s.Id,
+			}
+
 			if s.CurrentDowntime > 0 {
 				if downtime, err = downtimes.Find(s.CurrentDowntime); err != nil {
 					return //returning without updating
 				}
 			}
+
 			downtime.End = time.Now()
 			downtime.SubStatus = ApplyStatus(downtime.SubStatus, HandleEmptyStatus(s.LastFailureType), STATUS_DEGRADED)
 			downtime.Failures = s.FailureCounter

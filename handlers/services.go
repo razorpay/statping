@@ -385,7 +385,7 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 		return nil, err
 	}
 
-	objs, err := failuresData.GraphData(database.ByCount)
+	objs, err := failuresData.NoFailureGraphData(database.ByCount)
 	if err != nil {
 		return nil, err
 	}

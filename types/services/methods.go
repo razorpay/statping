@@ -125,7 +125,7 @@ func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*Uptim
 		s := ser{
 			Time:      v.CreatedAt,
 			Online:    false,
-			SubStatus: FailureTypeStatusMap[v.Type],
+			SubStatus: HandleEmptyStatus(v.Type),
 		}
 		servs = append(servs, s)
 	}
