@@ -36,7 +36,7 @@ type Service struct {
 	Redirect            null.NullBool         `gorm:"default:false;column:redirect" json:"redirect" scope:"user,admin" yaml:"redirect"`
 	CreatedAt           time.Time             `gorm:"column:created_at" json:"created_at" yaml:"-"`
 	UpdatedAt           time.Time             `gorm:"column:updated_at" json:"updated_at" yaml:"-"`
-	Online              bool                  `gorm:"-" json:"online" yaml:"-"`
+	Online              bool                  `gorm:"column:online" json:"online" yaml:"-"`
 	Latency             int64                 `gorm:"-" json:"latency" yaml:"-"`
 	PingTime            int64                 `gorm:"-" json:"ping_time" yaml:"-"`
 	Online24Hours       float32               `gorm:"-" json:"online_24_hours" yaml:"-"`
@@ -54,9 +54,9 @@ type Service struct {
 	LastStatusCode      int                   `gorm:"-" json:"status_code" yaml:"-"`
 	LastLookupTime      int64                 `gorm:"-" json:"-" yaml:"-"`
 	LastLatency         int64                 `gorm:"-" json:"-" yaml:"-"`
-	LastCheck           time.Time             `gorm:"-" json:"-" yaml:"-"`
-	LastOnline          time.Time             `gorm:"-" json:"last_success" yaml:"-"`
-	LastOffline         time.Time             `gorm:"-" json:"last_error" yaml:"-"`
+	LastCheck           time.Time             `gorm:"column:last_check" json:"last_check" yaml:"-"`
+	LastOnline          time.Time             `gorm:"column:last_success" json:"last_success" yaml:"-"`
+	LastOffline         time.Time             `gorm:"column:last_error" json:"last_error" yaml:"-"`
 	Stats               *Stats                `gorm:"-" json:"stats,omitempty" yaml:"-"`
 	Messages            []*messages.Message   `gorm:"foreignkey:service;association_foreignkey:id" json:"messages,omitempty" yaml:"messages"`
 	Incidents           []*incidents.Incident `gorm:"foreignkey:service;association_foreignkey:id" json:"incidents,omitempty" yaml:"incidents"`
@@ -65,8 +65,8 @@ type Service struct {
 	LastProcessingTime 	time.Time 	`gorm:"column:last_processing_time" json:"last_processing_time"`
 	State				string    	`gorm:"column:state" json:"state"`
 
-	notifyAfterCount int64 `gorm:"-" json:"-" yaml:"-"`
-	prevOnline       bool  `gorm:"-" json:"-" yaml:"-"`
+	notifyAfterCount int64 `gorm:"column:notify_after_count" json:"notify_after_count" yaml:"-"`
+	prevOnline       bool  `gorm:"column:prev_online" json:"prev_online" yaml:"-"`
 }
 
 // ServiceOrder will reorder the services based on 'order_id' (Order)
