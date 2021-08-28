@@ -1,0 +1,59 @@
+.title {
+  color: $title-color;
+}
+
+.description {
+  color: $description-color;
+}
+
+.subtitle {
+  color: $subtitle-color;
+}
+
+.text-muted {
+  color: lighten($text-color, 30%) !important;
+}
+
+.bg-white {
+  background-color: $white;
+}
+
+.card-bg {
+  background-color: $group-list-background;
+}
+
+.status-green {
+  background: $green;
+}
+
+.status-degraded {
+  background: $yellow;
+}
+
+.status-red {
+  background: $red;
+}
+
+.uptime {
+  background-color: rgba($green, 0.54);
+}
+
+.uptime:hover {
+  background-color: rgba($green, 0.64);
+}
+
+.degraded {
+  background-color: rgba($yellow, 0.54);
+}
+
+.degraded:hover {
+  background-color: rgba($yellow, 0.64);
+}
+
+.downtime {
+  background: rgba($red, 0.54);
+}
+
+.downtime:hover {
+  background: rgba($red, 0.64);
+}
