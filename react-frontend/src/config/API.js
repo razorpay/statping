@@ -3,7 +3,7 @@ import { hits_data, incidents, ping_data } from "../utils/data";
 
 const qs = require("querystring");
 
-axios.defaults.baseURL = `${process.env.REACT_APP_API_ENDPOINT}/api`;
+axios.defaults.baseURL = `/api`;
 // axios.defaults.withCredentials = true;
 
 const tokenKey = "statping_auth";

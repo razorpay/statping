@@ -3,7 +3,6 @@ package handlers
 import (
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/statping/statping/source"
 	"github.com/statping/statping/types/core"
 	"github.com/statping/statping/utils"
 	"net/http"
@@ -21,28 +20,28 @@ func staticAssets(src string) http.Handler {
 	return http.StripPrefix(src+"/", http.FileServer(http.Dir(utils.Directory+"/assets/"+src)))
 }
 
+func IndexHandler(entrypoint string) func(w http.ResponseWriter, r *http.Request) {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, entrypoint)
+	}
+
+	return http.HandlerFunc(fn)
+}
+
 // Router returns all of the routes used in Statping.
 // Server will use static assets if the 'assets' directory is found in the root directory.
 func Router() *mux.Router {
-	dir := utils.Directory
 
 	r := mux.NewRouter().StrictSlash(true)
 	r.Use(prometheusMiddleware)
+
+	r.PathPrefix("/static/").Handler(http.FileServer(http.Dir("./source/dist/")))
+	r.Handle("/", http.HandlerFunc(IndexHandler("./source/dist/index.html")))
 
 	authUser := utils.Params.GetString("AUTH_USERNAME")
 	authPass := utils.Params.GetString("AUTH_PASSWORD")
 	if authUser != "" && authPass != "" {
 		r.Use(basicAuthHandler)
-	}
-
-	bPath := utils.Params.GetString("BASE_PATH")
-
-	if bPath != "" {
-		basePath = "/" + bPath + "/"
-		r = r.PathPrefix("/" + bPath).Subrouter()
-		r.Handle("", http.HandlerFunc(indexHandler))
-	} else {
-		r.Handle("/", http.HandlerFunc(indexHandler))
 	}
 
 	if !utils.Params.GetBool("DISABLE_LOGS") {
@@ -62,25 +61,6 @@ func Router() *mux.Router {
 			// pprof -http=:9000 http://localhost:9090/debug/pprof/heap?debug=1
 		}()
 	}
-
-	if source.UsingAssets(dir) {
-		indexHandler := http.FileServer(http.Dir(dir + "/assets/"))
-
-		r.PathPrefix("/css/").Handler(http.StripPrefix(basePath, staticAssets("css")))
-		r.PathPrefix("/favicon/").Handler(http.StripPrefix(basePath, staticAssets("favicon")))
-		r.PathPrefix("/robots.txt").Handler(http.StripPrefix(basePath, indexHandler))
-		r.PathPrefix("/banner.png").Handler(http.StripPrefix(basePath, indexHandler))
-	} else {
-		tmplFileSrv := http.FileServer(source.TmplBox.HTTPBox())
-		tmplBoxHandler := http.StripPrefix(basePath, tmplFileSrv)
-
-		r.PathPrefix("/css/").Handler(http.StripPrefix(basePath, tmplFileSrv))
-		r.PathPrefix("/favicon/").Handler(http.StripPrefix(basePath, tmplFileSrv))
-		r.PathPrefix("/robots.txt").Handler(tmplBoxHandler)
-		r.PathPrefix("/banner.png").Handler(tmplBoxHandler)
-	}
-
-	r.PathPrefix("/js/").Handler(http.StripPrefix(basePath, http.FileServer(source.TmplBox.HTTPBox())))
 
 	api := r.NewRoute().Subrouter()
 	api.Use(apiMiddleware)
