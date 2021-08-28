@@ -63,11 +63,6 @@ func processSetupHandler(w http.ResponseWriter, r *http.Request) {
 			sendErrorJson(err, w, r)
 			return
 		}
-
-		if err := configs.TriggerSamples(); err != nil {
-			sendErrorJson(err, w, r)
-			return
-		}
 	}
 
 	if err = confgs.MigrateDatabase(); err != nil {
@@ -139,7 +134,7 @@ func registerNews(email, domain string) error {
 	v := url.Values{}
 	v.Set("email", email)
 	v.Set("domain", domain)
-	v.Set("timezone", "UTC")
+	v.Set("timezone", "localtime")
 	resp, err := http.PostForm("https://news.statping.com/new", v)
 	if err != nil {
 		return err
