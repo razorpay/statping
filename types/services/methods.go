@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/statping/statping/types"
+	"github.com/statping/statping/types/downtimes"
 	"github.com/statping/statping/types/errors"
 	"github.com/statping/statping/types/failures"
 	"github.com/statping/statping/types/hits"
@@ -63,6 +64,23 @@ func (s *Service) LoadTLSCert() (*tls.Config, error) {
 
 func (s Service) Duration() time.Duration {
 	return time.Duration(s.Interval) * time.Second
+}
+
+func (s Service) DowntimeData(start time.Time, end time.Time) (*UptimeSeries, *[]downtimes.Downtime, error) {
+
+	downtimesList, _ := downtimes.FindByService(s.Id, start, end)
+
+	response := &UptimeSeries{
+		Start:    start,
+		End:      end,
+		Uptime:   end.Sub(start).Milliseconds(),
+		Downtime: addDowntimeDurations(downtimesList),
+		Series:   nil,
+	}
+
+	response.Uptime = response.Uptime - response.Downtime
+
+	return response, downtimesList, nil
 }
 
 // Start will create a channel for the service checking go routine
@@ -144,7 +162,7 @@ func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*Uptim
 			}
 		}
 
-		subStatus = ApplyStatus(subStatus, v.SubStatus)
+		subStatus = ApplyStatus(subStatus, v.SubStatus, STATUS_UP)
 
 		if !v.Online {
 			ftc++
@@ -194,6 +212,14 @@ func addDurations(s []series, on bool) int64 {
 		if v.Online == on {
 			dur += v.Duration
 		}
+	}
+	return dur
+}
+
+func addDowntimeDurations(d *[]downtimes.Downtime) int64 {
+	var dur int64
+	for _, v := range *d {
+		dur += v.End.Sub(v.Start).Milliseconds()
 	}
 	return dur
 }
