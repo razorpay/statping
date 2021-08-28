@@ -7,6 +7,7 @@ import (
 	"github.com/statping/statping/types/metrics"
 	"github.com/statping/statping/utils"
 	"sort"
+	"time"
 )
 
 var (
@@ -160,3 +161,27 @@ func (s *Service) DeleteCheckins() error {
 	db.Model(s).Association("checkins").Clear()
 	return nil
 }
+
+func (s *Service) acquireServiceRun() error{
+	s.State = "inProcess"
+	//rows := db.Update(s)
+
+	rows := db.Model(s).Where("id = ?", s.Id).Where("state = ?", "due").Where("last_processing_time + (check_interval * interval '1 second') < ?", time.Now()).Update("state", "inProcess")
+
+	if rows.RowsAffected() == 0 {
+		return  errors.New("Service already acquired")
+	}
+	return nil
+}
+
+func (s *Service) markServiceRunProcessed() {
+	s.State = "due"
+	s.LastProcessingTime = time.Now()
+
+	db.Update(s)
+}
+
+func (s *Service) markServiceRunAsDue() {
+	db.Model(s).Where("id = ?", s.Id).Where("state != ?", "due").Where("last_processing_time + (check_interval * interval '1 second') < ?", time.Now()).Update("state", "due")
+}
+

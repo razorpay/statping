@@ -25,10 +25,33 @@ import (
 
 // checkServices will start the checking go routine for each service
 func CheckServices() {
+	go refreshAllServices()
 	log.Infoln(fmt.Sprintf("Starting monitoring process for %v Services", len(allServices)))
 	for _, s := range allServices {
 		time.Sleep(50 * time.Millisecond)
 		go ServiceCheckQueue(s, true)
+	}
+}
+
+func refreshAllServices() {
+	for {
+		time.After(time.Duration(time.Second * 120))
+
+		newList := all()
+
+		for _, s := range allServices {
+			x, err := Find(s.Id)
+			if err == nil{
+				s = x
+			}
+		}
+
+		for _, s := range newList {
+			if val, found := allServices[s.Id]; !found {
+				allServices[s.Id] = val
+				go ServiceCheckQueue(val, true)
+			}
+		}
 	}
 }
 
@@ -45,8 +68,22 @@ CheckLoop:
 			log.Infoln(fmt.Sprintf("Stopping service: %v", s.Name))
 			break CheckLoop
 		case <-time.After(s.SleepDuration):
-			s.CheckService(record)
-			s.UpdateStats()
+			x, err := Find(s.Id)
+			if err == nil{
+				s = x
+			}
+			if s.LastProcessingTime.Add(time.Second * time.Duration(s.Interval)).Before(time.Now()) {
+				if s.State != "due" {
+					s.markServiceRunAsDue()
+				} else {
+					err := s.acquireServiceRun()
+					if err == nil {
+						s.CheckService(record)
+						s.UpdateStats()
+						s.markServiceRunProcessed()
+					}
+				}
+			}
 			s.Checkpoint = s.Checkpoint.Add(s.Duration())
 			if !s.Online {
 				s.SleepDuration = s.Duration()
