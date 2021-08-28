@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"github.com/statping/statping/types/downtimes"
 	"net"
 	"net/http"
 	"net/url"
@@ -78,12 +79,13 @@ CheckLoop:
 				} else {
 					err := s.acquireServiceRun()
 					if err == nil {
-						s.CheckService(record)
-						s.UpdateStats()
+						err := s.CheckService(record)
+						s.HandleDowntime(err, record)
 						s.markServiceRunProcessed()
 					}
 				}
 			}
+
 			s.Checkpoint = s.Checkpoint.Add(s.Duration())
 			if !s.Online {
 				s.SleepDuration = s.Duration()
@@ -430,6 +432,65 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 	return s, err
 }
 
+func CheckCollection(s *Service, record bool) (*Service, error) {
+	defer s.updateLastCheck()
+	timer := prometheus.NewTimer(metrics.ServiceTimer(s.Name))
+	defer timer.ObserveDuration()
+
+	combinedStatus := STATUS_UP
+	var impactedSubService SubService
+	var latency, pingtime int64
+	downCount := 0
+
+	for id, subServiceDetail := range s.SubServicesDetails {
+		if subService, err := Find(id); err != nil {
+			log.Errorln(err)
+			continue
+		} else {
+			hit := subService.LastHit()
+			failure := subService.LastFailure()
+			pingtime = hit.PingTime
+			if failure.CreatedAt.After(hit.CreatedAt) {
+				pingtime = failure.PingTime
+				if combinedStatus != STATUS_DOWN {
+					switch subServiceDetail.DependencyType {
+					case CRITICAL:
+						combinedStatus = HandleEmptyStatus(failure.Type)
+						impactedSubService = subServiceDetail
+					case DELAYED, PARTIAL:
+						combinedStatus = STATUS_DEGRADED
+						if failure.Type == STATUS_DOWN {
+							downCount++
+						}
+						impactedSubService = subServiceDetail
+					}
+				}
+			}
+			latency += pingtime
+		}
+	}
+
+	if combinedStatus == STATUS_DEGRADED && downCount == len(s.SubServicesDetails) {
+		combinedStatus = STATUS_DOWN
+	}
+
+	s.Latency = latency
+	s.PingTime = latency
+	s.LastFailureType = combinedStatus
+	if combinedStatus == STATUS_DOWN || combinedStatus == STATUS_DEGRADED {
+		if record {
+			RecordFailureWithType(s, fmt.Sprintf("Sub Service Impacted : %s", impactedSubService.DisplayName), "", combinedStatus)
+		}
+		return s, fmt.Errorf("Sub Service Impacted %s", impactedSubService.DisplayName)
+	}
+
+	if record {
+		RecordSuccess(s)
+	}
+	s.Online = true
+	return s, nil
+}
+
 // RecordSuccess will create a new 'hit' record in the database for a successful/online service
 func RecordSuccess(s *Service) {
 	s.LastOnline = utils.Now()
@@ -452,8 +513,12 @@ func RecordSuccess(s *Service) {
 	sendSuccess(s)
 }
 
-// RecordFailure will create a new 'Failure' record in the database for a offline service
 func RecordFailure(s *Service, issue, reason string) {
+	RecordFailureWithType(s, issue, reason, "")
+}
+
+// RecordFailure will create a new 'Failure' record in the database for a offline service
+func RecordFailureWithType(s *Service, issue, reason string, failureType string) {
 	s.LastOffline = utils.Now()
 
 	fail := &failures.Failure{
@@ -463,6 +528,7 @@ func RecordFailure(s *Service, issue, reason string) {
 		CreatedAt: utils.Now(),
 		ErrorCode: s.LastStatusCode,
 		Reason:    reason,
+		Type:      failureType,
 	}
 	log.WithFields(utils.ToFields(fail, s)).
 		Warnln(fmt.Sprintf("Service %v Failing: %v | Lookup in: %v", s.Name, issue, humanMicro(fail.PingTime)))
@@ -487,15 +553,68 @@ func RecordFailure(s *Service, issue, reason string) {
 
 // Check will run checkHttp for HTTP services and checkTcp for TCP services
 // if record param is set to true, it will add a record into the database.
-func (s *Service) CheckService(record bool) {
+func (s *Service) CheckService(record bool) (err error) {
 	switch s.Type {
 	case "http":
-		CheckHttp(s, record)
+		_, err = CheckHttp(s, record)
 	case "tcp", "udp":
-		CheckTcp(s, record)
+		_, err = CheckTcp(s, record)
 	case "grpc":
-		CheckGrpc(s, record)
+		_, err = CheckGrpc(s, record)
 	case "icmp":
-		CheckIcmp(s, record)
+		_, err = CheckIcmp(s, record)
+	case "collection":
+		_, err = CheckCollection(s, record)
 	}
+	return
+}
+
+func (s *Service) HandleDowntime(err error, record bool) {
+	if err != nil {
+		s.FailureCounter++
+		if s.FailureCounter >= s.GetFtc() {
+
+			s.Online = false
+
+			downtime := &downtimes.Downtime{
+				Start:     time.Now().Add(time.Duration(-s.FailureCounter*s.Interval) * (time.Second)),
+				ServiceId: s.Id,
+			}
+
+			if s.CurrentDowntime > 0 {
+				if downtime, err = downtimes.Find(s.CurrentDowntime); err != nil {
+					return //returning without updating
+				}
+			}
+
+			downtime.End = time.Now()
+			downtime.SubStatus = ApplyStatus(downtime.SubStatus, HandleEmptyStatus(s.LastFailureType), STATUS_DEGRADED)
+			downtime.Failures = s.FailureCounter
+
+			if downtime.Id > 0 {
+				downtime.Update()
+			} else {
+				downtime.Create()
+			}
+
+			s.CurrentDowntime = downtime.Id
+		}
+	} else {
+		s.Online = true
+		if s.CurrentDowntime > 0 {
+			if downtime, err := downtimes.Find(s.CurrentDowntime); err != nil {
+				return //returning without updating
+			} else {
+				downtime.End = time.Now()
+				downtime.SubStatus = ApplyStatus(downtime.SubStatus, HandleEmptyStatus(s.LastFailureType), STATUS_DEGRADED)
+				downtime.Failures = s.FailureCounter
+				downtime.Update()
+			}
+		}
+		s.LastFailureType = ""
+		s.FailureCounter = 0
+		s.CurrentDowntime = 0
+	}
+
+	return
 }
