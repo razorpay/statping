@@ -41,10 +41,7 @@ func refreshAllServices() {
 		newList := all()
 
 		for _, s := range allServices {
-			x, err := Find(s.Id)
-			if err == nil{
-				s = x
-			}
+			s, _ = Find(s.Id)
 		}
 
 		for _, s := range newList {
@@ -59,38 +56,35 @@ func refreshAllServices() {
 // CheckQueue is the main go routine for checking a service
 func ServiceCheckQueue(s *Service, record bool) {
 	s.Start()
-	s.Checkpoint = utils.Now()
+
 	s.SleepDuration = (time.Duration(s.Id) * 100) * time.Millisecond
 
 CheckLoop:
 	for {
+		s.Checkpoint = utils.Now()
 		select {
 		case <-s.Running:
 			log.Infoln(fmt.Sprintf("Stopping service: %v", s.Name))
 			break CheckLoop
 		case <-time.After(s.SleepDuration):
-			x, err := Find(s.Id)
-			if err == nil{
-				s = x
-			}
-			if s.LastProcessingTime.Add(time.Second * time.Duration(s.Interval)).Before(time.Now()) {
-				if s.State != "due" {
-					s.markServiceRunAsDue()
-				} else {
-					err := s.acquireServiceRun()
-					if err == nil {
-						err := s.CheckService(record)
-						s.HandleDowntime(err, record)
-						s.markServiceRunProcessed()
-					}
-				}
-			}
 
-			s.Checkpoint = s.Checkpoint.Add(s.Duration())
-			if !s.Online {
-				s.SleepDuration = s.Duration()
-			} else {
-				s.SleepDuration = s.Checkpoint.Sub(time.Now())
+			s.SleepDuration = s.Duration()
+
+			err := s.acquireServiceRun();
+			s, er := Find(s.Id)
+
+			if er == nil {
+				if err == nil {
+					s.CheckService(record)
+					s.UpdateStats()
+					s.HandleDowntime(err, record)
+					s.markServiceRunProcessed()
+				}
+
+				s.Checkpoint = s.Checkpoint.Add(s.Duration())
+				if s.Online && err == nil && s.Type == "collection" {
+					s.SleepDuration = s.Checkpoint.Sub(time.Now())
+				}
 			}
 		}
 	}

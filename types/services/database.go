@@ -163,10 +163,8 @@ func (s *Service) DeleteCheckins() error {
 }
 
 func (s *Service) acquireServiceRun() error{
-	s.State = "inProcess"
-	//rows := db.Update(s)
 
-	rows := db.Model(s).Where("id = ?", s.Id).Where("state = ?", "due").Where("last_processing_time + (check_interval * interval '1 second') < ?", time.Now()).Update("state", "inProcess")
+	rows := db.Model(s).Where("id = ?", s.Id).Where("last_processing_time + (check_interval * interval '1 second') < ?", time.Now()).Update("last_processing_time", time.Now())
 
 	if rows.RowsAffected() == 0 {
 		return  errors.New("Service already acquired")
@@ -175,13 +173,8 @@ func (s *Service) acquireServiceRun() error{
 }
 
 func (s *Service) markServiceRunProcessed() {
-	s.State = "due"
 	s.LastProcessingTime = time.Now()
-
 	db.Update(s)
 }
 
-func (s *Service) markServiceRunAsDue() {
-	db.Model(s).Where("id = ?", s.Id).Where("state != ?", "due").Where("last_processing_time + (check_interval * interval '1 second') < ?", time.Now()).Update("state", "due")
-}
 
