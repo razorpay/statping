@@ -70,14 +70,14 @@ CheckLoop:
 
 			s.SleepDuration = s.Duration()
 
-			err := s.acquireServiceRun();
+			err := s.acquireServiceRun()
 			s, er := Find(s.Id)
 
 			if er == nil {
 				if err == nil {
-					s.CheckService(record)
+					ce := s.CheckService(record)
 					s.UpdateStats()
-					s.HandleDowntime(err, record)
+					s.HandleDowntime(ce, record)
 					s.markServiceRunProcessed()
 				}
 
