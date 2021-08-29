@@ -40,9 +40,9 @@ func Save() error {
 
 func LoadConfigs(cfgFile string) (*DbConfig, error) {
 	fileName := "/config.yml"
-	e, pr := os.LookupEnv("APP_MODE")
-	if pr && e == "stage" {
-		fileName = "/configs/stage.yml"
+
+	if env, ok := os.LookupEnv("APP_ENV"); ok {
+		fileName = "/configs/" + env + ".yml"
 	}
 
 	cfgFile = utils.Directory+fileName
@@ -61,6 +61,7 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 
 	db := new(DbConfig)
 	content, err := utils.OpenFile(cfgFile)
+	content = os.ExpandEnv(string(content))
 	if err == nil {
 		if err := yaml.Unmarshal([]byte(content), &db); err != nil {
 			return nil, err

@@ -44,6 +44,8 @@ func (s *Service) AfterFind() {
 
 func (s *Service) AfterCreate() error {
 	s.prevOnline = true
+	s.LastProcessingTime = time.Now()
+	db.Update(s)
 	allServices[s.Id] = s
 	metrics.Query("service", "create")
 	return nil
@@ -173,7 +175,6 @@ func (s *Service) acquireServiceRun() error{
 }
 
 func (s *Service) markServiceRunProcessed() {
-	s.LastProcessingTime = time.Now()
 	db.Update(s)
 }
 

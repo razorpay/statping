@@ -14,7 +14,7 @@ type Hit struct {
 // BeforeCreate for Hit will set CreatedAt to UTC
 func (h *Hit) BeforeCreate() (err error) {
 	if h.CreatedAt.IsZero() {
-		h.CreatedAt = time.Now().UTC()
+		h.CreatedAt = time.Now()
 	}
 	return
 }
