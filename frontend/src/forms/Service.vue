@@ -789,7 +789,11 @@ export default {
       s.order = parseInt(s.order);
 
       if (s.type === "collection") {
-        s.sub_services_detail = JSON.parse(s.json);
+        try {
+          s.sub_services_detail = JSON.parse(s.json);
+        } catch (e) {
+          alert("sub_services_detail needs to be JSON");
+        }
         delete s.json;
       }
 
