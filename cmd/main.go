@@ -15,6 +15,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 var (
@@ -29,6 +30,9 @@ var (
 
 func init() {
 	os.Setenv("TZ", "Asia/Kolkata")
+	if loc, err := time.LoadLocation("Africa/Cairo"); err!= nil {
+		time.Local = loc
+	}
 	stopped = make(chan bool, 1)
 	core.New(VERSION, COMMIT)
 	utils.InitEnvs()
