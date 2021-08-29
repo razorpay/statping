@@ -24,8 +24,9 @@ const ServicesPage = () => {
     const fetchServices = async () => {
       try {
         const data = await API.fetchServices();
+        const sorted_data = data.sort((a, b) => a.order_id - b.order_id);
         const status = findStatus(data);
-        setServices(data);
+        setServices(sorted_data);
         setStatus(status);
       } catch (e) {
         console.log(e.message);
@@ -66,7 +67,7 @@ const ServicesPage = () => {
           {services && services.length > 0 ? (
             <Group services={services} />
           ) : (
-            <span>No Services</span>
+            <div className="description text-align-center">No Services</div>
           )}
 
           {/* <div>
