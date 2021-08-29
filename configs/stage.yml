@@ -25,7 +25,6 @@ postgres_sslmode: disable
 remove_after: 2160h0m0s
 sample_data: true
 sass: /usr/local/bin/sass
-statping_dir: /Users/ankitgupta
 use_assets: true
-use_cdn: true
+use_cdn: false
 version: ""

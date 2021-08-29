@@ -99,7 +99,7 @@ func start() {
 	if err = configs.ConnectConfigs(confgs, true); err != nil {
 		exit(err)
 	}
-
+	//
 	if err = confgs.ResetCore(); err != nil {
 		exit(err)
 	}

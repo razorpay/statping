@@ -126,6 +126,8 @@ func (d *DbConfig) MigrateDatabase() error {
 
 	d.Db.Table("core").Model(&core.Core{}).Update("version", utils.Params.GetString("VERSION"))
 
+	CreateAdminUser()
+
 	log.Infoln("Statping Database Tables Migrated")
 
 	return nil
