@@ -175,7 +175,19 @@ func (s *Service) acquireServiceRun() error{
 }
 
 func (s *Service) markServiceRunProcessed() {
-	db.Update(s)
+	updateFields := map[string]interface{}{
+		"online": s.Online,
+		"last_check": s.LastCheck,
+		"last_success" : s.LastOnline,
+		"last_error" : s.LastOffline,
+		"failure_counter" : s.FailureCounter,
+		"downtime" : s.CurrentDowntime,
+	}
+
+	if e:= db.Model(s).Updates(updateFields).Error(); e!= nil {
+		log.Errorf("Failed to update service run : %s %s %s",s.Id, updateFields, e)
+	}
+	log.Infof("Service Run Update Published : %s %s",s.Id, updateFields)
 }
 
 
