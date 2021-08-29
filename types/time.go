@@ -36,7 +36,7 @@ func durationStr(d time.Duration) string {
 		return "2006-01-02T00:00:00Z"
 
 	case m >= Day.Seconds():
-		return "2006-01-02T00:00:00Z"
+		return "2006-01-02T00:00:00Z05:30"
 
 	case m >= Hour.Seconds():
 		return "2006-01-02T15:00:00Z"
