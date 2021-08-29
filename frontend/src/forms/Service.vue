@@ -42,7 +42,7 @@
               <option value="icmp">ICMP Ping</option>
               <option value="grpc">gRPC {{ $t("service") }}</option>
               <option value="static">Static {{ $t("service") }}</option>
-              <option value="collection">Collection</option>
+              <option value="collection">Collection {{ $t("service") }}</option>
             </select>
             <small class="form-text text-muted"
               >Use HTTP if you are checking a website or use TCP if you are
@@ -674,7 +674,7 @@ export default {
       service: {
         name: "",
         type: "http",
-        domain: "",
+        domain: "https://google.com",
         group_id: 0,
         method: "GET",
         post_data: "",
