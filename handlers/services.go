@@ -385,7 +385,9 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 		return nil, err
 	}
 
-	log.Infof("Input : %s %s", failuresData.Start, failuresData.End)
+	zone, offset := time.Now().Zone()
+
+	log.Infof("Input : %s %s %s", failuresData.Start, failuresData.End, zone, offset)
 
 	objs, err := failuresData.NoFailureGraphData(database.ByCount)
 	if err != nil {
