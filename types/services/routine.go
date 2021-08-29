@@ -139,7 +139,7 @@ func CheckIcmp(s *Service, record bool) (*Service, error) {
 	s.PingTime = dur
 	s.Latency = dur
 	s.LastResponse = ""
-	s.Online = true
+	//s.Online = true
 	if record {
 		RecordSuccess(s)
 	}
@@ -237,7 +237,7 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 
 	// Record latency
 	s.Latency = utils.Now().Sub(t1).Microseconds()
-	s.Online = true
+	//s.Online = true
 
 	if s.GrpcHealthCheck.Bool {
 		if s.ExpectedStatus != s.LastStatusCode {
@@ -319,7 +319,7 @@ func CheckTcp(s *Service, record bool) (*Service, error) {
 
 	s.Latency = utils.Now().Sub(t1).Microseconds()
 	s.LastResponse = ""
-	s.Online = true
+	//s.Online = true
 	if record {
 		RecordSuccess(s)
 	}
@@ -422,7 +422,7 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 	if record {
 		RecordSuccess(s)
 	}
-	s.Online = true
+	//s.Online = true
 	return s, err
 }
 
@@ -481,14 +481,14 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 	if record {
 		RecordSuccess(s)
 	}
-	s.Online = true
+	//s.Online = true
 	return s, nil
 }
 
 // RecordSuccess will create a new 'hit' record in the database for a successful/online service
 func RecordSuccess(s *Service) {
 	s.LastOnline = utils.Now()
-	s.Online = true
+	//s.Online = true
 	hit := &hits.Hit{
 		Service:   s.Id,
 		Latency:   s.Latency,
@@ -530,7 +530,7 @@ func RecordFailureWithType(s *Service, issue, reason string, failureType string)
 	if err := fail.Create(); err != nil {
 		log.Error(err)
 	}
-	s.Online = false
+	//s.Online = false
 	s.DownText = s.DowntimeText()
 
 	limitOffset := len(s.Failures)

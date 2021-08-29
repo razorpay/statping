@@ -107,7 +107,7 @@ func apiServicePatchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	service.Online = req.Online
+	//service.Online = req.Online
 	service.Latency = req.Latency
 
 	issueDefault := "Service was triggered to be offline"
