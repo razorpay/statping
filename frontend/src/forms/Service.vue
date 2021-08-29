@@ -648,8 +648,8 @@
 
     <div class="form-group row">
       <div class="col-12">
-        <!-- :disabled="loading" -->
         <button
+          :disabled="loading"
           @click.prevent="saveService"
           type="submit"
           class="btn btn-success btn-block"
@@ -773,7 +773,7 @@ export default {
       return 1;
     },
     async saveService() {
-      let s = this.service;
+      let s = { ...this.service };
       this.loading = true;
       delete s.failures;
       delete s.created_at;
@@ -790,7 +790,7 @@ export default {
 
       if (s.type === "collection") {
         try {
-          s.sub_services_detail = JSON.parse(s.json);
+          s.sub_services_detail = JSON.parse(this.service.json);
         } catch (e) {
           alert("sub_services_detail needs to be JSON");
         }
@@ -802,6 +802,7 @@ export default {
       } else {
         await this.createService(s);
       }
+
       const services = await Api.services();
       this.$store.commit("setServices", services);
       this.loading = false;
