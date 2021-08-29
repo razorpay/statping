@@ -4,9 +4,9 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import API from "../config/API";
 import langs from "../config/langs";
 import GroupServiceFailures from "./GroupServiceFailures";
+import SubServiceCard from "./SubServiceCard";
 // import IncidentsBlock from "./IncidentsBlock";
 // import ServiceLoader from "./ServiceLoader";
-import SubServiceCard from "./SubServiceCard";
 // import DateUtils from "../utils/DateUtils";
 
 const GroupItem = ({ service }) => {
@@ -18,21 +18,32 @@ const GroupItem = ({ service }) => {
   //   .filter((s) => s.group_id === service.id)
   //   .sort((a, b) => a.order_id - b.order_id);
 
-  const handleCollapse = async () => {
+  const fetchSubServices = async () => {
+    const data = await API.fetchSubServices(service.id);
+    if (Array.isArray(data)) {
+      const sorted_data = data.sort((a, b) => a.order_id - b.order_id);
+      setSubServices(sorted_data);
+    }
+    setCollapse(true);
+  };
+
+  const openCollapse = () => {
     if (subServices.length === 0) {
       setLoading(true);
       try {
-        const data = await API.fetchSubServices(service.id);
-        setSubServices(data);
-        setCollapse(!collapse);
+        fetchSubServices();
       } catch (e) {
         console.log(e.message);
       } finally {
         setLoading(false);
       }
     } else {
-      setCollapse(!collapse);
+      setCollapse(true);
     }
+  };
+
+  const closeCollapse = () => {
+    setCollapse(false);
   };
 
   return (
@@ -41,10 +52,13 @@ const GroupItem = ({ service }) => {
       <div className="service_item--header mb-3">
         <div className="service_item--right">
           {service.type === "collection" && !loading && (
-            <button
-              className={collapse ? "square-minus" : "square-plus"}
-              onClick={handleCollapse}
-            />
+            <>
+              {collapse ? (
+                <button className="square-minus" onClick={closeCollapse} />
+              ) : (
+                <button className="square-plus" onClick={openCollapse} />
+              )}
+            </>
           )}
 
           {loading && <FontAwesomeIcon icon={faCircleNotch} spin />}
@@ -74,16 +88,20 @@ const GroupItem = ({ service }) => {
         className="list-group online_list"
         style={{ display: collapse ? "block" : "none" }}
       >
-        {subServices.map((sub_service, i) => {
-          return (
-            <SubServiceCard
-              key={i}
-              group={service}
-              service={sub_service}
-              collapse={collapse}
-            />
-          );
-        })}
+        {subServices && subServices?.length > 0 ? (
+          subServices.map((sub_service, i) => {
+            return (
+              <SubServiceCard
+                key={i}
+                group={service}
+                service={sub_service}
+                collapse={collapse}
+              />
+            );
+          })
+        ) : (
+          <div className="subtitle text-align-center">No Services</div>
+        )}
       </div>
     </div>
   );
