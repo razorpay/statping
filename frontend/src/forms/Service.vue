@@ -173,9 +173,9 @@
               autocapitalize="none"
               spellcheck="false"
             />
-            <small class="form-text text-muted"
-              >Statping will attempt to connect to this address</small
-            >
+            <small class="form-text text-muted">
+              Statping will attempt to connect to this address
+            </small>
           </div>
         </div>
 
@@ -279,7 +279,7 @@
           >
           <div class="col-sm-8">
             <textarea
-              v-model="service.json"
+              v-model="service.sub_services_detail"
               class="form-control"
               rows="3"
               autocapitalize="none"
@@ -678,7 +678,7 @@ export default {
         group_id: 0,
         method: "GET",
         post_data: "",
-        json: "",
+        sub_services_detail: "",
         headers: "",
         expected: "",
         expected_status: 200,
@@ -790,11 +790,11 @@ export default {
 
       if (s.type === "collection") {
         try {
-          s.sub_services_detail = JSON.parse(this.service.json);
+          s.sub_services_detail = JSON.parse(s.sub_services_detail);
         } catch (e) {
           alert("sub_services_detail needs to be JSON");
+          return;
         }
-        delete s.json;
       }
 
       if (s.id) {
