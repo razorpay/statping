@@ -385,6 +385,8 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 		return nil, err
 	}
 
+	log.Infof("Input : %s %s", failuresData.Start, failuresData.End)
+
 	objs, err := failuresData.NoFailureGraphData(database.ByCount)
 	if err != nil {
 		return nil, err
@@ -400,6 +402,8 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 	if err != nil {
 		return nil, err
 	}
+
+	log.Infof("Downtimes : %s", *downtimesList)
 
 	blockSeries.Start = uptimeData.Start
 	blockSeries.End = uptimeData.End
