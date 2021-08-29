@@ -3,11 +3,12 @@ import { hits_data, services, incidents, ping_data } from "../utils/data";
 
 const qs = require("querystring");
 
-axios.defaults.baseURL = `${
-  process.env.NODE_ENV === "development" ? "http://localhost:8080/api" : "/api"
-}`;
-
+const LOCAL_API = "http://localhost:8080";
+// const STAGE_API = "https://statping.concierge.stage.razorpay.in";
 const tokenKey = "statping_auth";
+
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development" ? `${LOCAL_API}/api` : "/api";
 class Api {
   constructor() {
     this.version = "0.90.74";
@@ -21,22 +22,6 @@ class Api {
 
   async core() {
     const core = axios.get("api").then((response) => response.data);
-    // const core = {
-    //   allow_reports: true,
-    //   commit: "2352cae85cb388437ae848c6acd0a658a4cd2d84",
-    //   created_at: "2021-08-18T19:03:50.948350158Z",
-    //   description: "This status page has sample data included",
-    //   domain: "http://localhost:8080",
-    //   footer: "",
-    //   language: "en",
-    //   migration_id: 1629313430,
-    //   name: "Statping Sample Data",
-    //   setup: true,
-    //   started_on: "2021-08-18T19:04:44.943630138Z",
-    //   updated_at: "2021-08-18T19:04:42.046324648Z",
-    //   using_cdn: false,
-    //   version: "0.90.74",
-    // };
     // if (core.allow_reports) {
     //   await this.sentry_init();
     // }
