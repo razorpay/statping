@@ -40,9 +40,24 @@ func Select() (*Core, error) {
 		return nil, errors.New("core database has not been setup yet.")
 	}
 	q := db.Find(&c)
-	if q.Error() != nil {
+
+	if db.Error() != nil {
 		return nil, db.Error()
 	}
+
+	if q.Error() != nil {
+		// Todo: remove after first cut
+		if e := Samples(); e!=nil{
+			return nil, e
+		}
+	}
+
+	q = db.Find(&c)
+
+	if db.Error() != nil {
+		return nil, db.Error()
+	}
+
 	App = &c
 
 	if utils.Params.GetBool("USE_CDN") {

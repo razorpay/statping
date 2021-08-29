@@ -134,7 +134,6 @@ func registerNews(email, domain string) error {
 	v := url.Values{}
 	v.Set("email", email)
 	v.Set("domain", domain)
-	v.Set("timezone", "localtime")
 	resp, err := http.PostForm("https://news.statping.com/new", v)
 	if err != nil {
 		return err
