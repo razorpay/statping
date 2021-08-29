@@ -28,6 +28,7 @@ var (
 )
 
 func init() {
+	os.Setenv("TZ", "Asia/Kolkata")
 	stopped = make(chan bool, 1)
 	core.New(VERSION, COMMIT)
 	utils.InitEnvs()
