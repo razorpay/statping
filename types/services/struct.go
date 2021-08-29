@@ -155,7 +155,7 @@ type SubService struct {
 	Public         bool   `json:"public" yaml:"public"`
 }
 
-func (j *SubServicesDetail) Value() (driver.Value, error) {
+func (j SubServicesDetail) Value() (driver.Value, error) {
 	valueString, err := json.Marshal(j)
 	return string(valueString), err
 }
