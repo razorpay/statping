@@ -27,5 +27,5 @@ sample_data: true
 sass: /usr/local/bin/sass
 statping_dir: /Users/ankitgupta
 use_assets: false
-use_cdn: true
+use_cdn: false
 version: ""
