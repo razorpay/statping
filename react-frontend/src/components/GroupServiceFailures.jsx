@@ -47,8 +47,8 @@ function formatString(arr) {
 }
 
 async function fetchFailureSeries(url) {
-  const { now, beginningOf, endOf, nowSubtract, parseISO, toUnix } = DateUtils;
-  const start = beginningOf("day", nowSubtract(86400 * 28));
+  const { now, beginningOf, endOf, nowSubtract, toUnix } = DateUtils;
+  const start = beginningOf("day", nowSubtract(86400 * 29));
   const end = endOf("day", now());
   const data = await API.service_failures_data(
     url,

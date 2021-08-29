@@ -16,7 +16,7 @@ export const STATUS_ICON = {
 };
 
 export const STATUS_TEXT = {
-  uptime: "All services is up and running",
+  uptime: "All services are up and running",
   downtime: "Multiple services are down",
   degraded: "Some services are impacted",
 };
