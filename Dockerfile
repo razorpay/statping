@@ -4,6 +4,7 @@ FROM razorpay/statping:base_$GIT_COMMIT_HASH AS base
 # Statping main Docker image that contains all required libraries
 FROM alpine:latest
 RUN apk --no-cache add libgcc libstdc++ ca-certificates curl jq && update-ca-certificates
+RUN apk add --update tzdata
 
 COPY --from=base /go/bin/statping /usr/local/bin/
 COPY --from=base /root/sassc/bin/sassc /usr/local/bin/

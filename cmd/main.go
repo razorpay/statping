@@ -30,7 +30,7 @@ var (
 
 func init() {
 	os.Setenv("TZ", "Asia/Kolkata")
-	if loc, err := time.LoadLocation("Africa/Cairo"); err!= nil {
+	if loc, err := time.LoadLocation("Asia/Kolkata"); err!= nil {
 		time.Local = loc
 	}
 	stopped = make(chan bool, 1)
