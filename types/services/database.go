@@ -175,7 +175,6 @@ func (s *Service) acquireServiceRun() error{
 }
 
 func (s *Service) markServiceRunProcessed() {
-	s.LastProcessingTime = time.Now()
 	db.Update(s)
 }
 
