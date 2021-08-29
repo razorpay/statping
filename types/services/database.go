@@ -166,7 +166,7 @@ func (s *Service) DeleteCheckins() error {
 
 func (s *Service) acquireServiceRun() error{
 
-	rows := db.Model(s).Where("id = ?", s.Id).Where("last_processing_time + (check_interval * interval '1 second') < ?", time.Now()).Update("last_processing_time", time.Now())
+	rows := db.Model(s).Where("last_processing_time + (check_interval * interval '1 second') < ?", time.Now()).Update("last_processing_time", time.Now())
 
 	if rows.RowsAffected() == 0 {
 		return  errors.New("Service already acquired")
@@ -187,7 +187,7 @@ func (s *Service) markServiceRunProcessed() {
 	if e:= db.Model(s).Updates(updateFields).Error(); e!= nil {
 		log.Errorf("Failed to update service run : %s %s %s",s.Id, updateFields, e)
 	}
-	log.Infof("Service Run Update Published : %s %s",s.Id, updateFields)
+	log.Infof("Service Run Updates Saved : %s %s",s.Id, updateFields)
 }
 
 

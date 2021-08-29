@@ -73,12 +73,12 @@ CheckLoop:
 			err := s.acquireServiceRun()
 			s, er := Find(s.Id)
 
-			log.Infof("Service Run Started : %s",*s)
+			log.Infof("Service Run Started : %s",s.Id)
 
 			if er == nil {
 				if err == nil {
 					ce := s.CheckService(record)
-					s.UpdateStats()
+					//s.UpdateStats()
 					s.HandleDowntime(ce, record)
 					s.markServiceRunProcessed()
 				}
@@ -440,7 +440,7 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 
 	for id, subServiceDetail := range s.SubServicesDetails {
 		if subService, err := Find(id); err != nil {
-			log.Errorln(err)
+			log.Errorf("Failed to find Sub Service, ignoring : %s %s %s %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
 			continue
 		} else {
 			hit := subService.LastHit()
@@ -477,12 +477,13 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 		if record {
 			RecordFailureWithType(s, fmt.Sprintf("Sub Service Impacted : %s", impactedSubService.DisplayName), "", combinedStatus)
 		}
-		return s, fmt.Errorf("Sub Service Impacted %s", impactedSubService.DisplayName)
+		return s, fmt.Errorf("Sub Service Impacted: %s %s %s", s.Id, s.Name, impactedSubService.DisplayName)
 	}
 
 	if record {
 		RecordSuccess(s)
 	}
+	log.Infof("Collection Check Done : %s %s %s %s", s.Id, s.Name, s.LastFailureType)
 	//s.Online = true
 	return s, nil
 }
@@ -519,7 +520,7 @@ func RecordFailureWithType(s *Service, issue, reason string, failureType string)
 
 	fail := &failures.Failure{
 		Service:   s.Id,
-		Issue:     issue,
+		//Issue:     issue,
 		PingTime:  s.PingTime,
 		CreatedAt: utils.Now(),
 		ErrorCode: s.LastStatusCode,
@@ -579,6 +580,7 @@ func (s *Service) HandleDowntime(err error, record bool) {
 
 			if s.CurrentDowntime > 0 {
 				if downtime, err = downtimes.Find(s.CurrentDowntime); err != nil {
+					log.Errorf("[Failure]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
 					return //returning without updating
 				}
 			}
@@ -599,6 +601,7 @@ func (s *Service) HandleDowntime(err error, record bool) {
 		s.Online = true
 		if s.CurrentDowntime > 0 {
 			if downtime, err := downtimes.Find(s.CurrentDowntime); err != nil {
+				log.Errorf("[Success]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
 				return //returning without updating
 			} else {
 				downtime.End = time.Now()

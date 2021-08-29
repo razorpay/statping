@@ -29,8 +29,10 @@ var (
 )
 
 func init() {
+
 	os.Setenv("TZ", "Asia/Kolkata")
 	if loc, err := time.LoadLocation("Asia/Kolkata"); err!= nil {
+		log.Errorf("setting timezone globally : %s", loc)
 		time.Local = loc
 	}
 	stopped = make(chan bool, 1)

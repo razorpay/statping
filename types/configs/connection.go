@@ -57,7 +57,7 @@ func Connect(configs *DbConfig, retry bool) error {
 	configs.ApiSecret = utils.Params.GetString("API_SECRET")
 
 	log.WithFields(utils.ToFields(dbSession)).Debugln("connected to database")
-
+	//dbSession.LogMode(true)
 	db := dbSession.DB()
 	db.SetMaxOpenConns(utils.Params.GetInt("MAX_OPEN_CONN"))
 	db.SetMaxIdleConns(utils.Params.GetInt("MAX_IDLE_CONN"))

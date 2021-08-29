@@ -132,8 +132,6 @@ func (t *TimeVar) FillMissing(current, end time.Time) ([]*TimeValue, error) {
 		timeMap[v.Timeframe] = v.Amount
 	}
 
-	log.Infof("Input Fillmissing : %s %s", current, end)
-
 	for {
 		currentStr := types.FixedTime(current, t.g.Group)
 
@@ -148,7 +146,6 @@ func (t *TimeVar) FillMissing(current, end time.Time) ([]*TimeValue, error) {
 		})
 		current = current.Add(t.g.Group)
 		if current.After(end) {
-			log.Infof("Break Condition Met : %s %s", current, end)
 			break
 		}
 	}
