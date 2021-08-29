@@ -275,7 +275,7 @@
 
         <div v-if="service.type.match(/^(collection)$/)" class="form-group row">
           <label class="col-sm-4 col-form-label"
-            >Optional Post Data (JSON)</label
+            >Sub Services Details(JSON)</label
           >
           <div class="col-sm-8">
             <textarea
