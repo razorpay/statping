@@ -64,8 +64,8 @@ type Service struct {
 	Failures            []*failures.Failure   `gorm:"-" json:"failures,omitempty" yaml:"-" scope:"user,admin"`
 	LastProcessingTime 	time.Time 	`gorm:"column:last_processing_time" json:"last_processing_time"`
 
-	notifyAfterCount int64 `gorm:"column:notify_after_count" json:"notify_after_count" yaml:"-"`
-	prevOnline       bool  `gorm:"column:prev_online" json:"prev_online" yaml:"-"`
+	notifyAfterCount int64 `gorm:"column:notify_after_count" json:"" yaml:"-"`
+	prevOnline       bool  `gorm:"column:prev_online" json:"" yaml:"-"`
 }
 
 // ServiceOrder will reorder the services based on 'order_id' (Order)
