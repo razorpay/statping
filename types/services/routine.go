@@ -40,10 +40,6 @@ func refreshAllServices() {
 
 		newList := all()
 
-		for _, s := range allServices {
-			s, _ = Find(s.Id)
-		}
-
 		for _, s := range newList {
 			if _, found := allServices[s.Id]; !found {
 				allServices[s.Id] = s
@@ -439,7 +435,7 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 	downCount := 0
 
 	for id, subServiceDetail := range s.SubServicesDetails {
-		if subService, err := Find(id); err != nil {
+		if subService, err := FindInMemory(id); err != nil {
 			log.Errorf("Failed to find Sub Service, ignoring : %s %s %s %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
 			continue
 		} else {
@@ -563,6 +559,7 @@ func (s *Service) CheckService(record bool) (err error) {
 	case "collection":
 		_, err = CheckCollection(s, record)
 	}
+	log.Errorf("Health Check Executed : %s %s %s %s %s", s.Id, s.Name, s.Type, s.Online, err)
 	return
 }
 
