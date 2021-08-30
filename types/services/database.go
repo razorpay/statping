@@ -192,7 +192,7 @@ func (s *Service) markServiceRunProcessed() {
 		"last_success":    s.LastOnline,
 		"last_error":      s.LastOffline,
 		"failure_counter": s.FailureCounter,
-		"downtime":        s.CurrentDowntime,
+		"current_downtime":        s.CurrentDowntime,
 	}
 
 	d := db.Model(s).Where(" id = ? ", s.Id).Updates(updateFields);

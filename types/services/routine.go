@@ -411,20 +411,20 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 			if record {
 				RecordFailure(s, fmt.Sprintf("HTTP Response Body did not match '%v'", s.Expected), "regex")
 			}
-			return s, err
+			return s, fmt.Errorf("HTTP Response Body did not match '%v'", s.Expected)
 		}
 	}
 	if s.ExpectedStatus != res.StatusCode {
 		if record {
 			RecordFailure(s, fmt.Sprintf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus), "status_code")
 		}
-		return s, err
+		return s, fmt.Errorf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus)
 	}
 	if record {
 		RecordSuccess(s)
 	}
 	//s.Online = true
-	return s, err
+	return s, nil
 }
 
 func CheckCollection(s *Service, record bool) (*Service, error) {
@@ -581,6 +581,9 @@ func (s *Service) HandleDowntime(err error, record bool) {
 			if s.CurrentDowntime > 0 {
 				if downtime, err = downtimes.Find(s.CurrentDowntime); err != nil {
 					log.Errorf("[Failure]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
+					s.LastFailureType = ""
+					s.CurrentDowntime = 0
+					s.FailureCounter = 0
 					return
 				}
 			}
