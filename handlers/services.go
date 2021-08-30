@@ -412,9 +412,9 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 	for c := 0; c < len(objs); c++ {
 
 		currentFrame := objs[c]
-		currentFrameTime, _ := time.Parse("2006-01-02T15:04:05Z", currentFrame.Timeframe)
+		currentFrameTime, _ := time.ParseInLocation("2006-01-02T15:04:05Z", currentFrame.Timeframe, time.Local)
 		if c+1 < len(objs) {
-			nextFrameTime, _ = time.Parse("2006-01-02T15:04:05Z", objs[c+1].Timeframe)
+			nextFrameTime, _ = time.ParseInLocation("2006-01-02T15:04:05Z", objs[c+1].Timeframe, time.Local)
 		} else {
 			nextFrameTime = uptimeData.End
 		}
