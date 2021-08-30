@@ -408,7 +408,7 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 			if record {
 				RecordFailure(s, fmt.Sprintf("HTTP Response Body did not match '%v'", s.Expected), "regex")
 			}
-			return s, err
+			return s, fmt.Errorf("HTTP Response Body did not match '%v'", s.Expected)
 		}
 	}
 	if s.ExpectedStatus != res.StatusCode {
