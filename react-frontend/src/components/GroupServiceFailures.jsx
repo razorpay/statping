@@ -7,6 +7,7 @@ import ServiceLoader from "./ServiceLoader";
 import ReactTooltip from "react-tooltip";
 import format from "date-fns/format";
 import { STATUS_CLASS } from "../utils/meta";
+import { calcPer } from "../utils/helper";
 
 const STATUS_TEXT = {
   up: "Uptime",
@@ -88,26 +89,27 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
   const [failureData, setFailureData] = useState([]);
   const [uptime, setUptime] = useState(0);
 
-  useEffect(async () => {
-    let url = "/services";
-    try {
-      if (group) {
-        url += `/${group.id}/sub_services/${service.id}/block_series`;
-      } else {
-        url += `/${service.id}/block_series`;
+  useEffect(() => {
+    async function fetchData() {
+      let url = "/services";
+      try {
+        if (group) {
+          url += `/${group.id}/sub_services/${service.id}/block_series`;
+        } else {
+          url += `/${service.id}/block_series`;
+        }
+        const { series, downtime, uptime } = await fetchFailureSeries(url);
+        const percentage = calcPer(uptime, downtime);
+        setFailureData(series);
+        setUptime(percentage);
+      } catch (e) {
+        console.log(e.message);
+      } finally {
+        setLoaded(false);
       }
-      const { series, downtime, uptime } = await fetchFailureSeries(url);
-      const uptime_percentage = ((uptime / (uptime + downtime)) * 100).toFixed(
-        2
-      );
-      setFailureData(series);
-      setUptime(uptime_percentage);
-    } catch (e) {
-      console.log(e.message);
-    } finally {
-      setLoaded(false);
     }
-  }, []);
+    fetchData();
+  }, [service, group]);
 
   const handleTooltip = (d, date) => {
     let txt = "";

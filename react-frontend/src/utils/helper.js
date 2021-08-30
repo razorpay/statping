@@ -9,6 +9,7 @@ export function findStatus(data) {
   if (uptime) return "uptime";
   if (downtime) return "downtime";
   if (degraded) return "degraded";
+  return "none";
 }
 
 // export function inRange(message) {
@@ -20,3 +21,23 @@ export function findStatus(data) {
 //       : message.end_on
 //   );
 // }
+
+export const isObject = (obj) => {
+  if (Object.prototype.toString.call(obj) === "[object Object]") {
+    return true;
+  }
+
+  return false;
+};
+
+export const isObjectEmpty = (obj) => {
+  if (Object.keys(obj).length === 0) {
+    return true;
+  }
+  return false;
+};
+
+export const calcPer = (uptime, downtime) => {
+  const percentage = ((uptime / (uptime + downtime)) * 100).toFixed(2);
+  return percentage;
+};

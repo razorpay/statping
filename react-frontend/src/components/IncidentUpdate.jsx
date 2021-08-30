@@ -1,5 +1,5 @@
 import React from "react";
-import API from "../config/API";
+// import API from "../config/API";
 import DateUtils from "../utils/DateUtils";
 
 const IncidentUpdate = ({ update, admin }) => {
