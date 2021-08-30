@@ -42,7 +42,7 @@ func checkinCreateHandler(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
-	service, err := services.Find(checkin.ServiceId)
+	service, err := services.FindInMemory(checkin.ServiceId)
 	if err != nil {
 		sendErrorJson(err, w, r)
 		return

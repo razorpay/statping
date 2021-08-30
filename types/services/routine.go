@@ -36,7 +36,7 @@ func CheckServices() {
 
 func refreshAllServices() {
 	for {
-		time.Sleep(time.Duration(time.Second * 120))
+		time.Sleep(time.Duration(time.Second * 60))
 
 		newList := all()
 
@@ -436,7 +436,7 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 
 	for id, subServiceDetail := range s.SubServicesDetails {
 		if subService, err := FindInMemory(id); err != nil {
-			log.Errorf("Failed to find Sub Service, ignoring : %s %s %s %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
+			log.Errorf("[Ignored]Failed to find Sub Service : %s %s %s %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
 			continue
 		} else {
 			hit := subService.LastHit()

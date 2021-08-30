@@ -85,6 +85,7 @@ func FindInMemory(id int64) (*Service, error) {
 	if srv == nil {
 		return nil, errors.Missing(&Service{}, id)
 	}
+	return srv, nil
 }
 
 func all() []*Service {

@@ -21,7 +21,7 @@ type serviceOrder struct {
 func findService(r *http.Request) (*services.Service, error) {
 	vars := mux.Vars(r)
 	id := utils.ToInt(vars["id"])
-	servicer, err := services.Find(id)
+	servicer, err := services.FindInMemory(id)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func findPublicSubService(r *http.Request, service *services.Service) (*services
 	vars := mux.Vars(r)
 	id := utils.ToInt(vars["sub_id"])
 	if val, ok := service.SubServicesDetails[id]; ok && val.Public {
-		sub, err := services.Find(id)
+		sub, err := services.FindInMemory(id)
 		if err != nil {
 			return nil, err
 		}
@@ -53,7 +53,7 @@ func reorderServiceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, s := range newOrder {
-		service, err := services.Find(s.Id)
+		service, err := services.FindInMemory(s.Id)
 		if err != nil {
 			sendErrorJson(err, w, r)
 			return
@@ -496,7 +496,7 @@ func apiAllSubServicesHandler(r *http.Request) interface{} {
 	}
 	for id, config := range service.SubServicesDetails {
 		if config.Public {
-			if sub, err := services.Find(id); err == nil {
+			if sub, err := services.FindInMemory(id); err == nil {
 				subClone := *sub
 				subClone.DisplayName = config.DisplayName
 				srvs = append(srvs, subClone)
