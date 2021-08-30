@@ -1,14 +1,25 @@
 import React from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "../theme";
 import ServicesPage from "./ServicesPage";
+import Navbar from "./Navbar";
 
 const App = () => {
   console.log(`Application running on ${process.env.NODE_ENV} mode.`);
+
   return (
-    <Switch>
-      <Route exact path="/" component={ServicesPage} />
-      <Redirect from="*" to="/" />
-    </Switch>
+    <ChakraProvider theme={theme}>
+      <BrowserRouter>
+        <div className="app-layout">
+          <Navbar />
+          <Switch>
+            <Route exact path="/" component={ServicesPage} />
+            <Redirect from="*" to="/" />
+          </Switch>
+        </div>
+      </BrowserRouter>
+    </ChakraProvider>
   );
 };
 
