@@ -4,11 +4,11 @@ import { hits_data, services, incidents, ping_data } from "../utils/data";
 const qs = require("querystring");
 
 const LOCAL_API = "http://localhost:8080";
-const STAGE_API = "https://statping.concierge.stage.razorpay.in";
+// const STAGE_API = "https://statping.concierge.stage.razorpay.in";
 const TOKEN_KEY = "statping_auth";
 
 axios.defaults.baseURL =
-  process.env.NODE_ENV === "development" ? `${STAGE_API}/api` : "/api";
+  process.env.NODE_ENV === "development" ? `${LOCAL_API}/api` : "/api";
 class Api {
   constructor() {
     this.version = "0.90.74";
