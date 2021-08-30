@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 // import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheckCircle,
+  faExclamationCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import DateUtils from "../utils/DateUtils";
 import Group from "./Group";
 import ContentHeader from "./ContentHeader";
@@ -10,7 +14,7 @@ import ServiceLoader from "./ServiceLoader";
 // import ServiceBlock from "./ServiceBlock";
 // import ServicesList from "./ServicesList";
 import API from "../config/API";
-import { STATUS_COLOR, STATUS_ICON, STATUS_TEXT } from "../utils/meta";
+import { STATUS_COLOR, STATUS_TEXT } from "../utils/meta";
 import { findStatus } from "../utils/helper";
 
 const ServicesPage = () => {
@@ -18,14 +22,22 @@ const ServicesPage = () => {
   const [services, setServices] = useState([]);
   const [status, setStatus] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [poll, setPolling] = useState(1);
   const today = DateUtils.format(new Date(), "d MMMM yyyy, hh:mm aaa");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPolling((prev) => (prev += 1));
+    }, 120000);
+    return () => clearInterval(timer);
+  }, [poll]);
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
         const data = await API.fetchServices();
-        const sorted_data = data.sort((a, b) => a.order_id - b.order_id);
         const status = findStatus(data);
+        const sorted_data = data.sort((a, b) => a.order_id - b.order_id);
         setServices(sorted_data);
         setStatus(status);
       } catch (e) {
@@ -35,7 +47,7 @@ const ServicesPage = () => {
       }
     };
     fetchServices();
-  }, []);
+  }, [poll]);
 
   return (
     <div className="container col-md-7 col-sm-12 sm-container">
@@ -43,17 +55,17 @@ const ServicesPage = () => {
       <div className="app-content">
         <div className="service">
           <h2 className="title font-20">Razorpay payments</h2>
-          <div className="d-flex align-items-center subtitle font-12">
+          <div className="d-flex align-items-center subtitle font-12 mt-1">
             <span className="icon">
               <FontAwesomeIcon
-                icon={STATUS_ICON[status]}
+                icon={status === "up" ? faCheckCircle : faExclamationCircle}
                 style={{
                   fontSize: "16px",
                   color: STATUS_COLOR[status],
                 }}
               />
             </span>
-            {STATUS_TEXT[status]}
+            <span className="mr-1">{STATUS_TEXT[status]}</span>
             <span className="date">{today}</span>
           </div>
         </div>

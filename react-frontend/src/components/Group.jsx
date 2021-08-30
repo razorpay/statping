@@ -1,16 +1,33 @@
 import React from "react";
-import { groups } from "../utils/data";
+// import { groups } from "../utils/data";
 import GroupItem from "./GroupItem";
+import { isObjectEmpty } from "../utils/helper";
+
+function showPlus(service) {
+  let show = false;
+  if (!isObjectEmpty(service.sub_services_detail)) {
+    const arr = Object.values(service.sub_services_detail);
+    const isPublic = arr.some((a) => a.public === true);
+    show = service.type === "collection" && isPublic;
+  }
+  return show;
+}
 
 const Group = ({ services }) => {
   // const data = groups.sort((a, b) => a.order_id - b.order_id);
-
   // if (!data.length > 0) return <></>;
 
   return (
     <div>
       {services?.map((service) => {
-        return <GroupItem key={service.id} service={service} />;
+        const showPlusButton = showPlus(service);
+        return (
+          <GroupItem
+            key={service.id}
+            service={service}
+            showPlusButton={showPlusButton}
+          />
+        );
       })}
     </div>
   );

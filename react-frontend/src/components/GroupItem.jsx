@@ -9,7 +9,7 @@ import SubServiceCard from "./SubServiceCard";
 // import ServiceLoader from "./ServiceLoader";
 // import DateUtils from "../utils/DateUtils";
 
-const GroupItem = ({ service }) => {
+const GroupItem = ({ service, showPlusButton }) => {
   const [collapse, setCollapse] = useState(false);
   const [subServices, setSubServices] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ const GroupItem = ({ service }) => {
       {/** TODO: change span to navlink */}
       <div className="service_item--header mb-3">
         <div className="service_item--right">
-          {service.type === "collection" && !loading && (
+          {!loading && showPlusButton && (
             <>
               {collapse ? (
                 <button className="square-minus" onClick={closeCollapse} />
@@ -107,7 +107,7 @@ const GroupItem = ({ service }) => {
   );
 };
 
-export default GroupItem;
+export default React.memo(GroupItem);
 
 // import React from "react";
 // import langs from "../config/langs";

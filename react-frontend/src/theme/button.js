@@ -117,9 +117,11 @@ const defaultProps = {
   colorScheme: "blue",
 };
 
-export default {
+const buttonStyles = {
   baseStyle,
   variants,
   sizes,
   defaultProps,
 };
+
+export default buttonStyles;
