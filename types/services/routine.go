@@ -35,7 +35,7 @@ func CheckServices() {
 
 func refreshAllServices() {
 	for {
-		time.After(time.Duration(time.Second * 120))
+		time.Sleep(time.Duration(time.Second * 120))
 
 		newList := all()
 
@@ -44,9 +44,9 @@ func refreshAllServices() {
 		}
 
 		for _, s := range newList {
-			if val, found := allServices[s.Id]; !found {
-				allServices[s.Id] = val
-				go ServiceCheckQueue(val, true)
+			if _, found := allServices[s.Id]; !found {
+				allServices[s.Id] = s
+				go ServiceCheckQueue(s, true)
 			}
 		}
 	}
