@@ -69,10 +69,11 @@ CheckLoop:
 			err := s.acquireServiceRun()
 			s, er := Find(s.Id)
 
-			log.Infof("Service Run Started : %s %s", s.Id, s.Name)
-
 			if er == nil {
 				if err == nil {
+
+					log.Infof("Service Run Started : %s %s", s.Id, s.Name)
+
 					ce := s.CheckService(record)
 					//s.UpdateStats()
 					s.HandleDowntime(ce, record)
