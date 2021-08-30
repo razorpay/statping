@@ -73,7 +73,7 @@ CheckLoop:
 			err := s.acquireServiceRun()
 			s, er := Find(s.Id)
 
-			log.Infof("Service Run Started : %s %s",s.Id, s.Name)
+			log.Infof("Service Run Started : %s %s", s.Id, s.Name)
 
 			if er == nil {
 				if err == nil {
@@ -519,7 +519,7 @@ func RecordFailureWithType(s *Service, issue, reason string, failureType string)
 	s.LastOffline = utils.Now()
 
 	fail := &failures.Failure{
-		Service:   s.Id,
+		Service: s.Id,
 		//Issue:     issue,
 		PingTime:  s.PingTime,
 		CreatedAt: utils.Now(),
@@ -590,9 +590,13 @@ func (s *Service) HandleDowntime(err error, record bool) {
 			downtime.Failures = s.FailureCounter
 
 			if downtime.Id > 0 {
-				if e:=downtime.Update();e!=nil{log.Errorf("Failed to update downtime : %s %s %s",s.Id,s.Name, e)}
+				if e := downtime.Update(); e != nil {
+					log.Errorf("Failed to update downtime : %s %s %s", s.Id, s.Name, e)
+				}
 			} else {
-				if e:=downtime.Create();e!=nil{log.Errorf("Failed to create downtime : %s %s %s",s.Id,s.Name, e)}
+				if e := downtime.Create(); e != nil {
+					log.Errorf("Failed to create downtime : %s %s %s", s.Id, s.Name, e)
+				}
 			}
 			s.CurrentDowntime = downtime.Id
 		}
@@ -606,7 +610,9 @@ func (s *Service) HandleDowntime(err error, record bool) {
 				downtime.End = time.Now()
 				downtime.SubStatus = ApplyStatus(downtime.SubStatus, HandleEmptyStatus(s.LastFailureType), STATUS_DEGRADED)
 				downtime.Failures = s.FailureCounter
-				if e:=downtime.Update();e!=nil{log.Errorf("Failed to close downtime : %s %s %s",s.Id,s.Name, e)}
+				if e := downtime.Update(); e != nil {
+					log.Errorf("Failed to close downtime : %s %s %s", s.Id, s.Name, e)
+				}
 			}
 		}
 		s.LastFailureType = ""

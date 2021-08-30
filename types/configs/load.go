@@ -45,7 +45,7 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 		fileName = "/configs/" + env + ".yml"
 	}
 
-	cfgFile = utils.Directory+fileName
+	cfgFile = utils.Directory + fileName
 	writeAble, err := utils.DirWritable(utils.Directory)
 	if err != nil {
 		return nil, err

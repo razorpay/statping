@@ -165,30 +165,28 @@ func (s *Service) DeleteCheckins() error {
 	return nil
 }
 
-func (s *Service) acquireServiceRun() error{
+func (s *Service) acquireServiceRun() error {
 
 	rows := db.Model(s).Where("last_processing_time + (check_interval * interval '1 second') < ?", time.Now()).Update("last_processing_time", time.Now())
 
 	if rows.RowsAffected() == 0 {
-		return  errors.New("Service already acquired")
+		return errors.New("Service already acquired")
 	}
 	return nil
 }
 
 func (s *Service) markServiceRunProcessed() {
 	updateFields := map[string]interface{}{
-		"online": s.Online,
-		"last_check": s.LastCheck,
-		"last_success" : s.LastOnline,
-		"last_error" : s.LastOffline,
-		"failure_counter" : s.FailureCounter,
-		"downtime" : s.CurrentDowntime,
+		"online":          s.Online,
+		"last_check":      s.LastCheck,
+		"last_success":    s.LastOnline,
+		"last_error":      s.LastOffline,
+		"failure_counter": s.FailureCounter,
+		"downtime":        s.CurrentDowntime,
 	}
 
-	if e:= db.Model(s).Updates(updateFields).Error(); e!= nil {
-		log.Errorf("Failed to update service run : %s %s %s %s",s.Id, s.Name, updateFields, e)
+	if e := db.Model(s).Updates(updateFields).Error(); e != nil {
+		log.Errorf("Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, e)
 	}
-	log.Infof("Service Run Updates Saved : %s %s %s",s.Id, s.Name, updateFields)
+	log.Infof("Service Run Updates Saved : %s %s %s", s.Id, s.Name, updateFields)
 }
-
-
