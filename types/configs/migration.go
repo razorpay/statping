@@ -125,28 +125,9 @@ func (d *DbConfig) MigrateDatabase() error {
 
 	d.Db.Table("core").Model(&core.Core{}).Update("version", utils.Params.GetString("VERSION"))
 
+	CreateAdminUser()
+
 	log.Infoln("Statping Database Tables Migrated")
-
-	if err := d.Db.Model(&hits.Hit{}).AddIndex("idx_service_hit", "service").Error(); err != nil {
-		log.Errorln(err)
-	}
-
-	if err := d.Db.Model(&hits.Hit{}).AddIndex("hit_created_at", "created_at").Error(); err != nil {
-		log.Errorln(err)
-	}
-
-	if err := d.Db.Model(&failures.Failure{}).AddIndex("fail_created_at", "created_at").Error(); err != nil {
-		log.Errorln(err)
-	}
-
-	if err := d.Db.Model(&failures.Failure{}).AddIndex("idx_service_fail", "service").Error(); err != nil {
-		log.Errorln(err)
-	}
-
-	if err := d.Db.Model(&failures.Failure{}).AddIndex("idx_checkin_fail", "checkin").Error(); err != nil {
-		log.Errorln(err)
-	}
-	log.Infoln("Database Indexes Created")
 
 	return nil
 }
