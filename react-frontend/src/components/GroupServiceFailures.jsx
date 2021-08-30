@@ -109,7 +109,7 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
       }
     }
     fetchData();
-  }, [service, group]);
+  }, [service]);
 
   const handleTooltip = (d, date) => {
     let txt = "";
