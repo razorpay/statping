@@ -195,9 +195,12 @@ func (s *Service) markServiceRunProcessed() {
 		"downtime":        s.CurrentDowntime,
 	}
 
-	e := db.Model(&Service{}).Where(" id = ? ", s.Id).Updates(updateFields).Error();
-	if  e != nil {
-		log.Errorf("Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, e)
+	d := db.Model(&Service{}).Where(" id = ? ", s.Id).Updates(updateFields);
+	if  d.Error() != nil {
+		log.Errorf("[DB ERROR]Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+	}
+	if d.RowsAffected() == 0 {
+		log.Errorf("[Zero]Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
 	}
 	log.Infof("Service Run Updates Saved : %s %s %s", s.Id, s.Name, updateFields)
 }
