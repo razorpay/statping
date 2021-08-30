@@ -678,7 +678,7 @@ export default {
         group_id: 0,
         method: "GET",
         post_data: "",
-        sub_services_detail: "",
+        sub_services_detail: null,
         headers: "",
         expected: "",
         expected_status: 200,
