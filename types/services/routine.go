@@ -52,7 +52,6 @@ func refreshAllServices() {
 // CheckQueue is the main go routine for checking a service
 func ServiceCheckQueue(s *Service, record bool) {
 	s.Start()
-
 	s.SleepDuration = (time.Duration(s.Id) * 100) * time.Millisecond
 
 CheckLoop:
@@ -435,7 +434,7 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 	downCount := 0
 
 	for id, subServiceDetail := range s.SubServicesDetails {
-		if subService, err := FindInMemory(id); err != nil {
+		if subService, err := FindOne(id); err != nil {
 			log.Errorf("[Ignored]Failed to find Sub Service : %s %s %s %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
 			continue
 		} else {

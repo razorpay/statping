@@ -80,12 +80,14 @@ func Find(id int64) (*Service, error) {
 	return srv, nil
 }
 
-func FindInMemory(id int64) (*Service, error) {
+func FindOne(id int64) (*Service, error) {
 	srv := allServices[id]
 	if srv == nil {
 		return nil, errors.Missing(&Service{}, id)
 	}
-	return srv, nil
+	service := &Service{}
+	db.First(&service, id)
+	return service, nil
 }
 
 func all() []*Service {
@@ -193,7 +195,8 @@ func (s *Service) markServiceRunProcessed() {
 		"downtime":        s.CurrentDowntime,
 	}
 
-	if e := db.Model(s).Updates(updateFields).Error(); e != nil {
+	e := db.Model(&Service{}).Where(" id = ? ", s.Id).Updates(updateFields).Error();
+	if  e != nil {
 		log.Errorf("Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, e)
 	}
 	log.Infof("Service Run Updates Saved : %s %s %s", s.Id, s.Name, updateFields)
