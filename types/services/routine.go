@@ -415,13 +415,13 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 		if record {
 			RecordFailure(s, fmt.Sprintf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus), "status_code")
 		}
-		return s, err
+		return s, fmt.Errorf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus)
 	}
 	if record {
 		RecordSuccess(s)
 	}
 	//s.Online = true
-	return s, err
+	return s, nil
 }
 
 func CheckCollection(s *Service, record bool) (*Service, error) {
