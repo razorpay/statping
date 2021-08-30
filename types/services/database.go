@@ -76,8 +76,8 @@ func Find(id int64) (*Service, error) {
 	if srv == nil {
 		return nil, errors.Missing(&Service{}, id)
 	}
-	db.First(&srv, id)
-	return srv, nil
+	res := db.First(&srv, id)
+	return srv, res.Error()
 }
 
 func FindOne(id int64) (*Service, error) {

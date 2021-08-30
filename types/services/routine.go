@@ -83,6 +83,9 @@ CheckLoop:
 				if s.Online && err == nil {
 					s.SleepDuration = s.Checkpoint.Sub(time.Now())
 				}
+			} else {
+				delete(allServices, s.Id)
+				break CheckLoop
 			}
 		}
 	}
