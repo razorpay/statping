@@ -578,6 +578,9 @@ func (s *Service) HandleDowntime(err error, record bool) {
 			if s.CurrentDowntime > 0 {
 				if downtime, err = downtimes.Find(s.CurrentDowntime); err != nil {
 					log.Errorf("[Failure]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
+					s.LastFailureType = ""
+					s.CurrentDowntime = 0
+					s.FailureCounter = 0
 					return
 				}
 			}
