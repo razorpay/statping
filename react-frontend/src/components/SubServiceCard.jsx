@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import langs from "../config/langs";
 import GroupServiceFailures from "./GroupServiceFailures";
-import IncidentsBlock from "./IncidentsBlock";
+// import IncidentsBlock from "./IncidentsBlock";
 
 const SubServiceCard = ({ group, service }) => {
   return (

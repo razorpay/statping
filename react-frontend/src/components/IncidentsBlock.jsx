@@ -6,13 +6,13 @@ import IncidentUpdate from "./IncidentUpdate";
 const IncidentsBlock = ({ service }) => {
   const [incidents, setIncidents] = useState([]);
 
-  useEffect(async () => {
+  useEffect(() => {
     async function fetchData() {
       const data = await API.incidents_service(service.id);
       setIncidents(data);
     }
     fetchData();
-  }, []);
+  }, [service.id]);
 
   return (
     <div className="row">

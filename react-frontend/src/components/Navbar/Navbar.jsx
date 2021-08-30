@@ -371,7 +371,6 @@ const Navbar = (props) => {
               />
             </NavContent>
           </NavMenu>
-
           <NavMenu
             ref={bankingMenuRef}
             setActiveTab={setActiveTab}
@@ -551,7 +550,6 @@ const Navbar = (props) => {
               />
             </NavContent>
           </NavMenu>
-
           <NavMenu
             ref={resourcesMenuRef}
             setActiveTab={setActiveTab}
@@ -693,7 +691,6 @@ const Navbar = (props) => {
               />
             </NavContent>
           </NavMenu>
-
           <NavMenu
             ref={supportMenuRef}
             setActiveTab={setActiveTab}
@@ -732,7 +729,6 @@ const Navbar = (props) => {
               />
             </NavContent>
           </NavMenu>
-
           {/* Desktop Links */}
           <NavTitleLink
             display={{ xxs: "none", lg: "inline-block" }}
@@ -746,7 +742,6 @@ const Navbar = (props) => {
           >
             Pricing
           </NavTitleLink>
-
           {/* Mobile Links */}
           <MobileBottomLinks
             paymentsMenuRef={paymentsMenuRef}
@@ -850,7 +845,8 @@ const MobileBottomLinks = (props) => {
           </NavMobileExploreButton>
         )}
         <NavMobileIconLink
-          to="/pricing"
+          to="https://razorpay.com/pricing"
+          isExternal
           icon={productIcons.pricingSvg}
           color="yellow.200"
         >
@@ -864,7 +860,11 @@ const MobileBottomLinks = (props) => {
             Resources
           </NavMobileExploreButton>
         )}
-        <NavMobileIconLink to="/partners" icon={productIcons.partnersSvg}>
+        <NavMobileIconLink
+          to="https://razorpay.com/partners"
+          isExternal
+          icon={productIcons.partnersSvg}
+        >
           Partners (Refer & Earn)
         </NavMobileIconLink>
         {!hideTab?.includes("support") && (
