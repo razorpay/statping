@@ -38,7 +38,7 @@ func (s *Service) BeforeUpdate() error {
 }
 
 func (s *Service) AfterFind() {
-	db.Model(s).Related(&s.Incidents).Related(&s.Messages).Related(&s.Checkins).Related(&s.Incidents)
+	//db.Model(s).Related(&s.Incidents).Related(&s.Messages).Related(&s.Checkins).Related(&s.Incidents)
 	metrics.Query("service", "find")
 }
 
@@ -110,16 +110,16 @@ func (s *Service) Create() error {
 }
 
 func (s *Service) Update() error {
-	q := db.Update(s)
 	s.Close()
-	allServices[s.Id] = s
-	s.SleepDuration = s.Duration()
-	go ServiceCheckQueue(allServices[s.Id], true)
+	q := db.Update(s)
+	delete(allServices, s.Id)
+	//s.SleepDuration = s.Duration()
+	//go ServiceCheckQueue(allServices[s.Id], true)
 	return q.Error()
 }
 
 func (s *Service) Delete() error {
-	s.Close()
+
 	if err := s.AllFailures().DeleteAll(); err != nil {
 		return err
 	}
@@ -139,6 +139,7 @@ func (s *Service) Delete() error {
 	}
 	db.Model(s).Association("Messages").Clear()
 
+	s.Close()
 	delete(allServices, s.Id)
 	q := db.Model(&Service{}).Delete(s)
 	return q.Error()
@@ -185,9 +186,9 @@ func (s *Service) markServiceRunProcessed() {
 	}
 
 	if e:= db.Model(s).Updates(updateFields).Error(); e!= nil {
-		log.Errorf("Failed to update service run : %s %s %s",s.Id, updateFields, e)
+		log.Errorf("Failed to update service run : %s %s %s %s",s.Id, s.Name, updateFields, e)
 	}
-	log.Infof("Service Run Updates Saved : %s %s",s.Id, updateFields)
+	log.Infof("Service Run Updates Saved : %s %s %s",s.Id, s.Name, updateFields)
 }
 
 

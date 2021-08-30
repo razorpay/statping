@@ -73,7 +73,7 @@ CheckLoop:
 			err := s.acquireServiceRun()
 			s, er := Find(s.Id)
 
-			log.Infof("Service Run Started : %s",s.Id)
+			log.Infof("Service Run Started : %s %s",s.Id, s.Name)
 
 			if er == nil {
 				if err == nil {
@@ -581,7 +581,7 @@ func (s *Service) HandleDowntime(err error, record bool) {
 			if s.CurrentDowntime > 0 {
 				if downtime, err = downtimes.Find(s.CurrentDowntime); err != nil {
 					log.Errorf("[Failure]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
-					return //returning without updating
+					return
 				}
 			}
 
@@ -590,11 +590,10 @@ func (s *Service) HandleDowntime(err error, record bool) {
 			downtime.Failures = s.FailureCounter
 
 			if downtime.Id > 0 {
-				downtime.Update()
+				if e:=downtime.Update();e!=nil{log.Errorf("Failed to update downtime : %s %s %s",s.Id,s.Name, e)}
 			} else {
-				downtime.Create()
+				if e:=downtime.Create();e!=nil{log.Errorf("Failed to create downtime : %s %s %s",s.Id,s.Name, e)}
 			}
-
 			s.CurrentDowntime = downtime.Id
 		}
 	} else {
@@ -602,12 +601,12 @@ func (s *Service) HandleDowntime(err error, record bool) {
 		if s.CurrentDowntime > 0 {
 			if downtime, err := downtimes.Find(s.CurrentDowntime); err != nil {
 				log.Errorf("[Success]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
-				return //returning without updating
+				return
 			} else {
 				downtime.End = time.Now()
 				downtime.SubStatus = ApplyStatus(downtime.SubStatus, HandleEmptyStatus(s.LastFailureType), STATUS_DEGRADED)
 				downtime.Failures = s.FailureCounter
-				downtime.Update()
+				if e:=downtime.Update();e!=nil{log.Errorf("Failed to close downtime : %s %s %s",s.Id,s.Name, e)}
 			}
 		}
 		s.LastFailureType = ""
