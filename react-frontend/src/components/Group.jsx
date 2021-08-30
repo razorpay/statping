@@ -1,11 +1,14 @@
 import React from "react";
 // import { groups } from "../utils/data";
 import GroupItem from "./GroupItem";
-import { isObjectEmpty } from "../utils/helper";
+import { isObject, isObjectEmpty } from "../utils/helper";
 
 function showPlus(service) {
   let show = false;
-  if (!isObjectEmpty(service.sub_services_detail)) {
+  if (
+    isObject(service.sub_services_detail) &&
+    !isObjectEmpty(service.sub_services_detail)
+  ) {
     const arr = Object.values(service.sub_services_detail);
     const isPublic = arr.some((a) => a.public === true);
     show = service.type === "collection" && isPublic;

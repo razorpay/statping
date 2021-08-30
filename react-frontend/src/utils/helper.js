@@ -31,7 +31,7 @@ export const isObject = (obj) => {
 };
 
 export const isObjectEmpty = (obj) => {
-  if (isObject(obj) && Object.keys(obj).length === 0) {
+  if (Object.keys(obj).length === 0) {
     return true;
   }
   return false;
