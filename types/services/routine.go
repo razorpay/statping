@@ -602,10 +602,9 @@ func (s *Service) HandleDowntime(err error, record bool) {
 		}
 	} else {
 		s.Online = true
-		if s.CurrentDowntime > 0 {
+		/*if s.CurrentDowntime > 0 {
 			if downtime, err := downtimes.Find(s.CurrentDowntime); err != nil {
 				log.Errorf("[Success]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
-				return
 			} else {
 				downtime.End = time.Now()
 				downtime.SubStatus = ApplyStatus(downtime.SubStatus, HandleEmptyStatus(s.LastFailureType), STATUS_DEGRADED)
@@ -614,7 +613,7 @@ func (s *Service) HandleDowntime(err error, record bool) {
 					log.Errorf("Failed to close downtime : %s %s %s", s.Id, s.Name, e)
 				}
 			}
-		}
+		}*/
 		s.LastFailureType = ""
 		s.FailureCounter = 0
 		s.CurrentDowntime = 0

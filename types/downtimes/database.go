@@ -1,6 +1,7 @@
 package downtimes
 
 import (
+	"fmt"
 	"github.com/statping/statping/database"
 	"time"
 )
@@ -14,7 +15,13 @@ func SetDB(database database.Database) {
 
 func Find(id int64) (*Downtime, error) {
 	var downtime Downtime
-	q := db.Where("id = ?", id).Find(&downtime)
+	q := db.Where("id = ?", id).Find(&downtime);
+	if q.Error() != nil {
+		return nil, q.Error()
+	}
+	if q.RecordNotFound() {
+		return nil, fmt.Errorf(" Downtime record not found : %s", id)
+	}
 	return &downtime, q.Error()
 }
 
@@ -31,7 +38,7 @@ func (c *Downtime) Create() error {
 }
 
 func (c *Downtime) Update() error {
-	q := db.Update(c)
+	q := db.Save(c)
 	return q.Error()
 }
 
