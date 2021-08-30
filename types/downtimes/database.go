@@ -38,7 +38,7 @@ func (c *Downtime) Create() error {
 }
 
 func (c *Downtime) Update() error {
-	q := db.Save(c)
+	q := db.Where(" id = ? ", c.Id).Updates(c)
 	return q.Error()
 }
 
