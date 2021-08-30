@@ -570,18 +570,22 @@ func (s *Service) HandleDowntime(err error, record bool) {
 
 			s.Online = false
 
-			downtime := &downtimes.Downtime{
-				Start:     time.Now().Add(time.Duration(-s.FailureCounter*s.Interval) * (time.Second)),
-				ServiceId: s.Id,
-			}
+			var downtime *downtimes.Downtime
+
 
 			if s.CurrentDowntime > 0 {
 				if downtime, err = downtimes.Find(s.CurrentDowntime); err != nil {
 					log.Errorf("[Failure]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
+					//resetting as failed to fetch downtime..
 					s.LastFailureType = ""
 					s.CurrentDowntime = 0
 					s.FailureCounter = 0
 					return
+				}
+			} else {
+				downtime = &downtimes.Downtime{
+					Start:     time.Now().Add(time.Duration(-s.FailureCounter*s.Interval) * (time.Second)),
+					ServiceId: s.Id,
 				}
 			}
 
