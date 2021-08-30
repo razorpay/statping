@@ -71,8 +71,8 @@ type Service struct {
 	notifyAfterCount int64 `gorm:"column:notify_after_count" yaml:"-"`
 	prevOnline       bool  `gorm:"column:prev_online" yaml:"-"`
 
-	FailureCounter  int    `gorm:"failure_counter" json:"-" yaml:"-"`
-	CurrentDowntime int64  `gorm:"downtime" json:"-" yaml:"-"`
+	FailureCounter  int    `gorm:"column:failure_counter" json:"-" yaml:"-"`
+	CurrentDowntime int64  `gorm:"column:current_downtime" json:"-" yaml:"-"`
 	LastFailureType string `gorm:"-" json:"-" yaml:"-"`
 }
 
