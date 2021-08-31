@@ -5,7 +5,7 @@ import GroupServiceFailures from "./GroupServiceFailures";
 
 const SubServiceCard = ({ group, service }) => {
   return (
-    <div className="service-card service_item no-border-radius">
+    <div className="service-card service_item border-radius-0 border-right-0 border-left-0">
       {/** TODO: change span to navlink */}
 
       <div className="service_item--header">

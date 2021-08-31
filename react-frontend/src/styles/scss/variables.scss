@@ -2,20 +2,19 @@
 $background-color: #f5f8ff;
 $container-color: #ffffff;
 $text-color: #2a2a2a;
-$max-width: 466px;
+$max-width: 475px;
 
 /* colors */
-$white: rgba(255, 255, 255, 1);
 $base-color: #1f2849;
-$title-color: $base-color;
-$description-color: rgba($base-color, 0.54);
-$subtitle-color: rgba($base-color, 0.87);
-$label: rgba($base-color, 0.87);
+$white: rgba(255, 255, 255, 1);
+
+//font-family
+$font-family: "Lato";
 
 $mobile-card-shadow: 2px 3px 10px #b7b7b7;
 $green: #1f890e;
 $red: #d12d2d;
-$yellow: #cd8214;
+$yellow: #e4951d;
 $uptime: rgba($green, 0.54);
 $downtime: rgba($red, 0.54);
 $degraded: rgba($yellow, 0.54);

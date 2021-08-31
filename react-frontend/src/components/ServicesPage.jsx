@@ -54,18 +54,16 @@ const ServicesPage = () => {
       <ContentHeader />
       <div className="app-content">
         <div className="service">
-          <h2 className="title font-20">Razorpay payments</h2>
-          <div className="d-flex align-items-center subtitle font-12 mt-1">
-            <span className="icon">
-              <FontAwesomeIcon
-                icon={status === "up" ? faCheckCircle : faExclamationCircle}
-                style={{
-                  fontSize: "16px",
-                  color: STATUS_COLOR[status],
-                }}
-              />
-            </span>
-            <span className="mr-1">{STATUS_TEXT[status]}</span>
+          <h2 className="title font-20 fw-700">Razorpay payments</h2>
+          <div className="d-flex align-items-center subtitle font-12 mt-2">
+            <FontAwesomeIcon
+              icon={status === "up" ? faCheckCircle : faExclamationCircle}
+              style={{
+                fontSize: "16px",
+                color: STATUS_COLOR[status],
+              }}
+            />
+            <span className="mx-1">{STATUS_TEXT[status]}</span>
             <span className="date">{today}</span>
           </div>
         </div>
