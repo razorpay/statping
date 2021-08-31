@@ -65,6 +65,8 @@ CheckLoop:
 
 			s.SleepDuration = s.Duration()
 
+			sid := s.Id
+
 			err := s.acquireServiceRun()
 			s, er := Find(s.Id)
 
@@ -84,7 +86,7 @@ CheckLoop:
 					s.SleepDuration = s.Checkpoint.Sub(time.Now())
 				}
 			} else {
-				delete(allServices, s.Id)
+				delete(allServices, sid)
 				break CheckLoop
 			}
 		}
