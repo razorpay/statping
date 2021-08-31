@@ -21,7 +21,7 @@ type serviceOrder struct {
 func findService(r *http.Request) (*services.Service, error) {
 	vars := mux.Vars(r)
 	id := utils.ToInt(vars["id"])
-	servicer, err := services.Find(id)
+	servicer, err := services.FindOne(id)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func findPublicSubService(r *http.Request, service *services.Service) (*services
 	vars := mux.Vars(r)
 	id := utils.ToInt(vars["sub_id"])
 	if val, ok := service.SubServicesDetails[id]; ok && val.Public {
-		sub, err := services.Find(id)
+		sub, err := services.FindOne(id)
 		if err != nil {
 			return nil, err
 		}
@@ -53,7 +53,7 @@ func reorderServiceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, s := range newOrder {
-		service, err := services.Find(s.Id)
+		service, err := services.FindOne(s.Id)
 		if err != nil {
 			sendErrorJson(err, w, r)
 			return
@@ -107,7 +107,7 @@ func apiServicePatchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	service.Online = req.Online
+	//service.Online = req.Online
 	service.Latency = req.Latency
 
 	issueDefault := "Service was triggered to be offline"
@@ -412,9 +412,9 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 	for c := 0; c < len(objs); c++ {
 
 		currentFrame := objs[c]
-		currentFrameTime, _ := time.Parse("2006-01-02T15:04:05Z", currentFrame.Timeframe)
+		currentFrameTime, _ := time.ParseInLocation("2006-01-02T15:04:05Z", currentFrame.Timeframe, time.Local)
 		if c+1 < len(objs) {
-			nextFrameTime, _ = time.Parse("2006-01-02T15:04:05Z", objs[c+1].Timeframe)
+			nextFrameTime, _ = time.ParseInLocation("2006-01-02T15:04:05Z", objs[c+1].Timeframe, time.Local)
 		} else {
 			nextFrameTime = uptimeData.End
 		}
@@ -496,7 +496,7 @@ func apiAllSubServicesHandler(r *http.Request) interface{} {
 	}
 	for id, config := range service.SubServicesDetails {
 		if config.Public {
-			if sub, err := services.Find(id); err == nil {
+			if sub, err := services.FindOne(id); err == nil {
 				subClone := *sub
 				subClone.DisplayName = config.DisplayName
 				srvs = append(srvs, subClone)

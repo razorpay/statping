@@ -82,5 +82,5 @@ func parseError(f *failures.Failure) string {
 	if err {
 		return fmt.Sprintf("Timed Out on Response Body")
 	}
-	return f.Issue
+	return fmt.Sprintf("Error description uknown")
 }

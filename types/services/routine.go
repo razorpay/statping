@@ -26,6 +26,7 @@ import (
 
 // checkServices will start the checking go routine for each service
 func CheckServices() {
+	go refreshAllServices()
 	log.Infoln(fmt.Sprintf("Starting monitoring process for %v Services", len(allServices)))
 	for _, s := range allServices {
 		time.Sleep(50 * time.Millisecond)
@@ -33,27 +34,58 @@ func CheckServices() {
 	}
 }
 
+func refreshAllServices() {
+	for {
+		time.Sleep(time.Duration(time.Second * 60))
+
+		newList := all()
+
+		for _, s := range newList {
+			if _, found := allServices[s.Id]; !found {
+				allServices[s.Id] = s
+				go ServiceCheckQueue(s, true)
+			}
+		}
+	}
+}
+
 // CheckQueue is the main go routine for checking a service
 func ServiceCheckQueue(s *Service, record bool) {
 	s.Start()
-	s.Checkpoint = utils.Now()
 	s.SleepDuration = (time.Duration(s.Id) * 100) * time.Millisecond
 
 CheckLoop:
 	for {
+		s.Checkpoint = utils.Now()
 		select {
 		case <-s.Running:
 			log.Infoln(fmt.Sprintf("Stopping service: %v", s.Name))
 			break CheckLoop
 		case <-time.After(s.SleepDuration):
-			err := s.CheckService(record)
-			s.HandleDowntime(err, record)
-			s.UpdateStats()
-			s.Checkpoint = s.Checkpoint.Add(s.Duration())
-			if !s.Online {
-				s.SleepDuration = s.Duration()
+
+			s.SleepDuration = s.Duration()
+
+			err := s.acquireServiceRun()
+			s, er := Find(s.Id)
+
+			if er == nil {
+				if err == nil {
+
+					log.Infof("Service Run Started : %s %s", s.Id, s.Name)
+
+					ce := s.CheckService(record)
+					//s.UpdateStats()
+					s.HandleDowntime(ce, record)
+					s.markServiceRunProcessed()
+				}
+
+				s.Checkpoint = s.Checkpoint.Add(s.Duration())
+				if s.Online && err == nil {
+					s.SleepDuration = s.Checkpoint.Sub(time.Now())
+				}
 			} else {
-				s.SleepDuration = s.Checkpoint.Sub(time.Now())
+				delete(allServices, s.Id)
+				break CheckLoop
 			}
 		}
 	}
@@ -108,7 +140,7 @@ func CheckIcmp(s *Service, record bool) (*Service, error) {
 	s.PingTime = dur
 	s.Latency = dur
 	s.LastResponse = ""
-	s.Online = true
+	//s.Online = true
 	if record {
 		RecordSuccess(s)
 	}
@@ -206,7 +238,7 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 
 	// Record latency
 	s.Latency = utils.Now().Sub(t1).Microseconds()
-	s.Online = true
+	//s.Online = true
 
 	if s.GrpcHealthCheck.Bool {
 		if s.ExpectedStatus != s.LastStatusCode {
@@ -288,7 +320,7 @@ func CheckTcp(s *Service, record bool) (*Service, error) {
 
 	s.Latency = utils.Now().Sub(t1).Microseconds()
 	s.LastResponse = ""
-	s.Online = true
+	//s.Online = true
 	if record {
 		RecordSuccess(s)
 	}
@@ -379,20 +411,20 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 			if record {
 				RecordFailure(s, fmt.Sprintf("HTTP Response Body did not match '%v'", s.Expected), "regex")
 			}
-			return s, err
+			return s, fmt.Errorf("HTTP Response Body did not match '%v'", s.Expected)
 		}
 	}
 	if s.ExpectedStatus != res.StatusCode {
 		if record {
 			RecordFailure(s, fmt.Sprintf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus), "status_code")
 		}
-		return s, err
+		return s, fmt.Errorf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus)
 	}
 	if record {
 		RecordSuccess(s)
 	}
-	s.Online = true
-	return s, err
+	//s.Online = true
+	return s, nil
 }
 
 func CheckCollection(s *Service, record bool) (*Service, error) {
@@ -406,8 +438,8 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 	downCount := 0
 
 	for id, subServiceDetail := range s.SubServicesDetails {
-		if subService, err := Find(id); err != nil {
-			log.Errorln(err)
+		if subService, err := FindOne(id); err != nil {
+			log.Errorf("[Ignored]Failed to find Sub Service : %s %s %s %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
 			continue
 		} else {
 			hit := subService.LastHit()
@@ -444,20 +476,21 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 		if record {
 			RecordFailureWithType(s, fmt.Sprintf("Sub Service Impacted : %s", impactedSubService.DisplayName), "", combinedStatus)
 		}
-		return s, fmt.Errorf("Sub Service Impacted %s", impactedSubService.DisplayName)
+		return s, fmt.Errorf("Sub Service Impacted: %s %s %s", s.Id, s.Name, impactedSubService.DisplayName)
 	}
 
 	if record {
 		RecordSuccess(s)
 	}
-	s.Online = true
+	log.Infof("Collection Check Done : %s %s %s %s", s.Id, s.Name, s.LastFailureType)
+	//s.Online = true
 	return s, nil
 }
 
 // RecordSuccess will create a new 'hit' record in the database for a successful/online service
 func RecordSuccess(s *Service) {
 	s.LastOnline = utils.Now()
-	s.Online = true
+	//s.Online = true
 	hit := &hits.Hit{
 		Service:   s.Id,
 		Latency:   s.Latency,
@@ -485,8 +518,8 @@ func RecordFailureWithType(s *Service, issue, reason string, failureType string)
 	s.LastOffline = utils.Now()
 
 	fail := &failures.Failure{
-		Service:   s.Id,
-		Issue:     issue,
+		Service: s.Id,
+		//Issue:     issue,
 		PingTime:  s.PingTime,
 		CreatedAt: utils.Now(),
 		ErrorCode: s.LastStatusCode,
@@ -499,7 +532,7 @@ func RecordFailureWithType(s *Service, issue, reason string, failureType string)
 	if err := fail.Create(); err != nil {
 		log.Error(err)
 	}
-	s.Online = false
+	//s.Online = false
 	s.DownText = s.DowntimeText()
 
 	limitOffset := len(s.Failures)
@@ -529,6 +562,7 @@ func (s *Service) CheckService(record bool) (err error) {
 	case "collection":
 		_, err = CheckCollection(s, record)
 	}
+	log.Errorf("Health Check Executed : %s %s %s %s %s", s.Id, s.Name, s.Type, s.Online, err)
 	return
 }
 
@@ -546,7 +580,11 @@ func (s *Service) HandleDowntime(err error, record bool) {
 
 			if s.CurrentDowntime > 0 {
 				if downtime, err = downtimes.Find(s.CurrentDowntime); err != nil {
-					return //returning without updating
+					log.Errorf("[Failure]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
+					s.LastFailureType = ""
+					s.CurrentDowntime = 0
+					s.FailureCounter = 0
+					return
 				}
 			}
 
@@ -555,25 +593,30 @@ func (s *Service) HandleDowntime(err error, record bool) {
 			downtime.Failures = s.FailureCounter
 
 			if downtime.Id > 0 {
-				downtime.Update()
+				if e := downtime.Update(); e != nil {
+					log.Errorf("Failed to update downtime : %s %s %s", s.Id, s.Name, e)
+				}
 			} else {
-				downtime.Create()
+				if e := downtime.Create(); e != nil {
+					log.Errorf("Failed to create downtime : %s %s %s", s.Id, s.Name, e)
+				}
 			}
-
 			s.CurrentDowntime = downtime.Id
 		}
 	} else {
 		s.Online = true
-		if s.CurrentDowntime > 0 {
+		/*if s.CurrentDowntime > 0 {
 			if downtime, err := downtimes.Find(s.CurrentDowntime); err != nil {
-				return //returning without updating
+				log.Errorf("[Success]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
 			} else {
 				downtime.End = time.Now()
 				downtime.SubStatus = ApplyStatus(downtime.SubStatus, HandleEmptyStatus(s.LastFailureType), STATUS_DEGRADED)
 				downtime.Failures = s.FailureCounter
-				downtime.Update()
+				if e := downtime.Update(); e != nil {
+					log.Errorf("Failed to close downtime : %s %s %s", s.Id, s.Name, e)
+				}
 			}
-		}
+		}*/
 		s.LastFailureType = ""
 		s.FailureCounter = 0
 		s.CurrentDowntime = 0

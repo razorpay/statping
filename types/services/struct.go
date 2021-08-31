@@ -40,7 +40,7 @@ type Service struct {
 	SubServicesDetails  SubServicesDetail     `gorm:"column:sub_services_detail;type:json;DEFAULT:null" json:"sub_services_detail" yaml:"sub_services_detail"`
 	CreatedAt           time.Time             `gorm:"column:created_at" json:"created_at" yaml:"-"`
 	UpdatedAt           time.Time             `gorm:"column:updated_at" json:"updated_at" yaml:"-"`
-	Online              bool                  `gorm:"-" json:"online" yaml:"-"`
+	Online              bool                  `gorm:"column:online" json:"online" yaml:"-"`
 	Latency             int64                 `gorm:"-" json:"latency" yaml:"-"`
 	PingTime            int64                 `gorm:"-" json:"ping_time" yaml:"-"`
 	Online24Hours       float32               `gorm:"-" json:"online_24_hours" yaml:"-"`
@@ -58,19 +58,22 @@ type Service struct {
 	LastStatusCode      int                   `gorm:"-" json:"status_code" yaml:"-"`
 	LastLookupTime      int64                 `gorm:"-" json:"-" yaml:"-"`
 	LastLatency         int64                 `gorm:"-" json:"-" yaml:"-"`
-	LastCheck           time.Time             `gorm:"-" json:"-" yaml:"-"`
-	LastOnline          time.Time             `gorm:"-" json:"last_success" yaml:"-"`
-	LastOffline         time.Time             `gorm:"-" json:"last_error" yaml:"-"`
+	LastCheck           time.Time             `gorm:"column:last_check" json:"last_check" yaml:"-"`
+	LastOnline          time.Time             `gorm:"column:last_success" json:"last_success" yaml:"-"`
+	LastOffline         time.Time             `gorm:"column:last_error" json:"last_error" yaml:"-"`
 	Stats               *Stats                `gorm:"-" json:"stats,omitempty" yaml:"-"`
 	Messages            []*messages.Message   `gorm:"foreignkey:service;association_foreignkey:id" json:"messages,omitempty" yaml:"messages"`
 	Incidents           []*incidents.Incident `gorm:"foreignkey:service;association_foreignkey:id" json:"incidents,omitempty" yaml:"incidents"`
 	Checkins            []*checkins.Checkin   `gorm:"foreignkey:service;association_foreignkey:id" json:"checkins,omitempty" yaml:"-" scope:"user,admin"`
 	Failures            []*failures.Failure   `gorm:"-" json:"failures,omitempty" yaml:"-" scope:"user,admin"`
-	notifyAfterCount    int64                 `gorm:"-" json:"-" yaml:"-"`
-	prevOnline          bool                  `gorm:"-" json:"-" yaml:"-"`
-	FailureCounter      int                   `gorm:"failure_counter" json:"-" yaml:"-"`
-	CurrentDowntime     int64                 `gorm:"downtime" json:"-" yaml:"-"`
-	LastFailureType     string                `gorm:"-" json:"-" yaml:"-"`
+	LastProcessingTime  time.Time             `gorm:"column:last_processing_time" json:"last_processing_time"`
+
+	notifyAfterCount int64 `gorm:"column:notify_after_count" yaml:"-"`
+	prevOnline       bool  `gorm:"column:prev_online" yaml:"-"`
+
+	FailureCounter  int    `gorm:"column:failure_counter" json:"-" yaml:"-"`
+	CurrentDowntime int64  `gorm:"column:current_downtime" json:"-" yaml:"-"`
+	LastFailureType string `gorm:"-" json:"-" yaml:"-"`
 }
 
 // ServiceOrder will reorder the services based on 'order_id' (Order)
@@ -152,7 +155,7 @@ type SubService struct {
 	Public         bool   `json:"public" yaml:"public"`
 }
 
-func (j *SubServicesDetail) Value() (driver.Value, error) {
+func (j SubServicesDetail) Value() (driver.Value, error) {
 	valueString, err := json.Marshal(j)
 	return string(valueString), err
 }
