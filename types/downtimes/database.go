@@ -15,7 +15,7 @@ func SetDB(database database.Database) {
 
 func Find(id int64) (*Downtime, error) {
 	var downtime Downtime
-	q := db.Where("id = ?", id).Find(&downtime);
+	q := db.Where("id = ?", id).Find(&downtime)
 	if q.Error() != nil {
 		return nil, q.Error()
 	}

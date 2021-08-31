@@ -35,6 +35,7 @@ func init() {
 		log.Errorf("setting timezone globally : %s", loc)
 		time.Local = loc
 	}
+
 	stopped = make(chan bool, 1)
 	core.New(VERSION, COMMIT)
 	utils.InitEnvs()

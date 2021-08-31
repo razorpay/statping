@@ -187,16 +187,16 @@ func (s *Service) acquireServiceRun() error {
 
 func (s *Service) markServiceRunProcessed() {
 	updateFields := map[string]interface{}{
-		"online":          s.Online,
-		"last_check":      s.LastCheck,
-		"last_success":    s.LastOnline,
-		"last_error":      s.LastOffline,
-		"failure_counter": s.FailureCounter,
-		"current_downtime":        s.CurrentDowntime,
+		"online":           s.Online,
+		"last_check":       s.LastCheck,
+		"last_success":     s.LastOnline,
+		"last_error":       s.LastOffline,
+		"failure_counter":  s.FailureCounter,
+		"current_downtime": s.CurrentDowntime,
 	}
 
-	d := db.Model(s).Where(" id = ? ", s.Id).Updates(updateFields);
-	if  d.Error() != nil {
+	d := db.Model(s).Where(" id = ? ", s.Id).Updates(updateFields)
+	if d.Error() != nil {
 		log.Errorf("[DB ERROR]Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
 	}
 	if d.RowsAffected() == 0 {
