@@ -80,6 +80,16 @@ func Find(id int64) (*Service, error) {
 	return srv, res.Error()
 }
 
+func FindOne(id int64) (*Service, error) {
+	srv := allServices[id]
+	if srv == nil {
+		return nil, errors.Missing(&Service{}, id)
+	}
+	service := &Service{}
+	db.First(&service, id)
+	return service, nil
+}
+
 func all() []*Service {
 	var services []*Service
 	db.Find(&services)
