@@ -19,7 +19,7 @@ type serviceOrder struct {
 func findService(r *http.Request) (*services.Service, error) {
 	vars := mux.Vars(r)
 	id := utils.ToInt(vars["id"])
-	servicer, err := services.Find(id)
+	servicer, err := services.FindOne(id)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func reorderServiceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, s := range newOrder {
-		service, err := services.Find(s.Id)
+		service, err := services.FindOne(s.Id)
 		if err != nil {
 			sendErrorJson(err, w, r)
 			return
