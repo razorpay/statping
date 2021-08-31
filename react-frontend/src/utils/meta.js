@@ -6,7 +6,7 @@ import {
 export const STATUS_COLOR = {
   uptime: "#5ebe5b",
   downtime: "#d50a0a",
-  degraded: "#fcd669",
+  degraded: "#e4951d",
 };
 
 export const STATUS_ICON = {

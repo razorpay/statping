@@ -1,5 +1,6 @@
 @import "variables";
 @import "mixin";
+@import "font";
 
 .index-chart {
   height: 100%;
@@ -169,8 +170,12 @@
   width: 100%;
   text-align: center;
 
+  &-title {
+    line-height: 36px;
+    letter-spacing: 0.5px;
+  }
+
   &-description {
-    font-weight: 400;
     margin-bottom: 2.25rem;
   }
 }
@@ -186,11 +191,13 @@
 .service {
   padding: 0 1rem 1.5rem;
 
+  h2 {
+    line-height: 30px;
+    letter-spacing: 0.5px;
+  }
+
   span {
     line-height: 16px;
-  }
-  .icon {
-    margin-right: 5px;
   }
 
   .date {
@@ -308,6 +315,18 @@
 
 .font-8 {
   font-size: 3.5rem;
+}
+
+.fw-300 {
+  font-weight: 300 !important;
+}
+
+.fw-400 {
+  font-weight: 400 !important;
+}
+
+.fw-700 {
+  font-weight: 700 !important;
 }
 
 .badge {

@@ -1,13 +1,15 @@
+@import "font";
+
 .title {
-  color: $title-color;
+  color: rgba($base-color, 0.87);
 }
 
 .description {
-  color: $description-color;
+  color: rgba($base-color, 0.54);
 }
 
 .subtitle {
-  color: $subtitle-color;
+  color: rgba($base-color, 0.87);
 }
 
 .text-muted {

@@ -5,7 +5,7 @@
  * letter spacing
  */
 
-const CUSTOM_FONT = `MulishVariable`;
+const CUSTOM_FONT = "Lato";
 const FALLBACK_FONTS = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`;
 const FONTS = `${CUSTOM_FONT},${FALLBACK_FONTS}`;
 

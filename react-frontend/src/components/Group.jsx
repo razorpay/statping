@@ -21,7 +21,7 @@ const Group = ({ services }) => {
   // if (!data.length > 0) return <></>;
 
   return (
-    <div>
+    <div className="list-group">
       {services?.map((service) => {
         const showPlusButton = showPlus(service);
         return (

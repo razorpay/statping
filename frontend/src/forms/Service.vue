@@ -147,6 +147,21 @@
             />
           </div>
         </div>
+
+        <div v-if="service.type !== 'static'" class="form-group row">
+          <label for="ftc" class="col-sm-4 col-form-label">
+            Failure Threshold
+          </label>
+          <div class="col-sm-2">
+            <input
+              v-model.number="service.ftc"
+              type="number"
+              name="ftc"
+              id="ftc"
+              class="form-control"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -684,6 +699,7 @@ export default {
         expected_status: 200,
         port: 80,
         check_interval: 60,
+        ftc: 5,
         timeout: 15,
         permalink: "",
         order: 1,
@@ -782,6 +798,7 @@ export default {
       delete s.latency;
       delete s.online_24_hours;
       s.check_interval = parseInt(s.check_interval);
+      s.ftc = parseInt(s.ftc);
       s.timeout = parseInt(s.timeout);
       s.port = parseInt(s.port);
       s.notify_after = parseInt(s.notify_after);
