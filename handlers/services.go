@@ -59,7 +59,7 @@ func reorderServiceHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		service.Order = s.Order
-		service.Update()
+		service.UpdateOrder()
 	}
 	returnJson(newOrder, w, r)
 }
