@@ -35,13 +35,9 @@ func CheckServices() {
 
 func refreshAllServices() {
 	for {
-		time.Sleep(time.Duration(time.Second * 120))
+		time.Sleep(time.Duration(time.Second * 60))
 
 		newList := all()
-
-		for _, s := range allServices {
-			s, _ = Find(s.Id)
-		}
 
 		for _, s := range newList {
 			if _, found := allServices[s.Id]; !found {
@@ -69,20 +65,26 @@ CheckLoop:
 
 			s.SleepDuration = s.Duration()
 
+			sid := s.Id
 			err := s.acquireServiceRun();
 			s, er := Find(s.Id)
 
 			if er == nil {
 				if err == nil {
+					log.Infof("Service Run Started : %s %s", s.Id, s.Name)
+
 					s.CheckService(record)
 					s.UpdateStats()
 					s.markServiceRunProcessed()
 				}
 
 				s.Checkpoint = s.Checkpoint.Add(s.Duration())
-				if s.Online && err == nil && s.Type == "collection" {
+				if s.Online && err == nil {
 					s.SleepDuration = s.Checkpoint.Sub(time.Now())
 				}
+			} else {
+				delete(allServices, sid)
+				break CheckLoop
 			}
 		}
 	}
