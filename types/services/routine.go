@@ -374,19 +374,19 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 			if record {
 				RecordFailure(s, fmt.Sprintf("HTTP Response Body did not match '%v'", s.Expected), "regex")
 			}
-			return s, err
+			return s, fmt.Errorf("HTTP Response Body did not match '%v'", s.Expected)
 		}
 	}
 	if s.ExpectedStatus != res.StatusCode {
 		if record {
 			RecordFailure(s, fmt.Sprintf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus), "status_code")
 		}
-		return s, err
+		return s, fmt.Errorf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus)
 	}
 	if record {
 		RecordSuccess(s)
 	}
-	return s, err
+	return s, nil
 }
 
 // RecordSuccess will create a new 'hit' record in the database for a successful/online service
