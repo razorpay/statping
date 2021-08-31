@@ -37,7 +37,6 @@ func (s *Service) BeforeUpdate() error {
 }
 
 func (s *Service) AfterFind() {
-	db.Model(s).Related(&s.Incidents).Related(&s.Messages).Related(&s.Checkins).Related(&s.Incidents)
 	metrics.Query("service", "find")
 }
 

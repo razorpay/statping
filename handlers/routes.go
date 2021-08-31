@@ -21,28 +21,31 @@ func staticAssets(src string) http.Handler {
 	return http.StripPrefix(src+"/", http.FileServer(http.Dir(utils.Directory+"/assets/"+src)))
 }
 
+func IndexHandler(entrypoint string) func(w http.ResponseWriter, r *http.Request) {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, entrypoint)
+	}
+
+	return http.HandlerFunc(fn)
+}
+
 // Router returns all of the routes used in Statping.
 // Server will use static assets if the 'assets' directory is found in the root directory.
 func Router() *mux.Router {
 	dir := utils.Directory
-
 	r := mux.NewRouter().StrictSlash(true)
 	r.Use(prometheusMiddleware)
+
+	r.PathPrefix("/static/").Handler(http.FileServer(http.Dir("./react/build/")))
+	r.Handle("/", http.HandlerFunc(IndexHandler("./react/build/index.html")))
+	r.Handle("/favicon.ico", http.HandlerFunc(IndexHandler("./react/build/favicon.ico")))
+	r.Handle("/manifest.json", http.HandlerFunc(IndexHandler("./react/build/manifest.json")))
+	r.Handle("/robot.txt", http.HandlerFunc(IndexHandler("./react/build/robot.txt")))
 
 	authUser := utils.Params.GetString("AUTH_USERNAME")
 	authPass := utils.Params.GetString("AUTH_PASSWORD")
 	if authUser != "" && authPass != "" {
 		r.Use(basicAuthHandler)
-	}
-
-	bPath := utils.Params.GetString("BASE_PATH")
-
-	if bPath != "" {
-		basePath = "/" + bPath + "/"
-		r = r.PathPrefix("/" + bPath).Subrouter()
-		r.Handle("", http.HandlerFunc(indexHandler))
-	} else {
-		r.Handle("/", http.HandlerFunc(indexHandler))
 	}
 
 	if !utils.Params.GetBool("DISABLE_LOGS") {
@@ -68,7 +71,7 @@ func Router() *mux.Router {
 
 		r.PathPrefix("/css/").Handler(http.StripPrefix(basePath, staticAssets("css")))
 		r.PathPrefix("/favicon/").Handler(http.StripPrefix(basePath, staticAssets("favicon")))
-		r.PathPrefix("/robots.txt").Handler(http.StripPrefix(basePath, indexHandler))
+		//r.PathPrefix("/robots.txt").Handler(http.StripPrefix(basePath, indexHandler))
 		r.PathPrefix("/banner.png").Handler(http.StripPrefix(basePath, indexHandler))
 	} else {
 		tmplFileSrv := http.FileServer(source.TmplBox.HTTPBox())
@@ -88,7 +91,7 @@ func Router() *mux.Router {
 
 	// API Routes
 	r.Handle("/api", scoped(apiIndexHandler))
-	r.Handle("/api/setup", http.HandlerFunc(processSetupHandler)).Methods("POST")
+	//r.Handle("/api/setup", http.HandlerFunc(processSetupHandler)).Methods("POST")
 	api.Handle("/api/login", http.HandlerFunc(apiLoginHandler)).Methods("POST")
 	api.Handle("/api/logout", http.HandlerFunc(logoutHandler))
 	api.Handle("/api/renew", authenticated(apiRenewHandler, false))

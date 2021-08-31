@@ -41,16 +41,7 @@ func (d *DbConfig) ResetCore() error {
 	if err := CreateAdminUser(); err != nil {
 		return errors.Wrap(err, "error creating default admin user")
 	}
-	if utils.Params.GetBool("SAMPLE_DATA") {
-		log.Infoln("Adding Sample Data")
-		if err := TriggerSamples(); err != nil {
-			return errors.Wrap(err, "error adding sample data")
-		}
-	} else {
-		if err := core.Samples(); err != nil {
-			return errors.Wrap(err, "error added core details")
-		}
-	}
+
 	return nil
 }
 
@@ -134,28 +125,9 @@ func (d *DbConfig) MigrateDatabase() error {
 
 	d.Db.Table("core").Model(&core.Core{}).Update("version", utils.Params.GetString("VERSION"))
 
+	CreateAdminUser()
+
 	log.Infoln("Statping Database Tables Migrated")
-
-	if err := d.Db.Model(&hits.Hit{}).AddIndex("idx_service_hit", "service").Error(); err != nil {
-		log.Errorln(err)
-	}
-
-	if err := d.Db.Model(&hits.Hit{}).AddIndex("hit_created_at", "created_at").Error(); err != nil {
-		log.Errorln(err)
-	}
-
-	if err := d.Db.Model(&failures.Failure{}).AddIndex("fail_created_at", "created_at").Error(); err != nil {
-		log.Errorln(err)
-	}
-
-	if err := d.Db.Model(&failures.Failure{}).AddIndex("idx_service_fail", "service").Error(); err != nil {
-		log.Errorln(err)
-	}
-
-	if err := d.Db.Model(&failures.Failure{}).AddIndex("idx_checkin_fail", "checkin").Error(); err != nil {
-		log.Errorln(err)
-	}
-	log.Infoln("Database Indexes Created")
 
 	return nil
 }

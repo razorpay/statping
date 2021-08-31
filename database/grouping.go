@@ -169,8 +169,8 @@ func ParseRequest(r *http.Request) (*GroupQuery, error) {
 	}
 
 	query := &GroupQuery{
-		Start:     time.Unix(startField, 0).UTC(),
-		End:       time.Unix(endField, 0).UTC(),
+		Start:     time.Unix(startField, 0),
+		End:       time.Unix(endField, 0),
 		Group:     groupDur,
 		Order:     orderBy,
 		Limit:     int(limit),
@@ -213,8 +213,8 @@ func ParseQueries(r *http.Request, o isObject) (*GroupQuery, error) {
 	}
 
 	query := &GroupQuery{
-		Start:     time.Unix(startField, 0).UTC(),
-		End:       time.Unix(endField, 0).UTC(),
+		Start:     time.Unix(startField, 0),
+		End:       time.Unix(endField, 0),
 		Group:     groupDur,
 		Order:     orderBy,
 		Limit:     int(limit),
