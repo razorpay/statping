@@ -75,7 +75,6 @@ func InitEnvs() {
 	//Params.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	Params.SetConfigName("config")
 
-
 	Params.SetConfigType("yml")
 	Params.AddConfigPath(Directory)
 	Params.ReadInConfig()

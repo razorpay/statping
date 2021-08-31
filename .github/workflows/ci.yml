@@ -17,6 +17,7 @@ jobs:
         id: dont_cancel
         run: |
           echo "Don't cancel old workflow"
+
   build-statping-docker-image:
     name: Docker image - statping
     runs-on: [ubuntu-latest]

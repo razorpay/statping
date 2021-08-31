@@ -47,7 +47,7 @@ func Select() (*Core, error) {
 
 	if q.Error() != nil {
 		// Todo: remove after first cut
-		if e := Samples(); e!=nil{
+		if e := Samples(); e != nil {
 			return nil, e
 		}
 	}

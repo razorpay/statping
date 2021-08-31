@@ -7,6 +7,7 @@ import (
 	"github.com/statping/statping/database"
 	"github.com/statping/statping/types/checkins"
 	"github.com/statping/statping/types/core"
+	"github.com/statping/statping/types/downtimes"
 	"github.com/statping/statping/types/failures"
 	"github.com/statping/statping/types/groups"
 	"github.com/statping/statping/types/hits"
@@ -27,6 +28,7 @@ func initModels(db database.Database) {
 	hits.SetDB(db)
 	failures.SetDB(db)
 	checkins.SetDB(db)
+	downtimes.SetDB(db)
 	notifications.SetDB(db)
 	incidents.SetDB(db)
 	users.SetDB(db)

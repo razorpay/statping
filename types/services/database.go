@@ -38,6 +38,7 @@ func (s *Service) BeforeUpdate() error {
 }
 
 func (s *Service) AfterFind() {
+	//db.Model(s).Related(&s.Incidents).Related(&s.Messages).Related(&s.Checkins).Related(&s.Incidents)
 	metrics.Query("service", "find")
 }
 
@@ -122,12 +123,13 @@ func (s *Service) Update() error {
 	s.Close()
 	q := db.Update(s)
 	delete(allServices, s.Id)
-
+	//s.SleepDuration = s.Duration()
+	//go ServiceCheckQueue(allServices[s.Id], true)
 	return q.Error()
 }
 
 func (s *Service) Delete() error {
-	s.Close()
+
 	if err := s.AllFailures().DeleteAll(); err != nil {
 		return err
 	}
@@ -147,6 +149,7 @@ func (s *Service) Delete() error {
 	}
 	db.Model(s).Association("Messages").Clear()
 
+	s.Close()
 	delete(allServices, s.Id)
 	q := db.Model(&Service{}).Delete(s)
 	return q.Error()
@@ -184,14 +187,16 @@ func (s *Service) acquireServiceRun() error {
 
 func (s *Service) markServiceRunProcessed() {
 	updateFields := map[string]interface{}{
-		"online":          s.Online,
-		"last_check":      s.LastCheck,
-		"last_success":    s.LastOnline,
-		"last_error":      s.LastOffline,
+		"online":           s.Online,
+		"last_check":       s.LastCheck,
+		"last_success":     s.LastOnline,
+		"last_error":       s.LastOffline,
+		"failure_counter":  s.FailureCounter,
+		"current_downtime": s.CurrentDowntime,
 	}
 
-	d := db.Model(s).Where(" id = ? ", s.Id).Updates(updateFields);
-	if  d.Error() != nil {
+	d := db.Model(s).Where(" id = ? ", s.Id).Updates(updateFields)
+	if d.Error() != nil {
 		log.Errorf("[DB ERROR]Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
 	}
 	if d.RowsAffected() == 0 {
@@ -199,5 +204,3 @@ func (s *Service) markServiceRunProcessed() {
 	}
 	log.Infof("Service Run Updates Saved : %s %s %s", s.Id, s.Name, updateFields)
 }
-
-
