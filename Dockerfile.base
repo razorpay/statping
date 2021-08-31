@@ -4,8 +4,8 @@ ARG BUILDPLATFORM
 
 # Build vue frontent
 WORKDIR /statping
-COPY ./react-frontend/package.json .
-COPY ./react-frontend/yarn.lock .
+COPY ./frontend/package.json .
+COPY ./frontend/yarn.lock .
 RUN yarn install --pure-lockfile --network-timeout 1000000
 COPY ./frontend/ .
 RUN yarn build && yarn cache clean
