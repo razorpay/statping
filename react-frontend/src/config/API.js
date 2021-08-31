@@ -3,7 +3,7 @@ import { hits_data, services, incidents, ping_data } from "../utils/data";
 
 const qs = require("querystring");
 
-const LOCAL_API = "http://localhost:8080";
+// const LOCAL_API = "http://localhost:8080";
 const STAGE_API = "https://statping.concierge.stage.razorpay.in";
 const TOKEN_KEY = "statping_auth";
 
