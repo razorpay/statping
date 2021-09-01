@@ -113,7 +113,7 @@ func Router() *mux.Router {
 	// API OAUTH Routes
 	api.Handle("/api/oauth", authenticatedV2(apiOAuthHandler)).Methods("GET")
 	api.Handle("/api/oauth", authenticated(apiUpdateOAuthHandler, false)).Methods("POST")
-	api.Handle("/oauth/{provider}", authenticated(oauthHandler, true))
+	api.Handle("/oauth/{provider}", authenticated(oauthHandler, false))
 
 	// API SCSS and ASSETS Routes
 	api.Handle("/api/theme", authenticated(apiThemeViewHandler, false)).Methods("GET")
