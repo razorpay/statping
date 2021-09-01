@@ -150,7 +150,6 @@ func Router() *mux.Router {
 	api.Handle("/api/services/{id}/ping_data", authenticated(apiServicePingDataHandler, false)).Methods("GET")
 	api.Handle("/api/services/{id}/uptime_data", authenticated(apiServiceTimeDataHandler, false)).Methods("GET")
 
-
 	api.Handle("/api/services/{id}/block_series", http.HandlerFunc(apiServiceBlockSeriesHandler)).Methods("GET")
 	api.Handle("/api/services/{id}/sub_services/{sub_id}/block_series", http.HandlerFunc(apiSubServiceBlockSeriesHandler)).Methods("GET")
 
