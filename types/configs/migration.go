@@ -24,6 +24,9 @@ import (
 
 func (d *DbConfig) ResetCore() error {
 	if d.Db.HasTable("core") {
+		if d.Db.Error() != nil {
+			return errors.New("Unable to connect to database in RestCore")
+		}
 		return nil
 	}
 	var srvs int64
@@ -33,9 +36,9 @@ func (d *DbConfig) ResetCore() error {
 			return errors.New("there are already services setup.")
 		}
 	}
-	if err := d.DropDatabase(); err != nil {
-		return errors.Wrap(err, "error dropping database")
-	}
+	//if err := d.DropDatabase(); err != nil {
+	//	return errors.Wrap(err, "error dropping database")
+	//}
 	if err := d.CreateDatabase(); err != nil {
 		return errors.Wrap(err, "error creating database")
 	}
