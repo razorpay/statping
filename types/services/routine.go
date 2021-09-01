@@ -564,7 +564,7 @@ func (s *Service) CheckService(record bool) (err error) {
 	case "collection":
 		_, err = CheckCollection(s, record)
 	}
-	log.Errorf("Health Check Executed : %s %s %s %s %s", s.Id, s.Name, s.Type, s.Online, err)
+	log.Infof("Health Check Executed : %s %s %s %s %s", s.Id, s.Name, s.Type, s.Online, err)
 	return
 }
 

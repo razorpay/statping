@@ -10,6 +10,7 @@ import (
 	"github.com/statping/statping/types/services"
 	"github.com/statping/statping/utils"
 	"net/http"
+	"sort"
 	"time"
 )
 
@@ -59,7 +60,7 @@ func reorderServiceHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		service.Order = s.Order
-		service.Update()
+		service.UpdateOrder()
 	}
 	returnJson(newOrder, w, r)
 }
@@ -503,6 +504,8 @@ func apiAllSubServicesHandler(r *http.Request) interface{} {
 			}
 		}
 	}
+	sort.Sort(services.ServiceOrder(srvs))
+
 	return srvs
 }
 

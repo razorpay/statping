@@ -103,7 +103,7 @@ func All() map[int64]*Service {
 func AllInOrder() []Service {
 	var services []Service
 	for _, service := range allServices {
-		service.UpdateStats()
+		//service.UpdateStats()
 		services = append(services, *service)
 	}
 	sort.Sort(ServiceOrder(services))
@@ -126,6 +126,23 @@ func (s *Service) Update() error {
 	//s.SleepDuration = s.Duration()
 	//go ServiceCheckQueue(allServices[s.Id], true)
 	return q.Error()
+}
+
+func (s *Service) UpdateOrder() (err error) {
+	updateFields := map[string]interface{}{
+		"order_id": s.Order,
+	}
+
+	d := db.Model(s).Where(" id = ? ", s.Id).Updates(updateFields)
+	if err = d.Error(); d.Error() != nil {
+		log.Errorf("[DB ERROR]Failed toservice order : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+	}
+	if d.RowsAffected() == 0 {
+		err = fmt.Errorf("[Zero]Failed to update service order : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+		log.Errorf("[Zero]Failed to update service order : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+	}
+	log.Infof("Service Order updates Saved : %s %s %s", s.Id, s.Name, updateFields)
+	return
 }
 
 func (s *Service) Delete() error {
