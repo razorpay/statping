@@ -5,7 +5,7 @@ import langs from "../config/langs";
 import API from "../config/API";
 import ServiceLoader from "./ServiceLoader";
 import ReactTooltip from "react-tooltip";
-import { STATUS_CLASS } from "../utils/meta";
+import { STATUS_CLASS } from "../utils/constants";
 import { calcPer, isObjectEmpty } from "../utils/helper";
 
 const STATUS_TEXT = {
