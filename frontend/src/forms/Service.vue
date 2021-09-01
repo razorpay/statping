@@ -25,6 +25,30 @@
             >
           </div>
         </div>
+
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label">{{
+            $t("service_description")
+          }}</label>
+          <div class="col-sm-8">
+            <textarea
+              v-model="service.description"
+              id="description"
+              class="form-control"
+              name="description"
+              rows="3"
+              autocapitalize="none"
+              spellcheck="false"
+              autocorrect="off"
+              placeholder="Service Description"
+            ></textarea>
+
+            <small class="form-text text-muted"
+              >Give your service a description</small
+            >
+          </div>
+        </div>
+
         <div class="form-group row">
           <label for="service_type" class="col-sm-4 col-form-label">{{
             $t("service_type")
@@ -688,6 +712,7 @@ export default {
       loading: false,
       service: {
         name: "",
+        description: "",
         type: "http",
         domain: "https://google.com",
         group_id: 0,

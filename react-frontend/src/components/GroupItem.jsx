@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import ReactTooltip from "react-tooltip";
 import API from "../config/API";
 import langs from "../config/langs";
 import GroupServiceFailures from "./GroupServiceFailures";
@@ -8,11 +9,13 @@ import SubServiceCard from "./SubServiceCard";
 // import IncidentsBlock from "./IncidentsBlock";
 // import ServiceLoader from "./ServiceLoader";
 // import DateUtils from "../utils/DateUtils";
+import infoIcon from "../static/info.svg";
 
 const GroupItem = ({ service, showPlusButton }) => {
   const [collapse, setCollapse] = useState(false);
   const [subServices, setSubServices] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [hoverText, setHoverText] = useState("");
 
   // const groupServices = services
   //   .filter((s) => s.group_id === service.id)
@@ -46,6 +49,10 @@ const GroupItem = ({ service, showPlusButton }) => {
     setCollapse(false);
   };
 
+  const handleMouseOver = (str) => setHoverText(str);
+
+  const handleMouseOut = () => setHoverText("");
+
   return (
     <div className="service-card service_item card-bg pb-0">
       {/** TODO: change span to navlink */}
@@ -64,17 +71,36 @@ const GroupItem = ({ service, showPlusButton }) => {
           {loading && <FontAwesomeIcon icon={faCircleNotch} spin />}
 
           <span
-            className="subtitle no-decoration font-14"
+            className="subtitle no-decoration font-14 mr-1"
             // to="/service/1"
           >
             {service.name}
           </span>
-          {/* <span className="info">i</span> */}
+          {service?.description && (
+            <>
+              <ReactTooltip
+                id={`tooltip-${service.name}`}
+                effect="solid"
+                place="right"
+                backgroundColor="#344A6C"
+              />
+              <img
+                onMouseOver={() =>
+                  handleMouseOver(service.description || service.name)
+                }
+                onMouseOut={handleMouseOut}
+                src={infoIcon}
+                alt="info-icon"
+                data-for={`tooltip-${service.name}`}
+                data-tip={hoverText}
+              />
+            </>
+          )}
         </div>
         <div className="service_item--left">
           <span
             className={`badge float-right font-12 ${
-              service.online ? "status-green" : "status-red"
+              service.online ? "uptime" : "downtime"
             }`}
             style={{ display: collapse ? "none" : "block" }}
           >

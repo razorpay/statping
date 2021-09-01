@@ -37,25 +37,25 @@
 }
 
 .uptime {
-  background-color: rgba($green, 0.54);
+  background-color: rgba($green, 0.74);
 }
 
 .uptime:hover {
-  background-color: rgba($green, 0.64);
+  background-color: rgba($green, 0.84);
 }
 
 .degraded {
-  background-color: rgba($yellow, 0.54);
+  background-color: rgba($yellow, 0.74);
 }
 
 .degraded:hover {
-  background-color: rgba($yellow, 0.64);
+  background-color: rgba($yellow, 0.84);
 }
 
 .downtime {
-  background: rgba($red, 0.54);
+  background: rgba($red, 0.84);
 }
 
 .downtime:hover {
-  background: rgba($red, 0.64);
+  background: rgba($red, 0.94);
 }

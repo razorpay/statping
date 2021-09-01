@@ -10,8 +10,8 @@ import { calcPer, isObjectEmpty } from "../utils/helper";
 
 const STATUS_TEXT = {
   up: "Uptime",
-  down: "Downtime",
-  degraded: "Partial degradation",
+  down: "Down",
+  degraded: "Degraded",
 };
 
 const groupByStatus = (arr = []) => {
@@ -81,7 +81,7 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
         const failureData = [];
         series.forEach((d) => {
           let date = DateUtils.parseISO(d.timeframe);
-          date = date.toLocaleDateString();
+          date = DateUtils.format(date, "dd MMMM yyyy");
           failureData.push({
             timeframe: date,
             status: d.status,
@@ -103,15 +103,15 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
   const handleTooltip = (d) => {
     let txt = "";
     if (d.status === "up") {
-      txt = `${d.timeframe} - 100% ${STATUS_TEXT[d.status]}`;
+      txt = `${d.timeframe} - No Downtime`;
     } else if (d.status === "down" && !isObjectEmpty(d.downtimes)) {
-      txt = `<div>
-      <div style="text-align:center;">${d.timeframe}</div>
+      txt = `<div style="text-align:center;">
+      <div>${d.timeframe}</div>
       <div>${formatStatusDuration(d.downtimes)}</div>
       </div>`;
     } else if (d.status === "degraded") {
-      txt = `<div>
-      <div style="text-align:center;">${d.timeframe}</div>
+      txt = `<div style="text-align:center;">
+      <div>${d.timeframe}</div>
       <div>${formatStatusDuration(d.downtimes)}</div>
       </div>`;
     }
