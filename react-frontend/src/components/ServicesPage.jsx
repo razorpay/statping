@@ -14,7 +14,7 @@ import ServiceLoader from "./ServiceLoader";
 // import ServiceBlock from "./ServiceBlock";
 // import ServicesList from "./ServicesList";
 import API from "../config/API";
-import { STATUS_COLOR, STATUS_TEXT } from "../utils/meta";
+import { STATUS_COLOR, STATUS_TEXT } from "../utils/constants";
 import { findStatus } from "../utils/helper";
 
 const ServicesPage = () => {
