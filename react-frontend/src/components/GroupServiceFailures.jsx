@@ -5,9 +5,9 @@ import langs from "../config/langs";
 import API from "../config/API";
 import ServiceLoader from "./ServiceLoader";
 import ReactTooltip from "react-tooltip";
-import format from "date-fns/format";
+import { formatDistance } from "date-fns";
 import { STATUS_CLASS } from "../utils/meta";
-import { calcPer } from "../utils/helper";
+import { calcPer, isObjectEmpty } from "../utils/helper";
 
 const STATUS_TEXT = {
   up: "Uptime",
@@ -15,36 +15,51 @@ const STATUS_TEXT = {
   degraded: "Partial degradation",
 };
 
-// function secondsToDhms(seconds) {
-//   seconds = Number(seconds);
-//   var d = Math.floor(seconds / (3600 * 24));
-//   var h = Math.floor((seconds % (3600 * 24)) / 3600);
-//   var m = Math.floor((seconds % 3600) / 60);
-//   var s = Math.floor(seconds % 60);
+const groupByStatus = (arr = []) => {
+  const res = arr.reduce((acc, val) => {
+    const { duration, sub_status } = val;
+    if (acc.hasOwnProperty(sub_status)) {
+      acc[sub_status]["duration"] += duration;
+      acc[sub_status]["count"] += 1;
+    } else {
+      acc[sub_status] = {
+        duration,
+        sub_status,
+        count: 1,
+      };
+    }
+    return acc;
+  }, {});
+  return res;
+};
 
-//   var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
-//   var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-//   var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-//   var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
-//   return dDisplay + hDisplay + mDisplay + sDisplay;
-// }
+function formatString(obj) {
+  const arrayStr = Object.values(obj).map((d) => {
+    let duration = formatDistance(0, d.duration, {
+      includeSeconds: true,
+    });
 
-function formatString(arr) {
-  const arrayStr = arr.map((d) => {
-    let start_dt = DateUtils.parseISO(d.start);
-    let end_dt = DateUtils.parseISO(d.end);
-    let duration = DateUtils.duration(
-      DateUtils.parseISO(d.start),
-      DateUtils.parseISO(d.end)
-    );
-
-    return `${start_dt.toLocaleDateString()} - ${
-      STATUS_TEXT[d.sub_status]
-    } for ${duration}
-      (${format(start_dt, "hh:mm aaa")} - ${format(end_dt, "hh:mm aaa")})`;
+    return `${STATUS_TEXT[d.sub_status]} for ${duration}`;
   });
 
   return arrayStr.join("<br/>");
+
+  // return arrayStr.join("<br/>");
+  // const arrayStr = arr.map((d) => {
+  //   let start_dt = DateUtils.parseISO(d.start);
+  //   let end_dt = DateUtils.parseISO(d.end);
+  //   let duration = DateUtils.duration(
+  //     DateUtils.parseISO(d.start),
+  //     DateUtils.parseISO(d.end)
+  //   );
+
+  //   return `${start_dt.toLocaleDateString()} - ${
+  //     STATUS_TEXT[d.sub_status]
+  //   } for ${duration}
+  //     (${format(start_dt, "hh:mm aaa")} - ${format(end_dt, "hh:mm aaa")})`;
+  // });
+
+  // return arrayStr.join("<br/>");
 }
 
 async function fetchFailureSeries(url) {
@@ -60,21 +75,6 @@ async function fetchFailureSeries(url) {
   );
   // console.log(data);
   return data;
-  // const data = series.map((s) => ({
-  //   ...series,
-  //   status: Math.random() > 0.2 ? "up" : "degraded",
-  // }));
-
-  // const failureData = [];
-  // series.forEach((d) => {
-  //   let date = parseISO(d.timeframe);
-  //   failureData.push({
-  //     month: date.getMonth(),
-  //     day: date.getDate(),
-  //     date: date,
-  //     amount: d.amount,
-  //   });
-  // });
 }
 
 const GroupServiceFailures = ({ group = null, service, collapse }) => {
@@ -99,8 +99,18 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
           url += `/${service.id}/block_series`;
         }
         const { series, downtime, uptime } = await fetchFailureSeries(url);
+        const failureData = [];
+        series.forEach((d) => {
+          let date = DateUtils.parseISO(d.timeframe);
+          date = date.toLocaleDateString();
+          failureData.push({
+            timeframe: date,
+            status: d.status,
+            downtimes: groupByStatus(d.downtimes),
+          });
+        });
         const percentage = calcPer(uptime, downtime);
-        setFailureData(series);
+        setFailureData(failureData);
         setUptime(percentage);
       } catch (e) {
         console.log(e.message);
@@ -111,30 +121,33 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
     fetchData();
   }, [service]);
 
-  const handleTooltip = (d, date) => {
+  const handleTooltip = (d) => {
+    console.log(d);
     let txt = "";
     if (d.status === "up") {
-      txt = `${date} - 100% ${STATUS_TEXT[d.status]}`;
-    } else if (d.status === "down" && d.downtimes?.length > 0) {
-      txt = formatString(d.downtimes);
-    } else if (d.status === "degraded" && d.downtimes?.length > 0) {
-      txt = formatString(d.downtimes);
+      txt = `${d.timeframe} - 100% ${STATUS_TEXT[d.status]}`;
+    } else if (d.status === "down" && !isObjectEmpty(d.downtimes)) {
+      txt = `<div>
+      <div style="text-align:center;">${d.timeframe}</div>
+      <div>${formatString(d.downtimes)}</div>
+      </div>`;
+    } else if (d.status === "degraded") {
+      txt = `<div>
+      <div style="text-align:center;">${d.timeframe}</div>
+      <div>${formatString(d.downtimes)}</div>
+      </div>`;
     }
     return txt;
   };
 
   const handleMouseOver = (d) => {
-    let date = DateUtils.parseISO(d.timeframe);
-    date = date.toLocaleDateString();
-    const tooltipText = handleTooltip(d, date);
+    // let date = DateUtils.parseISO(d.timeframe);
+    // date = date.toLocaleDateString();
+    const tooltipText = handleTooltip(d);
     setHoverText(tooltipText);
   };
 
   const handleMouseOut = () => setHoverText("");
-
-  // const service_txt = () => {
-  //   return DateUtils.smallText(service);
-  // };
 
   if (loaded) return <ServiceLoader text="Loading series.." />;
 

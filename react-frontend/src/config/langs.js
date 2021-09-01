@@ -19,6 +19,7 @@ const english = {
   copy: "Copy",
   close: "Close",
   secret: "Secret",
+  second: "Seconds",
   regen_api: "Regenerate API Keys",
   regen_desc:
     "API Secret is used for read create update and delete routes. You can Regenerate API Keys if you need to.",

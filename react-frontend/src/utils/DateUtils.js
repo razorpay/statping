@@ -45,7 +45,7 @@ const DateUtils = {
     return startOfToday();
   },
   secondsHumanize(val) {
-    return `${val} ${langs("second", val)}`;
+    return `${val} ${langs("second")}`;
   },
   utc(val) {
     return new Date.UTC(val);
