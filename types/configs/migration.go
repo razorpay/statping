@@ -36,6 +36,10 @@ func (d *DbConfig) ResetCore() error {
 			return errors.New("there are already services setup.")
 		}
 	}
+
+	if d.Db.Error() != nil {
+		return errors.New("Unable to connect to database to fetch services in RestCore")
+	}
 	//if err := d.DropDatabase(); err != nil {
 	//	return errors.Wrap(err, "error dropping database")
 	//}
