@@ -427,12 +427,25 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 
 		for _, data := range *downtimesList {
 
-			if currentFrameTime.Before(data.Start) && nextFrameTime.After(data.Start) {
+			if (currentFrameTime.Before(data.Start) && nextFrameTime.After(data.Start)) ||
+				(currentFrameTime.Before(data.End) && nextFrameTime.After(data.End)) ||
+				(currentFrameTime.After(data.Start) && nextFrameTime.Before(data.End)) {
+
+				start := data.Start
+				end := data.End
+
+				if currentFrameTime.After(data.Start) {
+					start = currentFrameTime
+				}
+
+				if nextFrameTime.Before(data.End) {
+					end = nextFrameTime
+				}
 
 				*block.Downtimes = append(*block.Downtimes, services.Downtime{
-					Start:     data.Start,
-					End:       data.End,
-					Duration:  data.End.Sub(data.Start).Milliseconds(),
+					Start:     start,
+					End:       end,
+					Duration:  end.Sub(start).Milliseconds(),
 					SubStatus: services.HandleEmptyStatus(data.SubStatus),
 				})
 
