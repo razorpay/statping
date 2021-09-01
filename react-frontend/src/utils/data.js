@@ -4,7 +4,7 @@ export const core = {
   created_at: "2021-08-18T19:03:50.948350158Z",
   name: "Razorpay Status Page",
   description:
-    "This pages show historical information about the state of our platform incidents, RCA (Root Cause Analisys), scheduled maintenance, conectivity problems with our third party and all related data about the perfomance of our services.",
+    "Razorpay status page publishes the most up-to-the-minute information on product availability. Check back here any time to get current status/information on individual products. If you are experiencing a real-time, operational issue with one of our products that is not described below, please reach out to our support team and we will help you out.",
   domain: "http://localhost:3000",
   footer: "",
   language: "en",
