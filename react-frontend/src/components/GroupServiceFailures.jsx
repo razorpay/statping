@@ -5,7 +5,6 @@ import langs from "../config/langs";
 import API from "../config/API";
 import ServiceLoader from "./ServiceLoader";
 import ReactTooltip from "react-tooltip";
-import { formatDistance } from "date-fns";
 import { STATUS_CLASS } from "../utils/meta";
 import { calcPer, isObjectEmpty } from "../utils/helper";
 
@@ -33,33 +32,13 @@ const groupByStatus = (arr = []) => {
   return res;
 };
 
-function formatString(obj) {
+function formatStatusDuration(obj) {
   const arrayStr = Object.values(obj).map((d) => {
-    let duration = formatDistance(0, d.duration, {
-      includeSeconds: true,
-    });
-
+    let duration = DateUtils.humanize(d.duration);
     return `${STATUS_TEXT[d.sub_status]} for ${duration}`;
   });
 
   return arrayStr.join("<br/>");
-
-  // return arrayStr.join("<br/>");
-  // const arrayStr = arr.map((d) => {
-  //   let start_dt = DateUtils.parseISO(d.start);
-  //   let end_dt = DateUtils.parseISO(d.end);
-  //   let duration = DateUtils.duration(
-  //     DateUtils.parseISO(d.start),
-  //     DateUtils.parseISO(d.end)
-  //   );
-
-  //   return `${start_dt.toLocaleDateString()} - ${
-  //     STATUS_TEXT[d.sub_status]
-  //   } for ${duration}
-  //     (${format(start_dt, "hh:mm aaa")} - ${format(end_dt, "hh:mm aaa")})`;
-  // });
-
-  // return arrayStr.join("<br/>");
 }
 
 async function fetchFailureSeries(url) {
@@ -122,19 +101,18 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
   }, [service]);
 
   const handleTooltip = (d) => {
-    console.log(d);
     let txt = "";
     if (d.status === "up") {
       txt = `${d.timeframe} - 100% ${STATUS_TEXT[d.status]}`;
     } else if (d.status === "down" && !isObjectEmpty(d.downtimes)) {
       txt = `<div>
       <div style="text-align:center;">${d.timeframe}</div>
-      <div>${formatString(d.downtimes)}</div>
+      <div>${formatStatusDuration(d.downtimes)}</div>
       </div>`;
     } else if (d.status === "degraded") {
       txt = `<div>
       <div style="text-align:center;">${d.timeframe}</div>
-      <div>${formatString(d.downtimes)}</div>
+      <div>${formatStatusDuration(d.downtimes)}</div>
       </div>`;
     }
     return txt;
