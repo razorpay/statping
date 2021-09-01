@@ -4,7 +4,6 @@ import parseISO from "date-fns/parseISO";
 import isBefore from "date-fns/isBefore";
 import isAfter from "date-fns/isAfter";
 import isPast from "date-fns/isPast";
-import { roundToNearestMinutes } from "date-fns";
 import langs from "../config/langs";
 
 const {
@@ -29,6 +28,7 @@ const {
   addMonths,
   addSeconds,
   isWithinInterval,
+  roundToNearestMinutes,
 } = require("date-fns");
 
 const DateUtils = {
@@ -45,7 +45,7 @@ const DateUtils = {
     return startOfToday();
   },
   secondsHumanize(val) {
-    return `${val} ${langs("second", val)}`;
+    return `${val} ${langs("second")}`;
   },
   utc(val) {
     return new Date.UTC(val);
@@ -70,6 +70,11 @@ const DateUtils = {
   },
   duration(t1, t2) {
     return formatDistance(t1, t2);
+  },
+  humanize(duration) {
+    return formatDistance(0, duration, {
+      includeSeconds: true,
+    });
   },
   format(val, type = "EEEE, MMM do h:mma") {
     return format(val, type);
