@@ -90,23 +90,23 @@ const ServicesPage = () => {
               return <ServiceBlock key={service.id} service={service} />;
             })}
           </div> */}
-      </div>
 
-      <div className="app-footer">
-        <div className="service-status">
-          <span className="service-status-badge uptime"></span>
-          <span className="description font-12">100% Uptime</span>
-          <span></span>
-        </div>
-        <div className="service-status">
-          <span className="service-status-badge degraded"></span>
-          <span className="description font-12">Partial degradation</span>
-          <span></span>
-        </div>
-        <div className="service-status">
-          <span className="service-status-badge downtime"></span>
-          <span className="description font-12">Downtime</span>
-          <span></span>
+        <div className="app-footer">
+          <div className="service-status">
+            <span className="service-status-badge uptime"></span>
+            <span className="description font-12">100% Uptime</span>
+            <span></span>
+          </div>
+          <div className="service-status">
+            <span className="service-status-badge degraded"></span>
+            <span className="description font-12">Partial degradation</span>
+            <span></span>
+          </div>
+          <div className="service-status">
+            <span className="service-status-badge downtime"></span>
+            <span className="description font-12">Downtime</span>
+            <span></span>
+          </div>
         </div>
       </div>
     </div>

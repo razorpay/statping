@@ -52,6 +52,19 @@ const variantSolid = (props) => {
     },
   };
 
+  const linkVariant = {
+    bg: "transparent",
+    color: "white.100",
+    borderColor: "transparent",
+    boxShadow: "none",
+    outline: "none",
+    _hover: {
+      bg: "transparent",
+      color: "white.100",
+      borderColor: "transparent",
+    },
+  };
+
   if (colorScheme === "blue") {
     return blueVariant;
   }
@@ -62,6 +75,10 @@ const variantSolid = (props) => {
 
   if (colorScheme === "darkBlue") {
     return darkBlueVariant;
+  }
+
+  if (colorScheme === "link") {
+    return linkVariant;
   }
 
   return blueVariant;

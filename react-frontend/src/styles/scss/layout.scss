@@ -14,7 +14,7 @@ a {
 }
 
 .app-layout {
-  background-color: $background-color;
+  background: $primary-bg;
 }
 
 .modal-backdrop {
@@ -347,12 +347,10 @@ a {
 }
 .app-footer {
   background-color: transparent;
-  padding: 0.625rem 1.5rem;
+  margin-top: 2.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 5px;
-  border-radius: 4px;
   .service-status {
     display: flex;
     align-items: center;

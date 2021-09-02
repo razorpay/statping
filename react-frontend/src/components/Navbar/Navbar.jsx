@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Grid,
-  // Tooltip
-} from "@chakra-ui/react";
+import { Box, Grid, Tooltip } from "@chakra-ui/react";
 // import { ArrowForwardIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
 import { SkipNavLink } from "@chakra-ui/skip-nav";
@@ -13,7 +9,7 @@ import Button from "../Button";
 
 import RzpLogo from "../../static/razorpay-logo.svg";
 import * as productIcons from "../../static/product-icons-blue";
-// import indiaFlagSvg from "./images/india-flag.svg";
+import indiaFlagSvg from "./images/india-flag.svg";
 
 import {
   NavMenu,
@@ -33,7 +29,7 @@ import {
   NavLinkMobileDescription,
   NavLinkThinTitle,
   NavDivider,
-  NavHamMenuButton,
+  // NavHamMenuButton,
 } from "./NavHelpers";
 
 const MotionBox = motion(Box);
@@ -119,10 +115,10 @@ const Navbar = (props) => {
         <SkipNavLink>Skip to content</SkipNavLink>
         <RazorpayLogoLink />
         {/* Ham Menu Button */}
-        <NavHamMenuButton
+        {/* <NavHamMenuButton
           isMobileNavOpen={isMobileNavOpen}
           toggleMobileNavMenu={toggleMobileNavMenu}
-        />
+        /> */}
         <MotionBox
           className="nav-container"
           display={{ xxs: "inline-block", lg: "flex" }}
@@ -729,6 +725,7 @@ const Navbar = (props) => {
               />
             </NavContent>
           </NavMenu>
+
           {/* Desktop Links */}
           <NavTitleLink
             display={{ xxs: "none", lg: "inline-block" }}
@@ -765,7 +762,7 @@ const Navbar = (props) => {
           paddingRight={{ xxs: "16", lg: "0" }}
           py={{ xxs: "4", lg: "6" }}
         >
-          {/* <Tooltip
+          <Tooltip
             width="56"
             textAlign="center"
             label="Razorpay is currently available only for Indian businesses"
@@ -784,15 +781,15 @@ const Navbar = (props) => {
                 aria-hidden="true"
               />
             </Box>
-          </Tooltip> */}
-          {/* <Button
+          </Tooltip>
+          <Button
             as={Link}
             size="sm"
             colorScheme="white"
             to="https://dashboard.razorpay.com/#/access/signin"
           >
             Log In
-          </Button> */}
+          </Button>
           <Button
             as={Link}
             to="https://dashboard.razorpay.com/signup"
