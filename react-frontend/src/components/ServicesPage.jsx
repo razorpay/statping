@@ -54,7 +54,7 @@ const ServicesPage = () => {
       <ContentHeader />
       <div className="app-content">
         <div className="service">
-          <h2 className="title font-20 fw-700">Razorpay payments</h2>
+          <h2 className="title font-20 fw-700">Razorpay Payments</h2>
           <div className="d-flex align-items-center subtitle font-12 mt-2">
             <FontAwesomeIcon
               icon={status === "up" ? faCheckCircle : faExclamationCircle}

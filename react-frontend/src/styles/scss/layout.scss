@@ -149,7 +149,7 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 1.125rem;
+    padding: 0 0.75rem;
   }
 
   &--right {
@@ -194,7 +194,7 @@ a {
 
 .timeline {
   width: 100%;
-  padding: 0 1.125rem;
+  padding: 0 0.75rem;
 
   &-text {
     color: rgba($base-color, 0.54);
@@ -350,12 +350,13 @@ a {
   padding: 0.625rem 1.5rem;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   margin-top: 5px;
   border-radius: 4px;
   .service-status {
     display: flex;
     align-items: center;
+    margin-right: 1.875rem;
 
     &-badge {
       width: 0.75rem;

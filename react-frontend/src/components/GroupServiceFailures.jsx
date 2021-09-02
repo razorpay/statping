@@ -132,7 +132,7 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
   return (
     // transition div
     <div name="fade" style={{ display: collapse ? "none" : "block" }}>
-      <div className="block-chart my-3 px-3">
+      <div className="block-chart">
         <ReactTooltip
           effect="solid"
           place="bottom"
