@@ -18,7 +18,7 @@ go_env: ""
 is_aws: false
 is_docker: false
 max_idle_conn: 25
-max_life_conn: 3m0s
+max_life_conn: 180
 max_open_conn: 25
 name: Razorpay Status Page
 postgres_sslmode: require

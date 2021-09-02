@@ -61,7 +61,7 @@ func Connect(configs *DbConfig, retry bool) error {
 	db := dbSession.DB()
 	db.SetMaxOpenConns(utils.Params.GetInt("MAX_OPEN_CONN"))
 	db.SetMaxIdleConns(utils.Params.GetInt("MAX_IDLE_CONN"))
-	db.SetConnMaxLifetime(utils.Params.GetDuration("MAX_LIFE_CONN"))
+	db.SetConnMaxLifetime(utils.Params.GetDuration("MAX_LIFE_CONN") * time.Second)
 
 	if db.Ping() == nil {
 		if utils.VerboseMode >= 4 {

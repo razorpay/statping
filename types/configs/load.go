@@ -111,28 +111,41 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 		p.Set("LETSENCRYPT_ENABLE", db.LetsEncryptEnable)
 	}
 
+	if db.MaxOpenConnections != 0 {
+		p.Set("MAX_OPEN_CONN", db.MaxOpenConnections)
+	}
+	if db.MaxIdleConnections != 0 {
+		p.Set("MAX_IDLE_CONN", db.MaxIdleConnections)
+	}
+	if db.MaxLifeConnections != 0 {
+		p.Set("MAX_LIFE_CONN", db.MaxLifeConnections)
+	}
+
 	configs := &DbConfig{
-		DbConn:            p.GetString("DB_CONN"),
-		DbHost:            p.GetString("DB_HOST"),
-		DbUser:            p.GetString("DB_USER"),
-		DbPass:            p.GetString("DB_PASS"),
-		DbData:            p.GetString("DB_DATABASE"),
-		DbPort:            p.GetInt("DB_PORT"),
-		Project:           p.GetString("NAME"),
-		Description:       p.GetString("DESCRIPTION"),
-		Domain:            p.GetString("DOMAIN"),
-		Email:             p.GetString("EMAIL"),
-		Username:          p.GetString("ADMIN_USER"),
-		Password:          p.GetString("ADMIN_PASSWORD"),
-		Location:          utils.Directory,
-		SqlFile:           p.GetString("SQL_FILE"),
-		Language:          p.GetString("LANGUAGE"),
-		AllowReports:      p.GetBool("ALLOW_REPORTS"),
-		LetsEncryptEnable: p.GetBool("LETSENCRYPT_ENABLE"),
-		LetsEncryptHost:   p.GetString("LETSENCRYPT_HOST"),
-		LetsEncryptEmail:  p.GetString("LETSENCRYPT_EMAIL"),
-		ApiSecret:         p.GetString("API_SECRET"),
-		SampleData:        p.GetBool("SAMPLE_DATA"),
+		DbConn:             p.GetString("DB_CONN"),
+		DbHost:             p.GetString("DB_HOST"),
+		DbUser:             p.GetString("DB_USER"),
+		DbPass:             p.GetString("DB_PASS"),
+		DbData:             p.GetString("DB_DATABASE"),
+		DbPort:             p.GetInt("DB_PORT"),
+		Project:            p.GetString("NAME"),
+		Description:        p.GetString("DESCRIPTION"),
+		Domain:             p.GetString("DOMAIN"),
+		Email:              p.GetString("EMAIL"),
+		Username:           p.GetString("ADMIN_USER"),
+		Password:           p.GetString("ADMIN_PASSWORD"),
+		Location:           utils.Directory,
+		SqlFile:            p.GetString("SQL_FILE"),
+		Language:           p.GetString("LANGUAGE"),
+		AllowReports:       p.GetBool("ALLOW_REPORTS"),
+		LetsEncryptEnable:  p.GetBool("LETSENCRYPT_ENABLE"),
+		LetsEncryptHost:    p.GetString("LETSENCRYPT_HOST"),
+		LetsEncryptEmail:   p.GetString("LETSENCRYPT_EMAIL"),
+		ApiSecret:          p.GetString("API_SECRET"),
+		SampleData:         p.GetBool("SAMPLE_DATA"),
+		MaxLifeConnections: p.GetInt("MAX_LIFE_CONN"),
+		MaxOpenConnections: p.GetInt("MAX_OPEN_CONN"),
+		MaxIdleConnections: p.GetInt("MAX_IDLE_CONN"),
 	}
 	log.WithFields(utils.ToFields(configs)).Debugln("read config file: " + cfgFile)
 

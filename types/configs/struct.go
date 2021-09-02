@@ -39,9 +39,9 @@ type DbConfig struct {
 	AdminPassword string `yaml:"admin_password,omitempty" json:"admin_password"`
 	AdminEmail    string `yaml:"admin_email,omitempty" json:"admin_email"`
 
-	MaxOpenConnections int `yaml:"db_open_connections,omitempty" json:"db_open_connections"`
-	MaxIdleConnections int `yaml:"db_idle_connections,omitempty" json:"db_idle_connections"`
-	MaxLifeConnections int `yaml:"db_max_life_connections,omitempty" json:"db_max_life_connections"`
+	MaxOpenConnections int `yaml:"max_open_conn,omitempty" json:"max_open_conn"`
+	MaxIdleConnections int `yaml:"max_idle_conn,omitempty" json:"max_idle_conn"`
+	MaxLifeConnections int `yaml:"max_life_conn,omitempty" json:"max_life_conn"`
 
 	SampleData    bool `yaml:"sample_data" json:"sample_data"`
 	UseCDN        bool `yaml:"use_cdn" json:"use_cdn"`
