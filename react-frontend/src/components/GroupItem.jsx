@@ -49,7 +49,9 @@ const GroupItem = ({ service, showPlusButton }) => {
     setCollapse(false);
   };
 
-  const handleMouseOver = (str) => setHoverText(str);
+  const handleMouseOver = (service) => {
+    setHoverText(service.description || service.name);
+  };
 
   const handleMouseOut = () => setHoverText("");
 
@@ -86,9 +88,7 @@ const GroupItem = ({ service, showPlusButton }) => {
                 className="tooltip"
               />
               <img
-                onMouseOver={() =>
-                  handleMouseOver(service.description || service.name)
-                }
+                onMouseOver={() => handleMouseOver(service)}
                 onMouseOut={handleMouseOut}
                 src={infoIcon}
                 alt="info-icon"
