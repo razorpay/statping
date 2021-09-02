@@ -133,22 +133,13 @@
 .block-chart {
   display: flex;
   justify-content: center;
-
-  div.service_day:first-child {
-    border-left: 0;
-  }
-
-  div.service_day:first-child {
-    border-right: 0;
-  }
 }
 
 .service_day {
   position: relative;
   height: 24px;
   width: 4px;
-  border-left: 1px solid #fff;
-  border-right: 1px solid #fff;
+  margin-right: 1px;
   border-radius: 1px;
   cursor: pointer;
 }
