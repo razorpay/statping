@@ -21,9 +21,11 @@ ENV IS_DOCKER=true
 ENV SASS=/usr/local/bin/sassc
 ENV STATPING_DIR=/app
 ENV PORT=80
+ENV PROMETHEUS_PORT=9000
 ENV TZ="Asia/Kolkata"
 
 EXPOSE $PORT
+EXPOSE $PROMETHEUS_PORT
 
 HEALTHCHECK --interval=60s --timeout=10s --retries=3 CMD curl -s "http://localhost:$PORT/health" | jq -r -e ".online==true"
 
