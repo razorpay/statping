@@ -83,6 +83,7 @@ const GroupItem = ({ service, showPlusButton }) => {
                 effect="solid"
                 place="right"
                 backgroundColor="#344A6C"
+                className="tooltip"
               />
               <img
                 onMouseOver={() =>
