@@ -25,6 +25,7 @@ const {
   getUnixTime,
   fromUnixTime,
   formatDistance,
+  formatDistanceStrict,
   addMonths,
   addSeconds,
   isWithinInterval,
@@ -72,9 +73,7 @@ const DateUtils = {
     return formatDistance(t1, t2);
   },
   humanize(duration) {
-    return formatDistance(0, duration, {
-      includeSeconds: true,
-    });
+    return formatDistanceStrict(0, duration);
   },
   format(val, type = "EEEE, MMM do h:mma") {
     return format(val, type);
