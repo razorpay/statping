@@ -59,7 +59,7 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 	p.SetConfigType("yaml")
 	res := p.ReadInConfig()
 
-	if res.Error() != "" {
+	if res != nil {
 		log.Errorf("Error reading config: %s", res.Error())
 	}
 
