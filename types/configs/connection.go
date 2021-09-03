@@ -38,6 +38,7 @@ func initModels(db database.Database) {
 
 // Connect will attempt to connect to the sqlite, postgres, or mysql database
 func Connect(configs *DbConfig, retry bool) error {
+	log.Infof("Started: Connect")
 	conn := configs.ConnectionString()
 
 	log.WithFields(utils.ToFields(configs, conn)).Debugln("attempting to connect to database")
