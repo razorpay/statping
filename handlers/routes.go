@@ -37,7 +37,7 @@ func Router() *mux.Router {
 	// metrics
 	mr := mux.NewRouter().StrictSlash(true)
 	mr.Use(prometheusMiddleware)
-	mr.Handle("/", promhttp.Handler())
+	mr.Handle("/metrics", promhttp.Handler())
 	go http.ListenAndServe(":9000", mr)
 
 	r := mux.NewRouter().StrictSlash(true)
