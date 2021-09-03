@@ -53,6 +53,8 @@ func (d *DbConfig) ConnectionString() string {
 	var conn string
 	postgresSSL := utils.Params.GetString("POSTGRES_SSLMODE")
 
+	log.Infof("ConnectionString:: postgressSSL: %s, d.dbConn: %s ", postgresSSL, d.DbConn)
+
 	switch d.DbConn {
 	case "memory", ":memory:":
 		conn = "sqlite3"

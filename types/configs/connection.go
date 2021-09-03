@@ -40,7 +40,7 @@ func initModels(db database.Database) {
 func Connect(configs *DbConfig, retry bool) error {
 	log.Infof("Started: Connect")
 	conn := configs.ConnectionString()
-
+	log.Infof("Attempting to connect to database")
 	log.WithFields(utils.ToFields(configs, conn)).Debugln("attempting to connect to database")
 
 	dbSession, err := database.Openw(configs.DbConn, conn)
@@ -55,6 +55,8 @@ func Connect(configs *DbConfig, retry bool) error {
 		}
 	}
 
+	log.Infof("Connected to databsae")
+
 	configs.ApiSecret = utils.Params.GetString("API_SECRET")
 
 	log.WithFields(utils.ToFields(dbSession)).Debugln("connected to database")
@@ -64,12 +66,16 @@ func Connect(configs *DbConfig, retry bool) error {
 	db.SetMaxIdleConns(utils.Params.GetInt("MAX_IDLE_CONN"))
 	db.SetConnMaxLifetime(utils.Params.GetDuration("MAX_LIFE_CONN") * time.Second)
 
+	log.Infof("Database env vars set")
+
 	if db.Ping() == nil {
 		if utils.VerboseMode >= 4 {
 			dbSession.LogMode(true).Debug().SetLogger(gorm.Logger{log})
 		}
 		log.Infoln(fmt.Sprintf("Database %s connection was successful.", configs.DbConn))
 	}
+
+	log.Infof("Database %s connection was successful.", configs.DbConn)
 
 	if utils.Params.GetBool("READ_ONLY") {
 		log.Warnln("Running in READ ONLY MODE")
