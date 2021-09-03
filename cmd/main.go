@@ -104,21 +104,30 @@ func start() {
 		}
 	}
 
+	log.Infof("Done: LoadConfigs")
+
 	if err = configs.ConnectConfigs(confgs, true); err != nil {
 		exit(err)
 	}
-	//
+	log.Infof("Done: ConnectConfigs")
+
 	if err = confgs.ResetCore(); err != nil {
 		exit(err)
 	}
+
+	log.Infof("Done: ResetCore")
 
 	if err = confgs.DatabaseChanges(); err != nil {
 		exit(err)
 	}
 
+	log.Infof("Done: DatabaseChanges")
+
 	if err := confgs.MigrateDatabase(); err != nil {
 		exit(err)
 	}
+
+	log.Infof("Done: MigrateDatabase")
 
 	if err := mainProcess(); err != nil {
 		exit(err)
