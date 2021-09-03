@@ -43,7 +43,7 @@ function formatStatusDuration(obj) {
 
 async function fetchFailureSeries(url) {
   const { now, beginningOf, endOf, nowSubtract, toUnix } = DateUtils;
-  const start = beginningOf("day", nowSubtract(86400 * 29));
+  const start = beginningOf("day", nowSubtract(86400 * 89));
   const end = endOf("day", now());
   const data = await API.service_failures_data(
     url,
@@ -132,7 +132,7 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
   return (
     // transition div
     <div name="fade" style={{ display: collapse ? "none" : "block" }}>
-      <div className="d-flex justify-content-center my-3">
+      <div className="block-chart">
         <ReactTooltip
           effect="solid"
           place="bottom"
@@ -163,13 +163,13 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
       </div>
       <div className="timeline">
         <div className="no-select">
-          <p className="divided">
+          <p className="divided justify-content-between">
             <span className="timeline-text font-12">
-              30 {langs("days_ago")}
+              90 {langs("days_ago")}
             </span>
-            <span className="timeline-divider"></span>
+            {/* <span className="timeline-divider"></span> */}
             {/* <span className="timeline-text font-12">{service_txt()}</span> */}
-            <span className="timeline-text font-12">{uptime}% uptime</span>
+            {/* <span className="timeline-text font-12">{uptime}% uptime</span> */}
             <span className="timeline-divider"></span>
             <span className="timeline-text font-12">{langs("today")}</span>
           </p>

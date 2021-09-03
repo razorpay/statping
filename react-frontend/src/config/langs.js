@@ -51,7 +51,7 @@ const english = {
   service_never_online: "Service has never been online",
   service_online_check: "Online checked",
   service_offline_time: "Service has been offline for",
-  days_ago: "Days Ago",
+  days_ago: "Days ago",
   today: "Today",
   week: "Week",
   month: "Month",

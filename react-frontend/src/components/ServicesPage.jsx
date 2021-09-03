@@ -54,7 +54,7 @@ const ServicesPage = () => {
       <ContentHeader />
       <div className="app-content">
         <div className="service">
-          <h2 className="title font-20 fw-700">Razorpay payments</h2>
+          <h2 className="title font-20 fw-700">Razorpay Payments</h2>
           <div className="d-flex align-items-center subtitle font-12 mt-2">
             <FontAwesomeIcon
               icon={status === "up" ? faCheckCircle : faExclamationCircle}
@@ -90,23 +90,23 @@ const ServicesPage = () => {
               return <ServiceBlock key={service.id} service={service} />;
             })}
           </div> */}
-      </div>
 
-      <div className="app-footer">
-        <div className="service-status">
-          <span className="service-status-badge uptime"></span>
-          <span className="description font-12">100% Uptime</span>
-          <span></span>
-        </div>
-        <div className="service-status">
-          <span className="service-status-badge degraded"></span>
-          <span className="description font-12">Partial degradation</span>
-          <span></span>
-        </div>
-        <div className="service-status">
-          <span className="service-status-badge downtime"></span>
-          <span className="description font-12">Downtime</span>
-          <span></span>
+        <div className="app-footer">
+          <div className="service-status">
+            <span className="service-status-badge uptime"></span>
+            <span className="description font-12">100% Uptime</span>
+            <span></span>
+          </div>
+          <div className="service-status">
+            <span className="service-status-badge degraded"></span>
+            <span className="description font-12">Partial degradation</span>
+            <span></span>
+          </div>
+          <div className="service-status">
+            <span className="service-status-badge downtime"></span>
+            <span className="description font-12">Downtime</span>
+            <span></span>
+          </div>
         </div>
       </div>
     </div>
