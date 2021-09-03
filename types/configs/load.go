@@ -57,15 +57,34 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 	log.Infof("Attempting to read config file at: %s", cfgFile)
 	p.SetConfigFile(cfgFile)
 	p.SetConfigType("yaml")
-	p.ReadInConfig()
+	res := p.ReadInConfig()
+
+	if res.Error() != "" {
+		log.Errorf("Error reading config: %s", res.Error())
+	}
 
 	db := new(DbConfig)
 	content, err := utils.OpenFile(cfgFile)
+
+	if err != nil {
+		log.Errorf("Unable to open config file %s", err.Error())
+	} else {
+		log.Infof("Opened the config fie")
+	}
+
 	content = os.ExpandEnv(string(content))
 	if err == nil {
 		if err := yaml.Unmarshal([]byte(content), &db); err != nil {
 			return nil, err
+		} else {
+			log.Errorf("Error unmarshalling config file %s", err.Error())
 		}
+	}
+
+	if content == "" {
+		log.Errorf("No content read fron cnfig file")
+	} else {
+		log.Infof("Read the config fie")
 	}
 
 	if os.Getenv("DB_CONN") == "sqlite" || os.Getenv("DB_CONN") == "sqlite3" {
@@ -121,6 +140,8 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 		p.Set("MAX_LIFE_CONN", db.MaxLifeConnections)
 	}
 
+	log.Infof("Set db env vars")
+
 	configs := &DbConfig{
 		DbConn:             p.GetString("DB_CONN"),
 		DbHost:             p.GetString("DB_HOST"),
@@ -147,6 +168,8 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 		MaxOpenConnections: p.GetInt("MAX_OPEN_CONN"),
 		MaxIdleConnections: p.GetInt("MAX_IDLE_CONN"),
 	}
+	log.Infof("Set db env vars into config struct")
+
 	log.WithFields(utils.ToFields(configs)).Debugln("read config file: " + cfgFile)
 
 	if configs.DbConn == "" {
