@@ -15,6 +15,8 @@ a {
 
 .app-layout {
   background: $primary-bg;
+  min-width: 100vw;
+  min-height: 100vh;
 }
 
 .modal-backdrop {
