@@ -77,7 +77,7 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 		if err := yaml.Unmarshal([]byte(content), &db); err != nil {
 			return nil, err
 		} else {
-			log.Errorf("Error unmarshalling config file %s", err.Error())
+			log.Infof("Unmarshalled config file successfully")
 		}
 	}
 
