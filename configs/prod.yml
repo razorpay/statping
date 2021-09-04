@@ -1,6 +1,6 @@
 admin_email: ankit.gupta@razorpay.com
 admin_password: admin
-admin_user: admin
+admin_user: superadmin
 allow_reports: false
 base_path: ""
 cleanup_interval: 12h0m0s
