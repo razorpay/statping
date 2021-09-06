@@ -20,9 +20,9 @@ type serviceOrder struct {
 }
 
 var (
-	zeroTime time.Time
-	zeroBool bool
-	zeroInt int
+	zeroTime  time.Time
+	zeroBool  bool
+	zeroInt   int
 	zeroInt64 int64
 )
 
@@ -139,25 +139,29 @@ func apiServicePatchHandler(w http.ResponseWriter, r *http.Request) {
 
 func apiServiceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	service, err := findService(r)
+
 	if err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
-	if err := DecodeJSON(r, &service); err != nil {
+
+	s2 := *service
+
+	if err := DecodeJSON(r, &s2); err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
 
-	service.LastProcessingTime = zeroTime
-	service.Online = zeroBool
-	service.FailureCounter = zeroInt
-	service.CurrentDowntime = zeroInt64
+	s2.LastProcessingTime = zeroTime
+	s2.Online = zeroBool
+	s2.FailureCounter = zeroInt
+	s2.CurrentDowntime = zeroInt64
 
-	if err := service.Update(); err != nil {
+	if err := s2.Update(); err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
-	go service.CheckService(true)
+	go s2.CheckService(true)
 	sendJsonAction(service, "update", w, r)
 }
 
