@@ -147,6 +147,8 @@ func apiServiceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
 	s2 := *service
 
+	s2.SubServicesDetails = map[int64]services.SubService{}
+
 	if err := DecodeJSON(r, &s2); err != nil {
 		sendErrorJson(err, w, r)
 		return
