@@ -595,10 +595,11 @@ func (s *Service) HandleDowntime(err error, record bool) {
 			}
 
 			downtime.End = time.Now()
-			newStatus := ApplyStatus(downtime.SubStatus, HandleEmptyStatus(s.LastFailureType), HandleEmptyStatus(s.LastFailureType))
+			newStatus := HandleEmptyStatus(s.LastFailureType)
 
-			if downtime.SubStatus != newStatus {
+			if downtime.SubStatus != "" && downtime.SubStatus != newStatus {
 				downtime.Id = 0
+				downtime.Start = time.Now().Add(time.Duration(-s.Interval) * (time.Second))
 			}
 
 			downtime.SubStatus = newStatus
