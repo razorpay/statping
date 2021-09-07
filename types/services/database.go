@@ -218,7 +218,7 @@ func (s *Service) markServiceRunProcessed() {
 		"current_downtime": s.CurrentDowntime,
 	}
 
-	d := db.Model(s).Where(" id = ? ", s.Id).Updates(updateFields)
+	d := db.Model(s).Where(" id = ? and manual_downtime = ?", s.Id, false).Updates(updateFields)
 	if d.Error() != nil {
 		log.Errorf("[DB ERROR]Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
 	}

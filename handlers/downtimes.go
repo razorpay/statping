@@ -1,12 +1,37 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/statping/statping/types/downtimes"
+	"github.com/statping/statping/types/services"
 	"github.com/statping/statping/utils"
 	"net/http"
 	"time"
 )
+
+
+/***
+Use cases
+1. Create past downtime: start, end both in past
+2. Start downtime: start<=now, end = nil
+3. Close downtime: downtime exists, start not given, end<=now
+4. Update substatus
+5. Delete past downtime
+6. Delete current downtime
+
+todo: handle in block series
+todo: handle in health check
+
+
+// Todo: handle in struct validations
+// end < now
+// start < now
+// service_id != null
+// substatus in down , degraded
+
+// todo: update service and handle in health check
+ */
 
 func findDowntime(r *http.Request) (*downtimes.Downtime, error) {
 	vars := mux.Vars(r)
@@ -21,11 +46,11 @@ func findDowntime(r *http.Request) (*downtimes.Downtime, error) {
 
 func apiAllDowntimesForServiceHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	service_id := utils.ToInt(vars["service_id"])
+	serviceId := utils.ToInt(vars["service_id"])
 
 	ninetyDaysAgo := time.Now().Add(time.Duration(-90*24) * time.Hour)
 
-	downtime, err := downtimes.FindByService(service_id, ninetyDaysAgo, time.Now())
+	downtime, err := downtimes.FindByService(serviceId, ninetyDaysAgo, time.Now())
 	if err != nil {
 		sendErrorJson(err, w, r)
 		return
@@ -40,9 +65,31 @@ func apiCreateDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	s, err := services.FindFirstFromDB(downtime.ServiceId)
+	if  err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	downtime.Type = "manual"
+
 	if err := downtime.Create(); err != nil {
 		sendErrorJson(err, w, r)
 		return
+	}
+
+	var zeroTime time.Time
+
+	if downtime.End == zeroTime {
+		s.ManualDowntime = true
+		s.CurrentDowntime = downtime.Id
+		s.Online = false
+		s.LastProcessingTime = zeroTime
+
+		if err := s.Update(); err != nil {
+			sendErrorJson(err, w, r)
+			return
+		}
 	}
 
 	sendJsonAction(downtime, "create", w, r)
@@ -69,15 +116,45 @@ func apiPatchDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	s, err := services.FindFirstFromDB(downtime.ServiceId)
+	if  err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	if downtime.End == zeroTime && req.End != zeroTime {
+		s.ManualDowntime = false
+		s.CurrentDowntime = 0
+		s.Online = true
+		s.LastProcessingTime = zeroTime
+
+		if err := s.Update(); err != nil {
+			sendErrorJson(err, w, r)
+			return
+		}
+	}
+
 	downtime.Start = req.Start
 	downtime.End = req.End
-	downtime.Manual = req.Manual
+	downtime.Type = "manual"
 	downtime.Failures = req.Failures
 	downtime.SubStatus = req.SubStatus
 
 	if err := downtime.Update(); err != nil {
 		sendErrorJson(err, w, r)
 		return
+	}
+
+	if req.End == zeroTime {
+		s.ManualDowntime = true
+		s.CurrentDowntime = downtime.Id
+		s.Online = false
+		s.LastProcessingTime = zeroTime
+
+		if err := s.Update(); err != nil {
+			sendErrorJson(err, w, r)
+			return
+		}
 	}
 
 	sendJsonAction(downtime, "update", w, r)
@@ -89,6 +166,23 @@ func apiDeleteDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
+	if downtime.End == zeroTime {
+		s2, err := services.FindFirstFromDB(downtime.ServiceId)
+		if err!= nil {
+			fmt.Errorf("Error updating service")
+		}
+		s2.LastProcessingTime = zeroTime
+		s2.Online = true
+		s2.FailureCounter = 0
+		s2.CurrentDowntime = 0
+		s2.ManualDowntime = false
+
+		if err := s2.Update(); err != nil {
+			sendErrorJson(err, w, r)
+			return
+		}
+	}
+
 	err = downtime.Delete()
 	if err != nil {
 		sendErrorJson(err, w, r)

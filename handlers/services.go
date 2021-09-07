@@ -158,6 +158,7 @@ func apiServiceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	s2.Online = zeroBool
 	s2.FailureCounter = zeroInt
 	s2.CurrentDowntime = zeroInt64
+	s2.ManualDowntime = zeroBool
 
 	if err := s2.Update(); err != nil {
 		sendErrorJson(err, w, r)
@@ -427,6 +428,8 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 	blockSeries.Uptime = uptimeData.Uptime
 	blockSeries.Series = &[]services.Block{}
 
+	var zeroTime time.Time
+
 	var nextFrameTime time.Time
 
 	for c := 0; c < len(objs); c++ {
@@ -445,6 +448,9 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 			Downtimes: &[]services.Downtime{}}
 
 		for _, data := range *downtimesList {
+			if data.End == zeroTime {
+				data.End = time.Now()
+			}
 
 			if (currentFrameTime.Before(data.Start) && nextFrameTime.After(data.Start)) ||
 				(currentFrameTime.Before(data.End) && nextFrameTime.After(data.End)) ||
