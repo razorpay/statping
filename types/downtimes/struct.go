@@ -12,4 +12,5 @@ type Downtime struct {
 	Failures  int       `gorm:"column:failures" json:"failures"`
 	Start     time.Time `gorm:"index;column:start" json:"start"`
 	End       time.Time `gorm:"column:end" json:"end"`
+	Manual    bool      `gorm:"default:false;column:manual" json:"manual"`
 }

@@ -43,10 +43,6 @@ func (c *Downtime) Update() error {
 }
 
 func (c *Downtime) Delete() error {
-	q := dbHits.Where("id = ?", c.Id).Delete(&Downtime{})
-	if err := q.Error(); err != nil {
-		return err
-	}
-	q = db.Model(&Downtime{}).Delete(c)
+	q := db.Model(&Downtime{}).Delete(c)
 	return q.Error()
 }
