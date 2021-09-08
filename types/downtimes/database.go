@@ -30,7 +30,7 @@ func Find(id int64) (*Downtime, error) {
 
 func (c *Downtime) Validate() error {
 	if c.Type == "manual" {
-		if c.End!= nil && c.End.After(time.Now()) || c.Start.After(time.Now()) {
+		if c.End != nil && c.End.After(time.Now()) || c.Start.After(time.Now()) {
 			return fmt.Errorf("Downtime cannot be in future")
 		}
 		if c.ServiceId == zeroInt64 {

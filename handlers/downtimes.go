@@ -10,28 +10,6 @@ import (
 	"time"
 )
 
-/***
-Use cases
-1. Create past downtime: start, end both in past
-2. Start downtime: start<=now, end = nil
-3. Close downtime: downtime exists, start not given, end<=now
-4. Update substatus
-5. Delete past downtime
-6. Delete current downtime
-
-todo: handle in block series
-todo: handle in health check
-
-
-// Todo: handle in struct validations
-// end < now
-// start < now
-// service_id != null
-// substatus in down , degraded
-
-// todo: update service and handle in health check
-*/
-
 func findDowntime(r *http.Request) (*downtimes.Downtime, error) {
 	vars := mux.Vars(r)
 	id := utils.ToInt(vars["id"])
