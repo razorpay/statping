@@ -36,7 +36,7 @@ func CheckServices() {
 
 func refreshAllServices() {
 	for {
-		time.Sleep(time.Duration(time.Second * 60))
+		time.Sleep(time.Duration(time.Second * 20))
 
 		newList := all()
 

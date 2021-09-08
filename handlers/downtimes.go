@@ -81,12 +81,13 @@ func apiCreateDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 	var zeroTime time.Time
 
 	if downtime.End == zeroTime {
-		s.ManualDowntime = true
-		s.CurrentDowntime = downtime.Id
-		s.Online = false
-		s.LastProcessingTime = zeroTime
+		updateFields := map[string]interface{}{
+			"online":           false,
+			"current_downtime": downtime.Id,
+			"manual_downtime":  true,
+		}
 
-		if err := s.Update(); err != nil {
+		if err := s.UpdateSpecificFields(updateFields); err != nil {
 			sendErrorJson(err, w, r)
 			return
 		}
@@ -127,12 +128,14 @@ func apiPatchDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if downtime.End == zeroTime && req.End != zeroTime {
-		s.ManualDowntime = false
-		s.CurrentDowntime = 0
-		s.Online = true
-		s.LastProcessingTime = zeroTime
+		updateFields := map[string]interface{}{
+			"online":           true,
+			"failure_counter":  0,
+			"current_downtime": 0,
+			"manual_downtime":  false,
+		}
 
-		if err := s.Update(); err != nil {
+		if err := s.UpdateSpecificFields(updateFields); err != nil {
 			sendErrorJson(err, w, r)
 			return
 		}

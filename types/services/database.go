@@ -141,14 +141,16 @@ func (s *Service) UpdateOrder() (err error) {
 
 	d := db.Model(s).Where(" id = ? ", s.Id).Updates(updateFields)
 	if err = d.Error(); d.Error() != nil {
-		log.Errorf("[DB ERROR]Failed toservice order : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+		fmt.Errorf("[DB ERROR]Failed toservice order : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+		return err
 	}
 	if d.RowsAffected() == 0 {
 		err = fmt.Errorf("[Zero]Failed to update service order : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
 		log.Errorf("[Zero]Failed to update service order : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+		return err
 	}
 	log.Infof("Service Order updates Saved : %s %s %s", s.Id, s.Name, updateFields)
-	return
+	return nil
 }
 
 func (s *Service) Delete() error {
@@ -206,6 +208,17 @@ func (s *Service) acquireServiceRun() error {
 		return errors.New("Service already acquired")
 	}
 	return nil
+}
+
+func (s *Service) UpdateSpecificFields(updateFields map[string]interface{}) error {
+	d := db.Model(s).Where(" id = ?", s.Id).Updates(updateFields)
+	if d.Error() != nil {
+		log.Errorf("[DB ERROR]Failed to update service : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+	}
+	if d.RowsAffected() == 0 {
+		log.Errorf("[Zero]Failed to update service : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+	}
+	log.Infof("Service Updates Saved : %s %s %s", s.Id, s.Name, updateFields)
 }
 
 func (s *Service) markServiceRunProcessed() {
