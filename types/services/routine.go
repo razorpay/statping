@@ -71,7 +71,7 @@ CheckLoop:
 			s, er := Find(s.Id)
 
 			if er == nil {
-				if err == nil  && !s.ManualDowntime {
+				if err == nil && !s.ManualDowntime {
 
 					log.Infof("Service Run Started : %s %s", s.Id, s.Name)
 

@@ -10,7 +10,6 @@ import (
 	"time"
 )
 
-
 /***
 Use cases
 1. Create past downtime: start, end both in past
@@ -31,7 +30,7 @@ todo: handle in health check
 // substatus in down , degraded
 
 // todo: update service and handle in health check
- */
+*/
 
 func findDowntime(r *http.Request) (*downtimes.Downtime, error) {
 	vars := mux.Vars(r)
@@ -66,12 +65,13 @@ func apiCreateDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s, err := services.FindFirstFromDB(downtime.ServiceId)
-	if  err != nil {
+	if err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
 
 	downtime.Type = "manual"
+	downtime.Id = zeroInt64
 
 	if err := downtime.Create(); err != nil {
 		sendErrorJson(err, w, r)
@@ -117,7 +117,7 @@ func apiPatchDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s, err := services.FindFirstFromDB(downtime.ServiceId)
-	if  err != nil {
+	if err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
@@ -168,7 +168,7 @@ func apiDeleteDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	if downtime.End == zeroTime {
 		s2, err := services.FindFirstFromDB(downtime.ServiceId)
-		if err!= nil {
+		if err != nil {
 			fmt.Errorf("Error updating service")
 		}
 		s2.LastProcessingTime = zeroTime
