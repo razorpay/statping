@@ -78,9 +78,7 @@ func apiCreateDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var zeroTime time.Time
-
-	if downtime.End == zeroTime {
+	if downtime.End == nil {
 		updateFields := map[string]interface{}{
 			"online":           false,
 			"current_downtime": downtime.Id,
@@ -123,11 +121,11 @@ func apiPatchDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if downtime.End != zeroTime && req.End == zeroTime {
+	if downtime.End != nil && req.End == nil {
 		fmt.Errorf("Cannot reopen a downtime!")
 	}
 
-	if downtime.End == zeroTime && req.End != zeroTime {
+	if downtime.End == nil && req.End != nil {
 		updateFields := map[string]interface{}{
 			"online":           true,
 			"failure_counter":  0,
@@ -161,7 +159,7 @@ func apiDeleteDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
-	if downtime.End == zeroTime {
+	if downtime.End == nil {
 		s2, err := services.FindFirstFromDB(downtime.ServiceId)
 		if err != nil {
 			fmt.Errorf("Error updating service")

@@ -10,7 +10,7 @@ type Downtime struct {
 	ServiceId int64     `gorm:"index;column:service" json:"service_id"`
 	SubStatus string    `gorm:"column:sub_status" json:"sub_status"`
 	Failures  int       `gorm:"column:failures" json:"failures"`
-	Start     time.Time `gorm:"index;column:start" json:"start"`
-	End       time.Time `gorm:"column:end" json:"end"`
+	Start     *time.Time `gorm:"index;column:start" json:"start"`
+	End       *time.Time `gorm:"column:end" json:"end"`
 	Type      string    `gorm:"default:'auto';column:type" json:"type"`
 }

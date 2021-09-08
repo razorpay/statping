@@ -428,8 +428,6 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 	blockSeries.Uptime = uptimeData.Uptime
 	blockSeries.Series = &[]services.Block{}
 
-	var zeroTime time.Time
-
 	var nextFrameTime time.Time
 
 	for c := 0; c < len(objs); c++ {
@@ -447,30 +445,32 @@ func apiServiceBlockSeriesHandlerCoreV2(r *http.Request, service *services.Servi
 			Status:    services.STATUS_UP,
 			Downtimes: &[]services.Downtime{}}
 
+		now := time.Now()
+
 		for _, data := range *downtimesList {
-			if data.End == zeroTime {
-				data.End = time.Now()
+			if data.End == nil {
+				data.End = &now
 			}
 
-			if (currentFrameTime.Before(data.Start) && nextFrameTime.After(data.Start)) ||
-				(currentFrameTime.Before(data.End) && nextFrameTime.After(data.End)) ||
-				(currentFrameTime.After(data.Start) && nextFrameTime.Before(data.End)) {
+			if (currentFrameTime.Before(*data.Start) && nextFrameTime.After(*data.Start)) ||
+				(currentFrameTime.Before(*data.End) && nextFrameTime.After(*data.End)) ||
+				(currentFrameTime.After(*data.Start) && nextFrameTime.Before(*data.End)) {
 
 				start := data.Start
 				end := data.End
 
-				if currentFrameTime.After(data.Start) {
-					start = currentFrameTime
+				if currentFrameTime.After(*data.Start) {
+					start = &currentFrameTime
 				}
 
-				if nextFrameTime.Before(data.End) {
-					end = nextFrameTime
+				if nextFrameTime.Before(*data.End) {
+					end = &nextFrameTime
 				}
 
 				*block.Downtimes = append(*block.Downtimes, services.Downtime{
-					Start:     start,
-					End:       end,
-					Duration:  end.Sub(start).Milliseconds(),
+					Start:     *start,
+					End:       *end,
+					Duration:  end.Sub(*start).Milliseconds(),
 					SubStatus: services.HandleEmptyStatus(data.SubStatus),
 				})
 
