@@ -219,6 +219,7 @@ func (s *Service) UpdateSpecificFields(updateFields map[string]interface{}) erro
 		log.Errorf("[Zero]Failed to update service : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
 	}
 	log.Infof("Service Updates Saved : %s %s %s", s.Id, s.Name, updateFields)
+	return nil
 }
 
 func (s *Service) markServiceRunProcessed() {
@@ -234,9 +235,11 @@ func (s *Service) markServiceRunProcessed() {
 	d := db.Model(s).Where(" id = ? and manual_downtime = ?", s.Id, false).Updates(updateFields)
 	if d.Error() != nil {
 		log.Errorf("[DB ERROR]Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+		return
 	}
 	if d.RowsAffected() == 0 {
 		log.Errorf("[Zero]Failed to update service run : %s %s %s %s", s.Id, s.Name, updateFields, d.Error())
+		return
 	}
 	log.Infof("Service Run Updates Saved : %s %s %s", s.Id, s.Name, updateFields)
 }
