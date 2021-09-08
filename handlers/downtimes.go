@@ -122,6 +122,10 @@ func apiPatchDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if downtime.End != zeroTime && req.End == zeroTime {
+		fmt.Errorf("Cannot reopen a downtime!")
+	}
+
 	if downtime.End == zeroTime && req.End != zeroTime {
 		s.ManualDowntime = false
 		s.CurrentDowntime = 0
@@ -143,18 +147,6 @@ func apiPatchDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 	if err := downtime.Update(); err != nil {
 		sendErrorJson(err, w, r)
 		return
-	}
-
-	if req.End == zeroTime {
-		s.ManualDowntime = true
-		s.CurrentDowntime = downtime.Id
-		s.Online = false
-		s.LastProcessingTime = zeroTime
-
-		if err := s.Update(); err != nil {
-			sendErrorJson(err, w, r)
-			return
-		}
 	}
 
 	sendJsonAction(downtime, "update", w, r)
