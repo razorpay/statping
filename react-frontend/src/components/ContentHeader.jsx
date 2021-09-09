@@ -12,8 +12,14 @@ const ContentHeader = () => {
         status/information on individual products. If you are experiencing a
         real-time, operational issue with one of our products that is not
         described below, please reach out to{" "}
-        <a href="https://razorpay.com/support/">our support team</a> and we will
-        help you out.
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://razorpay.com/support/"
+        >
+          our support team
+        </a>{" "}
+        and we will help you out.
       </h5>
     </div>
   );
