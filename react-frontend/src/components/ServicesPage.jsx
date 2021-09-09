@@ -60,7 +60,9 @@ const ServicesPage = () => {
               }}
             />
             <span className="mx-1">{STATUS_TEXT[status]}</span>
-            <span className="date">{today}</span>
+          </div>
+          <div>
+            <span className="date font-12">{today}</span>
           </div>
         </div>
 
