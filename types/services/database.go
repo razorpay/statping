@@ -88,6 +88,7 @@ func FindFirstFromDB(id int64) (*Service, error) {
 
 func FindOne(id int64) (*Service, error) {
 	srv := allServices[id]
+
 	if srv == nil {
 		return nil, errors.Missing(&Service{}, id)
 	}
