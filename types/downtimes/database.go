@@ -58,9 +58,10 @@ func FindByService(service int64, start time.Time, end time.Time) (*[]Downtime, 
 	return &downtime, q.Error()
 }
 
-func FindAllByService(service int64) (*[]Downtime, error) {
+func FindByTime(service int64, timeVar time.Time) (*[]Downtime, error) {
 	var downtime []Downtime
-	q := db.Where("service = ? ", service)
+	q := db.Where("service = $1 and start BETWEEN $2 AND $3 ", service, time.Time{}, timeVar)
+	q = db.Where("'end' BETWEEN $1 AND $2 ",timeVar,time.Now())
 	q = q.Order("id ASC ").Find(&downtime)
 	return &downtime, q.Error()
 }

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/statping/statping/database"
+	"github.com/statping/statping/types/downtimes"
 	"github.com/statping/statping/types/errors"
 	"github.com/statping/statping/types/failures"
 	"github.com/statping/statping/types/hits"
 	"github.com/statping/statping/types/services"
-	"github.com/statping/statping/types/downtimes"
 	"github.com/statping/statping/utils"
 	"net/http"
 	"net/url"
@@ -57,19 +57,23 @@ func findServiceStatus(t string,s services.Service) string{
 	if t == ""{
 		timeVar = time.Now()
 	}else{
-		var err error
-		timeVar,err = ConvertToUnixTime(t)
-		if err != nil{
+		var e error
+		timeVar,e = ConvertToUnixTime(t)
+		if e != nil{
 			return ""
 		}
 	}
-	var downtimes []Downtime
-	start := time.Time{}
-	end := timeVar
-	q := db.Where("start BETWEEN ? AND ?", start, end)
-
-
-
+	fmt.Println(time.Now().Unix())
+	fmt.Println(time.Now())
+	downtimesList,err := downtimes.FindByTime(s.Id,timeVar)
+	fmt.Println(err)
+	fmt.Println(*downtimesList)
+	if downtimesList !=nil{
+		fmt.Println(*downtimesList)
+		//fmt.Println((*downtimesList)[0])
+		//return (*downtimesList)[0].SubStatus
+		return "hello"
+	}
 	return ""
 }
 
@@ -564,13 +568,13 @@ func apiAllServicesHandler(r *http.Request) interface{} {
 	if query.Get("time") != ""{
 		t = query.Get("time")
 	}
-
 	var srvs []services.Service
 	for _, v := range services.AllInOrder() {
 		if !v.Public.Bool && !IsUser(r) {
 			continue
 		}
 		serviceStatus :=findServiceStatus(t,v)
+		fmt.Println(serviceStatus)
 		srvs = append(srvs, v)
 	}
 	return srvs
