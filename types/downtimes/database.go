@@ -59,6 +59,19 @@ func FindByService(service int64, start time.Time, end time.Time) (*[]Downtime, 
 	return &downtime, q.Error()
 }
 
+func FindDowntime(service int64, timeVar time.Time) *Downtime {
+	var downtime []Downtime
+	q := db.Where("service = $1 and start BETWEEN $2 AND $3 ", service, time.Time{}, timeVar)
+	q = q.Order("id ASC ").Find(&downtime)
+	downtimeList := *(&downtime)
+	for _,dtime := range downtimeList{
+		if (*(dtime.End)).Unix() > timeVar.Unix(){
+			return &dtime
+		}
+	}
+	return nil
+}
+
 func ConvertToUnixTime(str string) (time.Time, error) {
 	i, err := strconv.ParseInt(str, 10, 64)
 	var t time.Time
