@@ -114,6 +114,17 @@ func apiCreateDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if s.CurrentDowntime!=0 {
+		downtimeVar,errVar := downtimes.Find(s.CurrentDowntime)
+		if errVar!=nil{
+			sendErrorJson(errVar, w, r)
+		}else{
+			if (*downtimeVar).Start.Unix()< (*downtime).End.Unix(){
+				fmt.Errorf("downtime is already there, cannot create another downtime with overlaping intervals")
+			}
+		}
+	}
+
 	downtime.Type = "manual"
 	downtime.Id = zeroInt64
 
