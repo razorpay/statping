@@ -69,11 +69,12 @@ func ConvertToUnixTime(str string) (time.Time, error) {
 	return tm, nil
 }
 
-func CheckOverlapping(downtime *Downtime) bool {
+func (c *Downtime)CheckOverlapping() bool {
 	var downtimes []Downtime
-	q := db.Where("\"end\" IS NULL or \"end\" >= ?", downtime.Start)
-	if downtime.End != nil {
-		q = q.Where("start <= ?", downtime.End)
+	q := db.Where("service = ?",c.ServiceId)
+	q = q.Where("\"end\" IS NULL or \"end\" >= ?", c.Start)
+	if c.End != nil {
+		q = q.Where("start <= ?", c.End)
 	}
 	q = q.Find(&downtimes)
 	if len(downtimes) > 0 {
