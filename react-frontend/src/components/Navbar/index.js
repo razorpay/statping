@@ -3,7 +3,6 @@ import { Box, Tooltip } from "@chakra-ui/react";
 import Link from "../Link";
 import Image from "../Image";
 import Button from "../Button";
-import analyticsService from '@razorpay/universe-utils/analytics';
 
 import RzpLogo from "../../static/razorpay-logo-white.svg";
 import indiaFlagSvg from "./images/india-flag.svg";
