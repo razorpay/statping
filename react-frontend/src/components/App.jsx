@@ -14,7 +14,7 @@ const App = () => {
     }
 
     initLumberjack();
-  }, [])
+  }, []);
 
   return (
     <ChakraProvider theme={theme}>
