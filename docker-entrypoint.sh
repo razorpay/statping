@@ -9,6 +9,6 @@
 # # Inside of JSON strings newlines are already escaped.
 # ENV_JSON_ESCAPED="$(printf "%s" "${ENV_JSON}" | sed -e 's/[\&/]/\\&/g')"
 
-sed -i "s/<noscript id=\"env-insertion-point\"><\/noscript>/<script>var ENV=\"${ENV}\"<\/script>/g" /app/react/build/index.html
+sed -i "s/<noscript id=\"env-insertion-point\"><\/noscript>/<script>var ENV=\"${APP_ENV}\"<\/script>/g" /app/react/build/index.html
 
 exec "$@"
