@@ -20,7 +20,6 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <noscript id="env-insertion-point"></noscript>
     
     <title>Razorpay - Status Page</title>
   </head>
@@ -38,4 +37,8 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script type="text/javaScript">
+    window.LUMBERJACK_API_URL = "%REACT_APP_LUMBERJACK_API_URL%";
+    window.LUMBERJACK_API_KEY = "%REACT_APP_LUMBERJACK_API_KEY%";
+  </script>
 </html>

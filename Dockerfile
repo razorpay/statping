@@ -18,8 +18,6 @@ COPY --from=base /go/src/github.com/statping/statping/react/ ./react/
 
 COPY --from=base /go/src/github.com/statping/statping/configs/*.yml ./configs/
 
-COPY docker-entrypoint.sh /
-
 ENV IS_DOCKER=true
 ENV SASS=/usr/local/bin/sassc
 ENV STATPING_DIR=/app
@@ -32,5 +30,4 @@ EXPOSE $PROMETHEUS_PORT
 
 HEALTHCHECK --interval=60s --timeout=10s --retries=3 CMD curl -s "http://localhost:$PORT/health" | jq -r -e ".online==true"
 
-ENTRYPOINT ["sh", "/docker-entrypoint.sh"]
 CMD statping --port $PORT
