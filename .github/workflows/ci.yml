@@ -41,7 +41,7 @@ jobs:
         with:
           username: ${{ secrets.PUBLIC_DOCKER_USERNAME }}
           password: ${{ secrets.PUBLIC_DOCKER_PASSWORD }}
-      - if: github.ref != 'refs/heads/release'
+      - if: github.ref == 'refs/heads/release'
         name: build statping base_image
         uses: docker/build-push-action@v2
         with:
@@ -64,7 +64,7 @@ jobs:
             APP_ENV=dev
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-      - if: github.ref != 'refs/heads/release'
+      - if: github.ref == 'refs/heads/release'
         name: build statping prod image
         uses: docker/build-push-action@v2
         with:
