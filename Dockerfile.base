@@ -2,6 +2,7 @@ FROM node:16.13.0 AS frontend
 LABEL maintainer="Hunter Long (https://github.com/hunterlong)"
 ARG BUILDPLATFORM
 ARG GITHUB_ACCESS_TOKEN
+ARG APP_ENV
 
 ENV GITHUB_ACCESS_TOKEN ${GITHUB_ACCESS_TOKEN}
 
@@ -20,7 +21,7 @@ COPY ./react-frontend/yarn.lock .
 COPY ./react-frontend/.npmrc .
 RUN yarn install --pure-lockfile --network-timeout 1000000
 COPY ./react-frontend/ .
-RUN yarn build:prod && yarn cache clean
+RUN yarn build:${APP_ENV} && yarn cache clean
 
 # Statping Golang BACKEND building from source
 # Creates "/go/bin/statping" and "/usr/local/bin/sass" for copying

@@ -1,6 +1,7 @@
 ARG BUILDPLATFORM
 ARG GIT_COMMIT_HASH
-FROM razorpay/statping:base_$GIT_COMMIT_HASH AS base
+ARG APP_ENV
+FROM razorpay/statping:base_${APP_ENV}_$GIT_COMMIT_HASH AS base
 # Statping main Docker image that contains all required libraries
 FROM alpine:latest
 RUN apk --no-cache add libgcc libstdc++ ca-certificates curl jq && update-ca-certificates
