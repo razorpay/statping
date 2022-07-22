@@ -1,9 +1,6 @@
 FROM node:16.13.0 AS frontend
 LABEL maintainer="Hunter Long (https://github.com/hunterlong)"
 ARG BUILDPLATFORM
-ARG GITHUB_ACCESS_TOKEN
-
-ENV GITHUB_ACCESS_TOKEN ${GITHUB_ACCESS_TOKEN}
 
 # Build vue frontent
 WORKDIR /statping
@@ -20,7 +17,7 @@ COPY ./react-frontend/yarn.lock .
 COPY ./react-frontend/.npmrc .
 RUN yarn install --pure-lockfile --network-timeout 1000000
 COPY ./react-frontend/ .
-RUN yarn build && yarn cache clean
+RUN yarn build:prod && yarn cache clean
 
 # Statping Golang BACKEND building from source
 # Creates "/go/bin/statping" and "/usr/local/bin/sass" for copying

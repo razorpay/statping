@@ -47,15 +47,10 @@ jobs:
           tags: razorpay/statping:base_${{ github.sha }}
           push: true
           file: ./Dockerfile.base
-          build-args: |
-            GIT_COMMIT_HASH=${{ github.sha }}
-            GITHUB_ACCESS_TOKEN=${{ secrets.CI_BOT_TOKEN }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
         env:
-          GIT_COMMIT_HASH: ${{ github.sha }}
-          APP_ENV: dev_docker
-          EXEC_MODE: test
+          GITHUB_ACCESS_TOKEN: ${{ secrets.CI_BOT_TOKEN }}
       - name: build statping image
         uses: docker/build-push-action@v2
         with:
@@ -65,10 +60,6 @@ jobs:
           build-args: GIT_COMMIT_HASH=${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-        env:
-          GIT_COMMIT_HASH: ${{ github.sha }}
-          APP_ENV: dev_docker
-          EXEC_MODE: test
 
   fmt:
     name: fmt
