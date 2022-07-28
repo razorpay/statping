@@ -1,7 +1,6 @@
 package incidents
 
 import (
-	"fmt"
 	"github.com/statping/statping/database"
 	"github.com/statping/statping/types/errors"
 	"github.com/statping/statping/types/metrics"
@@ -107,7 +106,6 @@ func All() []*Incident {
 }
 
 func (i *Incident) Create() error {
-	fmt.Println("c4")
 	return db.Create(i).Error()
 }
 
