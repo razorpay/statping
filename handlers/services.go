@@ -635,7 +635,3 @@ func apiServiceHitsHandler(r *http.Request) interface{} {
 	query.Find(&hts)
 	return hts
 }
-
-func updateService(s *services.Service) error {
-	return s.Update()
-}
