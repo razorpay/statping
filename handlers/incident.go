@@ -5,7 +5,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/statping/statping/types/errors"
 	"github.com/statping/statping/types/incidents"
-	"github.com/statping/statping/types/services"
 	"github.com/statping/statping/utils"
 	"net/http"
 )
@@ -84,16 +83,6 @@ func apiCreateIncidentHandler(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
-	// adding incident to the service
-	service.Incidents = append(service.Incidents, incident)
-
-	if errVar := updateService(service); errVar != nil {
-		sendErrorJson(errVar, w, r)
-	}
-	fmt.Println("check1")
-	fmt.Println(services.FindOne(service.Id))
-	fmt.Println("check2")
-
 	sendJsonAction(incident, "create", w, r)
 }
 
