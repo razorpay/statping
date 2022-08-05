@@ -155,11 +155,11 @@ func Router() *mux.Router {
 	api.Handle("/api/services/{id}/sub_services/{sub_id}/block_series", http.HandlerFunc(apiSubServiceBlockSeriesHandler)).Methods("GET")
 
 	// API INCIDENTS Routes
+	api.Handle("/api/services/{id}/active_incidents", http.HandlerFunc(apiServiceIncidentsHandlerActive)).Methods("GET")
 	api.Handle("/api/services/{id}/incidents", authenticated(apiServiceIncidentsHandler, false)).Methods("GET")
 	api.Handle("/api/services/{id}/incidents", authenticated(apiCreateIncidentHandler, false)).Methods("POST")
 	api.Handle("/api/incidents/{id}", authenticated(apiIncidentUpdateHandler, false)).Methods("POST")
 	api.Handle("/api/incidents/{id}", authenticated(apiDeleteIncidentHandler, false)).Methods("DELETE")
-	api.Handle("/api/services/{id}/active_incidents", authenticated(apiServiceIncidentsHandlerActive, false)).Methods("GET")
 
 	// API INCIDENTS UPDATES Routes
 	api.Handle("/api/incidents/{id}/updates", authenticated(apiIncidentUpdatesHandler, false)).Methods("GET")
