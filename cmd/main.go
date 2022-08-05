@@ -117,7 +117,7 @@ func start() {
 
 	log.Infof("Done: ResetCore")
 
-	if err = confgs.DatabaseChanges(); err != nil {
+	/*if err = confgs.DatabaseChanges(); err != nil {
 		exit(err)
 	}
 
@@ -125,7 +125,7 @@ func start() {
 
 	if err := confgs.MigrateDatabase(); err != nil {
 		exit(err)
-	}
+	}*/
 
 	log.Infof("Done: MigrateDatabase")
 
