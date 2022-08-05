@@ -41,17 +41,21 @@ func apiServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
-	var visibleIncidents []*incidents.Incident
+	var visibleIncidents []incidents.Incident
 	for _, incident := range service.Incidents {
 		if visibilityCheck(incident) == true {
-			visibleIncidents = append(visibleIncidents, incident)
+			incidentVar := *incident
+			reverse(incidentVar.Updates)
+			log.Infoln(fmt.Sprintf("Incident: %v", incident))
+			log.Infoln(fmt.Sprintf("Reversed Incident: %v", incidentVar))
+			visibleIncidents = append(visibleIncidents, incidentVar)
 		}
 	}
 	log.Info(fmt.Sprintf("Visible Incidents: %v", visibleIncidents))
 	returnJson(visibleIncidents, w, r)
 }
 
-func reverse(incidents []*incidents.Incident) {
+func reverse(incidents []*incidents.IncidentUpdate) {
 	for i, j := 0, len(incidents)-1; i < j; i, j = i+1, j-1 {
 		incidents[i], incidents[j] = incidents[j], incidents[i]
 	}
