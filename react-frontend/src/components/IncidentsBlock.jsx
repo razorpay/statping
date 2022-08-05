@@ -9,14 +9,14 @@ const IncidentsBlock = ({ service, group }) => {
 
 	useEffect(() => {
 		async function fetchData() {
-      let data = [];
+			let data = [];
 
-      if(group?.id) {
-        data = await API.sub_incidents_service(group.id, service.id);
-      } else {
-        data = await API.incidents_service(service.id);
-      }
-      console.log('data', data);
+			if (group?.id) {
+				data = await API.sub_incidents_service(group.id, service.id);
+			} else {
+				data = await API.incidents_service(service.id);
+			}
+			console.log('data', data);
 			setIncidents(data || []);
 		}
 		fetchData();
@@ -70,7 +70,9 @@ const IncidentsBlock = ({ service, group }) => {
 								{incidentsShow[id] && (
 									<div className="incident-updates-wrapper">
 										{incident?.updates.map((update) => {
-											return <IncidentUpdate key={update.id} update={update} admin={false} />;
+											return (
+												<IncidentUpdate key={update.id} update={update} admin={false} />
+											);
 										})}
 									</div>
 								)}
