@@ -47,8 +47,15 @@ func apiServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
 			visibleIncidents = append(visibleIncidents, incident)
 		}
 	}
+	reverse(visibleIncidents)
 	log.Info(fmt.Sprintf("Visible Incidents: %v", visibleIncidents))
 	returnJson(visibleIncidents, w, r)
+}
+
+func reverse(incidents []*incidents.Incident) {
+	for i, j := 0, len(incidents)-1; i < j; i, j = i+1, j-1 {
+		incidents[i], incidents[j] = incidents[j], incidents[i]
+	}
 }
 
 func visibilityCheck(incident *incidents.Incident) bool {
