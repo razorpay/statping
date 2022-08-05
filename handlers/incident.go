@@ -55,6 +55,32 @@ func apiServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
 	returnJson(visibleIncidents, w, r)
 }
 
+func apiSubServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
+	service, err := findService(r)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+	subService, err := findPublicSubService(r, service)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	var visibleIncidents []incidents.Incident
+	for _, incident := range subService.Incidents {
+		if visibilityCheck(incident) == true {
+			incidentVar := *incident
+			reverse(incidentVar.Updates)
+			log.Infoln(fmt.Sprintf("Incident: %v", incident))
+			log.Infoln(fmt.Sprintf("Reversed Incident: %v", incidentVar))
+			visibleIncidents = append(visibleIncidents, incidentVar)
+		}
+	}
+	log.Info(fmt.Sprintf("Visible Incidents: %v", visibleIncidents))
+	returnJson(visibleIncidents, w, r)
+}
+
 func reverse(incidents []*incidents.IncidentUpdate) {
 	for i, j := 0, len(incidents)-1; i < j; i, j = i+1, j-1 {
 		incidents[i], incidents[j] = incidents[j], incidents[i]
