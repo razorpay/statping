@@ -23,14 +23,14 @@ const ServicesPage = () => {
   const today = DateUtils.format(new Date(), "d MMMM yyyy, hh:mm aaa");
 
   useEffect(() => {
-    if(!loading) {
+    if (!loading) {
       analyticsTrack({
-        objectName: 'Status Page',
-        actionName: 'displayed',
-        screen: 'Home page'
-      })
+        objectName: "Status Page",
+        actionName: "displayed",
+        screen: "Home page",
+      });
     }
-  }, [loading])
+  }, [loading]);
 
   useEffect(() => {
     const timer = setInterval(() => {

@@ -50,8 +50,7 @@ const SubServiceCard = ({ group, service }) => {
           <span
             className={`badge float-right font-12 ${
               service.online ? "status-green" : "status-red"
-            }`}
-          >
+            }`}>
             {service.online ? langs("online") : langs("offline")}
           </span>
         </div>

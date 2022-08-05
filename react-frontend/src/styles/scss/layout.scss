@@ -192,25 +192,26 @@ a {
         flex: 1;
       }
 
-      .square-plus, .square-minus {
+      .square-plus,
+      .square-minus {
         top: 5px;
       }
     }
 
     .incident-updates-wrapper {
       .incident-wrapper {
-          position: relative;
-          margin-right: 3px;
+        position: relative;
+        margin-right: 3px;
 
-          &:not(:last-child):after {
-            content: '';
-            height: 100%;
-            width: 1px;
-            top: 21px;
-            left: 18px;
-            background-color: #bbb;
-            position: absolute;
-          }
+        &:not(:last-child):after {
+          content: "";
+          height: 100%;
+          width: 1px;
+          top: 21px;
+          left: 18px;
+          background-color: #bbb;
+          position: absolute;
+        }
 
         &:last-child {
           margin-bottom: 0 !important;

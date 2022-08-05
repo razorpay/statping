@@ -40,26 +40,26 @@ const GroupItem = ({ service, showPlusButton }) => {
     }
 
     analyticsTrack({
-      objectName: 'Service Expand',
-      actionName: 'clicked',
-      screen: 'Home page',
-      properties:{
+      objectName: "Service Expand",
+      actionName: "clicked",
+      screen: "Home page",
+      properties: {
         serviceName: event.target.name,
-      }
-    })
+      },
+    });
   };
 
   const closeCollapse = (event) => {
     setCollapse(false);
 
     analyticsTrack({
-      objectName: 'Service Collapse',
-      actionName: 'clicked',
-      screen: 'Home page',
-      properties:{
+      objectName: "Service Collapse",
+      actionName: "clicked",
+      screen: "Home page",
+      properties: {
         serviceName: event.target.name,
-      }
-    })
+      },
+    });
   };
 
   const handleMouseOver = (service) => {
@@ -76,9 +76,17 @@ const GroupItem = ({ service, showPlusButton }) => {
           {!loading && showPlusButton && (
             <>
               {collapse ? (
-                <button className="square-minus" name={service.name} onClick={closeCollapse} />
+                <button
+                  className="square-minus"
+                  name={service.name}
+                  onClick={closeCollapse}
+                />
               ) : (
-                <button className="square-plus" name={service.name} onClick={openCollapse} />
+                <button
+                  className="square-plus"
+                  name={service.name}
+                  onClick={openCollapse}
+                />
               )}
             </>
           )}
@@ -111,40 +119,45 @@ const GroupItem = ({ service, showPlusButton }) => {
             </>
           )}
         </div>
-        {!collapse && <div className="service_item--left">
-          <span
-            className={`badge float-right font-12 ${
-              service.online ? "uptime" : "downtime"
-            }`}
-          >
-            {service.online ? langs("online") : langs("offline")}
-          </span>
-        </div>}
+        {!collapse && (
+          <div className="service_item--left">
+            <span
+              className={`badge float-right font-12 ${
+                service.online ? "uptime" : "downtime"
+              }`}>
+              {service.online ? langs("online") : langs("offline")}
+            </span>
+          </div>
+        )}
       </div>
 
-      {!collapse && <GroupServiceFailures service={service} collapse={collapse} />}
+      {!collapse && (
+        <GroupServiceFailures service={service} collapse={collapse} />
+      )}
 
       {!collapse && <IncidentsBlock service={service} />}
 
-      {collapse &&  <div
-        className="sub-service-wrapper list-group online_list"
-        // style={{ display: collapse ? "block" : "none" }}
-      >
-        {subServices && subServices?.length > 0 ? (
-          subServices.map((sub_service, i) => {
-            return (
-              <SubServiceCard
-                key={i}
-                group={service}
-                service={sub_service}
-                collapse={collapse}
-              />
-            );
-          })
-        ) : (
-          <div className="subtitle text-align-center">No Services</div>
-        )}
-      </div>}
+      {collapse && (
+        <div
+          className="sub-service-wrapper list-group online_list"
+          // style={{ display: collapse ? "block" : "none" }}
+        >
+          {subServices && subServices?.length > 0 ? (
+            subServices.map((sub_service, i) => {
+              return (
+                <SubServiceCard
+                  key={i}
+                  group={service}
+                  service={sub_service}
+                  collapse={collapse}
+                />
+              );
+            })
+          ) : (
+            <div className="subtitle text-align-center">No Services</div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

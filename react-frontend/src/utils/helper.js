@@ -13,17 +13,17 @@ export function findStatus(data) {
 }
 
 export function getIncidentTextType(type) {
-  switch(type.toLowerCase()) {
-    case 'resolved':
-      return 'text-success';
-    case 'issue summary':
-      return 'text-danger';
-    case 'update':
-      return 'text-warning';
+  switch (type.toLowerCase()) {
+    case "resolved":
+      return "text-success";
+    case "issue summary":
+      return "text-danger";
+    case "update":
+      return "text-warning";
     default:
-      return '';
+      return "";
   }
-} 
+}
 
 // export function inRange(message) {
 //   return DateUtils.isBetween(
@@ -72,13 +72,15 @@ export const calcPer = (uptime, downtime) => {
 // }
 
 export const setUerId = (id) => {
-  localStorage.setItem('stat_user_id',id);
-}
+  localStorage.setItem("stat_user_id", id);
+};
 
 export const getUserId = () => {
-  return localStorage.getItem('stat_user_id');
-}
+  return localStorage.getItem("stat_user_id");
+};
 
 export const generateUUID = (length) => {
-  return Array.from(Array(length), () => Math.floor(Math.random() * 36).toString(36)).join('')
-}
+  return Array.from(Array(length), () =>
+    Math.floor(Math.random() * 36).toString(36)
+  ).join("");
+};
