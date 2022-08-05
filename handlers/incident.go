@@ -47,7 +47,6 @@ func apiServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
 			visibleIncidents = append(visibleIncidents, incident)
 		}
 	}
-	reverse(visibleIncidents)
 	log.Info(fmt.Sprintf("Visible Incidents: %v", visibleIncidents))
 	returnJson(visibleIncidents, w, r)
 }
