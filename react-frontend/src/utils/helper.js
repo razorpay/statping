@@ -12,6 +12,19 @@ export function findStatus(data) {
   return "";
 }
 
+export function getIncidentTextType(type) {
+  switch(type.toLowerCase()) {
+    case 'resolved':
+      return 'text-success';
+    case 'issue summary':
+      return 'text-danger';
+    case 'update':
+      return 'text-warning';
+    default:
+      return '';
+  }
+} 
+
 // export function inRange(message) {
 //   return DateUtils.isBetween(
 //     DateUtils.now(),

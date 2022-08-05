@@ -59,10 +59,11 @@ const ServicesPage = () => {
   return (
     <div className="container col-md-7 col-sm-12 sm-container">
       <ContentHeader />
+
       <div className="app-content">
         <div className="service">
           <h2 className="title font-20 fw-700">Razorpay Payments</h2>
-          <div className="d-flex align-items-center subtitle font-12 mt-2">
+          {/* <div className="d-flex align-items-center subtitle font-12 mt-2">
             <FontAwesomeIcon
               icon={STATUS_ICON[status]}
               style={{
@@ -71,10 +72,10 @@ const ServicesPage = () => {
               }}
             />
             <span className="mx-1">{STATUS_TEXT[status]}</span>
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <span className="date font-12">{today}</span>
-          </div>
+          </div> */}
         </div>
 
         {loading && <ServiceLoader text="Loading Services" />}
