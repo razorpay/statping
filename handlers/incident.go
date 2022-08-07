@@ -72,8 +72,6 @@ func apiSubServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request)
 		if visibilityCheck(incident) == true {
 			incidentVar := *incident
 			reverse(incidentVar.Updates)
-			log.Infoln(fmt.Sprintf("Incident: %v", incident))
-			log.Infoln(fmt.Sprintf("Reversed Incident: %v", incidentVar))
 			visibleIncidents = append(visibleIncidents, incidentVar)
 		}
 	}
