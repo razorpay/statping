@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/statping/statping/types/errors"
 	"github.com/statping/statping/types/incidents"
 	"github.com/statping/statping/utils"
 	"net/http"
+	"time"
 )
 
 func findIncident(r *http.Request) (*incidents.Incident, int64, error) {
@@ -31,6 +33,69 @@ func apiServiceIncidentsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	returnJson(service.Incidents, w, r)
+}
+
+func apiServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
+	service, err := findService(r)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+	var visibleIncidents []incidents.Incident
+	for _, incident := range service.Incidents {
+		if visibilityCheck(incident) == true {
+			incidentVar := *incident
+			reverse(incidentVar.Updates)
+			log.Infoln(fmt.Sprintf("Incident: %v", incident))
+			log.Infoln(fmt.Sprintf("Reversed Incident: %v", incidentVar))
+			visibleIncidents = append(visibleIncidents, incidentVar)
+		}
+	}
+	log.Info(fmt.Sprintf("Visible Incidents: %v", visibleIncidents))
+	returnJson(visibleIncidents, w, r)
+}
+
+func apiSubServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
+	service, err := findService(r)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+	subService, err := findPublicSubService(r, service)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	var visibleIncidents []incidents.Incident
+	for _, incident := range subService.Incidents {
+		if visibilityCheck(incident) == true {
+			incidentVar := *incident
+			reverse(incidentVar.Updates)
+			visibleIncidents = append(visibleIncidents, incidentVar)
+		}
+	}
+	log.Info(fmt.Sprintf("Visible Incidents: %v", visibleIncidents))
+	returnJson(visibleIncidents, w, r)
+}
+
+func reverse(incidents []*incidents.IncidentUpdate) {
+	for i, j := 0, len(incidents)-1; i < j; i, j = i+1, j-1 {
+		incidents[i], incidents[j] = incidents[j], incidents[i]
+	}
+}
+
+func visibilityCheck(incident *incidents.Incident) bool {
+	incidentUpdates := incident.Updates
+	log.Infof(fmt.Sprintf("Latest Incident Update: %v, Time Diff: %v ", incidentUpdates[len(incidentUpdates)-1], timeDiff(incidentUpdates[len(incidentUpdates)-1])))
+	if len(incidentUpdates) == 0 || !(incidentUpdates[len(incidentUpdates)-1].Type == RESOLVED && timeDiff(incidentUpdates[len(incidentUpdates)-1]) > incidentsTimeoutInMinutes) {
+		return true
+	}
+	return false
+}
+
+func timeDiff(update *incidents.IncidentUpdate) float64 {
+	return time.Now().Sub(update.CreatedAt).Minutes()
 }
 
 func apiIncidentUpdatesHandler(w http.ResponseWriter, r *http.Request) {
