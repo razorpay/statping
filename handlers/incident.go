@@ -46,12 +46,10 @@ func apiServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
 		if visibilityCheck(incident) == true {
 			incidentVar := *incident
 			reverse(incidentVar.Updates)
-			log.Infoln(fmt.Sprintf("Incident: %v", incident))
-			log.Infoln(fmt.Sprintf("Reversed Incident: %v", incidentVar))
 			visibleIncidents = append(visibleIncidents, incidentVar)
 		}
 	}
-	log.Info(fmt.Sprintf("Visible Incidents: %v", visibleIncidents))
+	log.Info(fmt.Sprintf("Visible Incidents of Service %v : %v", service.Name, visibleIncidents))
 	returnJson(visibleIncidents, w, r)
 }
 
@@ -75,7 +73,7 @@ func apiSubServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request)
 			visibleIncidents = append(visibleIncidents, incidentVar)
 		}
 	}
-	log.Info(fmt.Sprintf("Visible Incidents: %v", visibleIncidents))
+	log.Info(fmt.Sprintf("Visible Incidents of Service %v : %v", service.Name, visibleIncidents))
 	returnJson(visibleIncidents, w, r)
 }
 
