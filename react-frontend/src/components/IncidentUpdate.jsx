@@ -16,8 +16,10 @@ const IncidentUpdate = ({ update, admin }) => {
   };
 
   return (
-    <div className="incident-wrapper col-12 mb-3 pb-2 d-flex" role="alert">
-      <div className="time-line mr-2"><span class="dot"></span></div>
+    <div className="incident-wrapper mb-3 pb-2 d-flex" role="alert">
+      <div className="time-line mr-2">
+        <span class="dot"></span>
+      </div>
 
       <div>
         <span className="font-14">
@@ -26,14 +28,17 @@ const IncidentUpdate = ({ update, admin }) => {
             <button
               onClick={deleteUpdate(update)}
               type="button"
-              className="close"
-            >
+              className="close">
               <span aria-hidden="true">&times;</span>
             </button>
           )}
         </span>
         <span className="d-block small text-muted">
-          Posted {DateUtils.ago(update.created_at)} ago. {DateUtils.format(DateUtils.parseISO(update.created_at), 'MMM d, yyyy - HH:mm')}
+          Posted {DateUtils.ago(update.created_at)} ago.{" "}
+          {DateUtils.format(
+            DateUtils.parseISO(update.created_at),
+            "MMM d, yyyy - HH:mm"
+          )}
         </span>
       </div>
     </div>

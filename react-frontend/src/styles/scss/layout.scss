@@ -199,6 +199,8 @@ a {
     }
 
     .incident-updates-wrapper {
+      margin-left: 3px;
+
       .incident-wrapper {
         position: relative;
         margin-right: 3px;
@@ -208,7 +210,7 @@ a {
           height: 100%;
           width: 1px;
           top: 21px;
-          left: 18px;
+          left: 3px;
           background-color: #bbb;
           position: absolute;
         }

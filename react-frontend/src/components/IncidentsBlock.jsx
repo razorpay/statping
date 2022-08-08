@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import API from '../config/API';
-import DateUtils from '../utils/DateUtils';
-import IncidentUpdate from './IncidentUpdate';
+import { useState, useEffect } from "react";
+import API from "../config/API";
+import DateUtils from "../utils/DateUtils";
+import IncidentUpdate from "./IncidentUpdate";
 
 const IncidentsBlock = ({ service, group }) => {
   const [incidents, setIncidents] = useState([]);
@@ -16,7 +16,7 @@ const IncidentsBlock = ({ service, group }) => {
       } else {
         data = await API.incidents_service(service.id);
       }
-      console.log('data', data);
+      console.log("data", data);
       setIncidents(data || []);
     }
     fetchData();
@@ -38,7 +38,10 @@ const IncidentsBlock = ({ service, group }) => {
             return (
               <>
                 <span className="braker mt-1 mb-3"></span>
-                <div className={`incident-title col-12 ${incidentsShow[id] && 'mb-3'}`}>
+                <div
+                  className={`incident-title col-12 ${
+                    incidentsShow[id] && "mb-3"
+                  }`}>
                   {incidentsShow[id] ? (
                     <button
                       className="square-minus"
@@ -56,22 +59,28 @@ const IncidentsBlock = ({ service, group }) => {
                   )}
                   <div className="title-wrapper">
                     <span class="subtitle no-decoration">{title}</span>
-                    <span className="d-block small text-dark">{description}</span>
+                    <span className="d-block small text-dark">
+                      {description}
+                    </span>
                     <span className="d-block small text-muted">
-                      Updated {DateUtils.ago(updated_at)} ago.{' '}
+                      Updated {DateUtils.ago(updated_at)} ago.{" "}
                       {DateUtils.format(
                         DateUtils.parseISO(updated_at),
-                        'MMM d, yyyy - HH:mm'
+                        "MMM d, yyyy - HH:mm"
                       )}
                     </span>
                   </div>
                 </div>
                 {/* <div className="font-2 mb-3"></div> */}
                 {incidentsShow[id] && (
-                  <div className="incident-updates-wrapper">
+                  <div className="incident-updates-wrapper col-12">
                     {incident?.updates.map((update) => {
                       return (
-                        <IncidentUpdate key={update.id} update={update} admin={false} />
+                        <IncidentUpdate
+                          key={update.id}
+                          update={update}
+                          admin={false}
+                        />
                       );
                     })}
                   </div>
