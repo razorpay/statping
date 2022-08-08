@@ -101,24 +101,29 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
   }, [service]);
 
   const handleTooltip = (d) => {
-    let txt = "";
-    if (d.status === "up") {
-      txt = `<div style="text-align:center;">
+    // let txt = "";
+    // if (d.status === "up") {
+    //   txt = `<div style="text-align:center;">
+    //   <div>${d.timeframe}</div>
+    //   <div>No Downtime</div>
+    //   </div>`;
+    // } else if (d.status === "down" && !isObjectEmpty(d.downtimes)) {
+    //   txt = `<div style="text-align:center;">
+    //   <div>${d.timeframe}</div>
+    //   <div>${formatStatusDuration(d.downtimes)}</div>
+    //   </div>`;
+    // } else if (d.status === "degraded") {
+    //   txt = `<div style="text-align:center;">
+    //   <div>${d.timeframe}</div>
+    //   <div>${formatStatusDuration(d.downtimes)}</div>
+    //   </div>`;
+    // }
+    // return txt;
+
+    return `<div style="text-align:center;">
       <div>${d.timeframe}</div>
       <div>No Downtime</div>
-      </div>`;
-    } else if (d.status === "down" && !isObjectEmpty(d.downtimes)) {
-      txt = `<div style="text-align:center;">
-      <div>${d.timeframe}</div>
-      <div>${formatStatusDuration(d.downtimes)}</div>
-      </div>`;
-    } else if (d.status === "degraded") {
-      txt = `<div style="text-align:center;">
-      <div>${d.timeframe}</div>
-      <div>${formatStatusDuration(d.downtimes)}</div>
-      </div>`;
-    }
-    return txt;
+    </div>`;
   };
 
   const handleMouseOver = (d) => {
@@ -146,7 +151,8 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
           failureData.map((d, i) => {
             return (
               <div
-                className={`flex-fill service_day ${STATUS_CLASS[d.status]}`}
+                // className={`flex-fill service_day ${STATUS_CLASS[d.status]}`}
+                className={`flex-fill service_day uptime`}
                 onMouseOver={() => handleMouseOver(d)}
                 onMouseOut={handleMouseOut}
                 key={i}
