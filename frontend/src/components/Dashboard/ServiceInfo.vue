@@ -44,7 +44,7 @@
                     <font-awesome-icon icon="calendar-check"/>
                   </button>
                   <button @click="$router.push({path: `/dashboard/service/${service.id}/failures`, params: {id: service.id}})" @mouseleave="unsetHover" @mouseover="setHover($t('failures'))" class="btn btn-sm btn-white failures">
-                    <font-awesome-icon icon="exclamation-triangle"/> <span v-if="service.stats.failures !== 0" class="badge badge-danger ml-1">{{service.stats.failures}}</span>
+                    <font-awesome-icon icon="exclamation-triangle"/><span v-if="service.stats && service.stats.failures !== 0" class="badge badge-danger ml-1">{{service.stats.failures}}</span>
                   </button>
               </div>
             </div>
