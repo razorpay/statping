@@ -146,6 +146,29 @@ func apiCreateIncidentHandler(w http.ResponseWriter, r *http.Request) {
 	sendJsonAction(incident, "create", w, r)
 }
 
+func apiUpdateIncidentHandler(w http.ResponseWriter, r *http.Request) {
+	incident, _, err := findIncident(r)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	var incidentVar *incidents.Incident
+	if err := DecodeJSON(r, &incidentVar); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	incident.Title = incidentVar.Title
+	incident.Description = incidentVar.Description
+	if err := incident.Update(); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	sendJsonAction(incident, "update", w, r)
+}
+
 func apiIncidentUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	incident, _, err := findIncident(r)
 	if err != nil {

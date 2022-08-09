@@ -159,6 +159,7 @@ func Router() *mux.Router {
 	api.Handle("/api/services/{id}/sub_services/{sub_id}/active_incidents", http.HandlerFunc(apiSubServiceIncidentsHandlerActive)).Methods("GET")
 	api.Handle("/api/services/{id}/incidents", authenticated(apiServiceIncidentsHandler, false)).Methods("GET")
 	api.Handle("/api/services/{id}/incidents", authenticated(apiCreateIncidentHandler, false)).Methods("POST")
+	api.Handle("/api/incidents/{id}", authenticated(apiUpdateIncidentHandler, false)).Methods("PATCH")
 	api.Handle("/api/incidents/{id}", authenticated(apiIncidentUpdateHandler, false)).Methods("POST")
 	api.Handle("/api/incidents/{id}", authenticated(apiDeleteIncidentHandler, false)).Methods("DELETE")
 
