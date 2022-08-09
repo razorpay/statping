@@ -1,4 +1,4 @@
 package handlers
 
-const incidentsTimeoutInMinutes = 0.5
+const incidentsTimeoutInMinutes = 120.0 //custom
 const RESOLVED = "Resolved"
