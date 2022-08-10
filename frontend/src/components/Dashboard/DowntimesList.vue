@@ -54,7 +54,7 @@
         >
           <td>
             <span>
-              {{ downtime.service.name }}
+              {{ (downtime.service && downtime.service.name) || '' }}
             </span>
           </td>
           <td class="d-none d-md-table-cell">
