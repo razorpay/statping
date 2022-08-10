@@ -16,7 +16,7 @@ const IncidentsBlock = ({ service, group }) => {
       } else {
         data = await API.incidents_service(service.id);
       }
-      console.log("data", data);
+
       setIncidents(data || []);
     }
     fetchData();
