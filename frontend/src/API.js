@@ -283,29 +283,29 @@ class Api {
   }
 
   async downtimes ({ serviceId, start, end, skip, count, subStatus }) {
-      return axios.get('api/downtimes', {
-          params: { service_id: serviceId, start, end, skip, count, sub_status: subStatus }
-      }).then((response) => response.data);
+    return axios.get('api/downtimes', {
+      params: { service_id: serviceId, start, end, skip, count, sub_status: subStatus }
+    }).then((response) => response.data);
   }
-  
+
   async downtime (id) {
-      return axios.get(`api/downtimes/${id}`).then((response) => response.data);
+    return axios.get(`api/downtimes/${id}`).then((response) => response.data);
   }
-  
+
   async downtime_create (data) {
-      return axios.post('/api/downtimes', data).then((response) => response.data);
+    return axios.post('/api/downtimes', data).then((response) => response.data);
   }
-  
+
   async downtime_update ({ id, data }) {
-      return axios.patch(`/api/downtimes/${id}`, data).then((response) => response.data);
+    return axios.patch(`/api/downtimes/${id}`, data).then((response) => response.data);
   }
-  
+
   async downtime_delete (id) {
-      return axios.delete(`/api/downtimes/${id}`).then((response) => response.data);
+    return axios.delete(`/api/downtimes/${id}`).then((response) => response.data);
   }
 
   async service_status (sec) {
-      return axios.get(`/api/services/status${sec && `?time=${sec}`}`).then((response) => response.data);
+    return axios.get(`/api/services/status${sec && `?time=${sec}`}`).then((response) => response.data);
   }
 }
 const api = new Api()
