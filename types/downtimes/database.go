@@ -82,8 +82,6 @@ func (c *Downtime) CheckOverlapping() bool {
 		q = q.Where("start <= ?", c.End)
 	}
 	q = q.Find(&downtimes)
-	fmt.Println("Debbuger Downtimes: ")
-	fmt.Println(downtimes)
 	if len(downtimes) > 0 {
 		return true
 	}
