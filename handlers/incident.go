@@ -84,7 +84,7 @@ func reverse(incidents []*incidents.IncidentUpdate) {
 func visibilityCheck(incident *incidents.Incident) bool {
 	incidentUpdates := incident.Updates
 	log.Infof(fmt.Sprintf("Latest Incident Update: %v, Time Diff: %v ", incidentUpdates[len(incidentUpdates)-1], timeDiff(incidentUpdates[len(incidentUpdates)-1])))
-	if len(incidentUpdates) == 0 || !(incidentUpdates[len(incidentUpdates)-1].Type == RESOLVED && timeDiff(incidentUpdates[len(incidentUpdates)-1]) > incidentsTimeoutInMinutes) {
+	if len(incidentUpdates) == 0 || !(incidentUpdates[len(incidentUpdates)-1].Type == resolved && timeDiff(incidentUpdates[len(incidentUpdates)-1]) > incidentsTimeoutInMinutes) {
 		return true
 	}
 	return false
