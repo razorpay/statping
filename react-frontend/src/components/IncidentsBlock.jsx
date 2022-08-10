@@ -16,7 +16,7 @@ const IncidentsBlock = ({ service, group }) => {
       } else {
         data = await API.incidents_service(service.id);
       }
-      console.log("data", data);
+
       setIncidents(data || []);
     }
     fetchData();
@@ -71,7 +71,7 @@ const IncidentsBlock = ({ service, group }) => {
                     </span>
                   </div>
                 </div>
-                {/* <div className="font-2 mb-3"></div> */}
+
                 {incidentsShow[id] && (
                   <div className="incident-updates-wrapper col-12">
                     {incident?.updates.map((update) => {

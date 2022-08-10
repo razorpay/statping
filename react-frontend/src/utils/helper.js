@@ -1,5 +1,3 @@
-// import DateUtils from "./DateUtils";
-
 export function findStatus(data) {
   if (!Array.isArray(data)) return null;
   if (data.length === 0) return null;
@@ -24,16 +22,6 @@ export function getIncidentTextType(type) {
       return "";
   }
 }
-
-// export function inRange(message) {
-//   return DateUtils.isBetween(
-//     DateUtils.now(),
-//     message.start_on,
-//     message.start_on === message.end_on
-//       ? DateUtils.maxDate().toISOString()
-//       : message.end_on
-//   );
-// }
 
 export const isObject = (obj) => {
   if (Object.prototype.toString.call(obj) === "[object Object]") {

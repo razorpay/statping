@@ -93,12 +93,7 @@ const GroupItem = ({ service, showPlusButton }) => {
 
           {loading && <FontAwesomeIcon icon={faCircleNotch} spin />}
 
-          <span
-            className="subtitle no-decoration mr-1"
-            // to="/service/1"
-          >
-            {service.name}
-          </span>
+          <span className="subtitle no-decoration mr-1">{service.name}</span>
           {service?.description && (
             <>
               <ReactTooltip
@@ -138,10 +133,14 @@ const GroupItem = ({ service, showPlusButton }) => {
       {!collapse && <IncidentsBlock service={service} />}
 
       {collapse && (
+<<<<<<< HEAD
         <div
           className="sub-service-wrapper list-group online_list"
           // style={{ display: collapse ? "block" : "none" }}
         >
+=======
+        <div className="sub-service-wrapper list-group online_list">
+>>>>>>> b86b9988082a301828095b20b42b3d41bff08fac
           {subServices && subServices?.length > 0 ? (
             subServices.map((sub_service, i) => {
               return (
