@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/statping/statping/types/errors"
 	"github.com/statping/statping/types/incidents"
+	"github.com/statping/statping/types/services"
 	"github.com/statping/statping/utils"
 	"net/http"
 	"time"
@@ -41,15 +42,7 @@ func apiServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
-	var visibleIncidents []incidents.Incident
-	for _, incident := range service.Incidents {
-		if visibilityCheck(incident) == true {
-			incidentVar := *incident
-			reverse(incidentVar.Updates)
-			visibleIncidents = append(visibleIncidents, incidentVar)
-		}
-	}
-	log.Info(fmt.Sprintf("Visible Incidents of Service %v : %v", service.Name, visibleIncidents))
+	visibleIncidents := getVisibleIncidentsOfService(service)
 	returnJson(visibleIncidents, w, r)
 }
 
@@ -65,8 +58,13 @@ func apiSubServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	visibleIncidents := getVisibleIncidentsOfService(subService)
+	returnJson(visibleIncidents, w, r)
+}
+
+func getVisibleIncidentsOfService(service *services.Service) []incidents.Incident {
 	var visibleIncidents []incidents.Incident
-	for _, incident := range subService.Incidents {
+	for _, incident := range service.Incidents {
 		if visibilityCheck(incident) == true {
 			incidentVar := *incident
 			reverse(incidentVar.Updates)
@@ -74,7 +72,7 @@ func apiSubServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request)
 		}
 	}
 	log.Info(fmt.Sprintf("Visible Incidents of Service %v : %v", service.Name, visibleIncidents))
-	returnJson(visibleIncidents, w, r)
+	return visibleIncidents
 }
 
 func reverse(incidents []*incidents.IncidentUpdate) {
