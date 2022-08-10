@@ -64,14 +64,16 @@ func apiSubServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request)
 
 func getVisibleIncidentsOfService(service *services.Service) []incidents.Incident {
 	var visibleIncidents []incidents.Incident
+	var visibleIncidentIds []int64
 	for _, incident := range service.Incidents {
 		if visibilityCheck(incident) == true {
 			incidentVar := *incident
 			reverse(incidentVar.Updates)
 			visibleIncidents = append(visibleIncidents, incidentVar)
+			visibleIncidentIds = append(visibleIncidentIds, incident.Id)
 		}
 	}
-	log.Info(fmt.Sprintf("Visible Incidents of Service %v : %v", service.Name, visibleIncidents))
+	log.Info(fmt.Sprintf("Visible Incidents of Service %v : %v", service.Name, visibleIncidentIds))
 	return visibleIncidents
 }
 
@@ -83,10 +85,14 @@ func reverse(incidents []*incidents.IncidentUpdate) {
 
 func visibilityCheck(incident *incidents.Incident) bool {
 	incidentUpdates := incident.Updates
-	log.Infof(fmt.Sprintf("Latest Incident Update: %v, Time Diff: %v ", incidentUpdates[len(incidentUpdates)-1], timeDiff(incidentUpdates[len(incidentUpdates)-1])))
-	if len(incidentUpdates) == 0 || !(incidentUpdates[len(incidentUpdates)-1].Type == resolved && timeDiff(incidentUpdates[len(incidentUpdates)-1]) > incidentsTimeoutInMinutes) {
+	log.Infof(fmt.Sprintf("Latest Incident Update: %v, Time Diff: %v ", &incidentUpdates[len(incidentUpdates)-1], timeDiff(incidentUpdates[len(incidentUpdates)-1])))
+	if len(incidentUpdates) == 0 {
 		return true
 	}
+	if !(incidentUpdates[len(incidentUpdates)-1].Type == resolved && timeDiff(incidentUpdates[len(incidentUpdates)-1]) > incidentsTimeoutInMinutes) {
+		return true
+	}
+
 	return false
 }
 
