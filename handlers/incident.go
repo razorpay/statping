@@ -36,7 +36,7 @@ func apiServiceIncidentsHandler(w http.ResponseWriter, r *http.Request) {
 	returnJson(service.Incidents, w, r)
 }
 
-func apiServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
+func apiServiceActiveIncidentsHandler(w http.ResponseWriter, r *http.Request) {
 	service, err := findService(r)
 	if err != nil {
 		sendErrorJson(err, w, r)
@@ -46,7 +46,7 @@ func apiServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
 	returnJson(visibleIncidents, w, r)
 }
 
-func apiSubServiceIncidentsHandlerActive(w http.ResponseWriter, r *http.Request) {
+func apiSubServiceActiveIncidentsHandler(w http.ResponseWriter, r *http.Request) {
 	service, err := findService(r)
 	if err != nil {
 		sendErrorJson(err, w, r)
@@ -66,14 +66,14 @@ func getVisibleIncidentsOfService(service *services.Service) []incidents.Inciden
 	var visibleIncidents []incidents.Incident
 	var visibleIncidentIds []int64
 	for _, incident := range service.Incidents {
-		if visibilityCheck(incident) == true {
+		if checkVisibility(incident) == true {
 			incidentVar := *incident
 			reverse(incidentVar.Updates)
 			visibleIncidents = append(visibleIncidents, incidentVar)
 			visibleIncidentIds = append(visibleIncidentIds, incident.Id)
 		}
 	}
-	log.Info(fmt.Sprintf("Visible Incidents of Service %v : %v", service.Name, visibleIncidentIds))
+	log.Info(fmt.Sprintf("Visible Incident Id's for the Service %v : %v", service.Name, visibleIncidentIds))
 	return visibleIncidents
 }
 
@@ -83,20 +83,31 @@ func reverse(incidents []*incidents.IncidentUpdate) {
 	}
 }
 
-func visibilityCheck(incident *incidents.Incident) bool {
+func checkVisibility(incident *incidents.Incident) bool {
 	incidentUpdates := incident.Updates
-	log.Infof(fmt.Sprintf("Latest Incident Update: %v, Time Diff: %v ", &incidentUpdates[len(incidentUpdates)-1], timeDiff(incidentUpdates[len(incidentUpdates)-1])))
-	if len(incidentUpdates) == 0 {
-		return true
-	}
-	if !(incidentUpdates[len(incidentUpdates)-1].Type == resolved && timeDiff(incidentUpdates[len(incidentUpdates)-1]) > incidentsTimeoutInMinutes) {
-		return true
-	}
+	log.Infof(fmt.Sprintf("Latest Incident Update: %v, Time Diff: %v ", &incidentUpdates[len(incidentUpdates)-1], getTimeDiff(incidentUpdates[len(incidentUpdates)-1])))
 
+	if hasZeroUpdates(incidentUpdates) || checkResolvedVisibility(incidentUpdates) {
+		return true
+	}
 	return false
 }
 
-func timeDiff(update *incidents.IncidentUpdate) float64 {
+func hasZeroUpdates(Updates []*incidents.IncidentUpdate) bool {
+	if len(Updates) == 0 {
+		return true
+	}
+	return false
+}
+
+func checkResolvedVisibility(incidentUpdates []*incidents.IncidentUpdate) bool {
+	if !(incidentUpdates[len(incidentUpdates)-1].Type == resolved && getTimeDiff(incidentUpdates[len(incidentUpdates)-1]) > incidentsTimeoutInMinutes) {
+		return true
+	}
+	return false
+}
+
+func getTimeDiff(update *incidents.IncidentUpdate) float64 {
 	return time.Now().Sub(update.CreatedAt).Minutes()
 }
 
@@ -157,14 +168,14 @@ func apiUpdateIncidentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var incidentVar *incidents.Incident
-	if err := DecodeJSON(r, &incidentVar); err != nil {
+	var updatedIncident *incidents.Incident
+	if err := DecodeJSON(r, &updatedIncident); err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
 
-	incident.Title = incidentVar.Title
-	incident.Description = incidentVar.Description
+	incident.Title = updatedIncident.Title
+	incident.Description = updatedIncident.Description
 	if err := incident.Update(); err != nil {
 		sendErrorJson(err, w, r)
 		return
