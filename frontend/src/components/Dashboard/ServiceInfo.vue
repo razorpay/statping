@@ -1,9 +1,9 @@
 <template>
     <div class="dashboard_card card mb-4" :class="{'offline-card': !service.online}">
         <div class="card-header pb-1">
-            <h6 v-observe-visibility="setVisible">
+            <h6 v-observe-visibility="setVisible" class="d-flex align-items-baseline justify-content-between">
                 <router-link :to="serviceLink(service)" class="no-decoration">{{service.name}}</router-link>
-                <span class="badge float-right text-uppercase" :class="{'badge-success': service.online, 'badge-danger': !service.online}">
+                <span class="badge text-uppercase" :class="{'badge-success': service.online, 'badge-danger': !service.online}">
                     {{service.online ? $t('online') : $t('offline')}}
                 </span>
             </h6>

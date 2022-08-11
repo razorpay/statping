@@ -18,6 +18,7 @@ const english = {
   name: "Name",
   copy: "Copy",
   close: "Close",
+  cancel: "Cancel",
   secret: "Secret",
   regen_api: "Regenerate API Keys",
   regen_desc:

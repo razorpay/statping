@@ -24,7 +24,7 @@
             <div class="card-header">{{incident.id ? `${$t('update')} ${incident.title}` : $t('incident_create')}}
                 <transition name="slide-fade">
                     <button @click="resetIncident" v-if="incident.id" class="btn btn-sm float-right btn-danger btn-sm">
-                        {{ $t('close') }}
+                        {{ $t('cancel') }}
                     </button>
                 </transition>
             </div>
@@ -49,7 +49,7 @@
                         <div class="col-sm-12">
                             <button @click.prevent="saveMessage"
                                     :disabled="!incident.title || !incident.description || isLoading"
-                                    type="submit" class="btn btn-block" :class="{'btn-primary': !incident.id, 'btn-secondary': incident.id}">
+                                    type="submit" class="btn btn-block btn-primary">
                                 {{incident.id ? $t('incident_edit') : $t('incident_create')}}
                                 <FontAwesomeIcon v-if="isLoading" icon="circle-notch" spin />
                             </button>
