@@ -33,7 +33,8 @@ const IncidentsBlock = ({ service, group }) => {
       <div className="col-12 mt-2">
         {incidents?.length > 0 ? (
           incidents?.map((incident) => {
-            const { id, title, description, updated_at } = incident;
+            const { id, title, description, updates } = incident;
+            const latestUpdate = updates[updates.length - 1];
 
             return (
               <>
@@ -58,14 +59,14 @@ const IncidentsBlock = ({ service, group }) => {
                     />
                   )}
                   <div className="title-wrapper">
-                    <span class="subtitle no-decoration">{title}</span>
+                    <span className="subtitle no-decoration">{title}</span>
                     <span className="d-block small text-dark">
                       {description}
                     </span>
                     <span className="d-block small text-muted">
-                      Updated {DateUtils.ago(updated_at)} ago.{" "}
+                      Updated {DateUtils.ago(latestUpdate.updated_at)} ago.{" "}
                       {DateUtils.format(
-                        DateUtils.parseISO(updated_at),
+                        DateUtils.parseISO(latestUpdate.updated_at),
                         "MMM d, yyyy - HH:mm"
                       )}
                     </span>
@@ -73,7 +74,7 @@ const IncidentsBlock = ({ service, group }) => {
                 </div>
                 {incidentsShow[id] && (
                   <div className="incident-updates-wrapper col-12">
-                    {incident?.updates.map((update) => {
+                    {updates.map((update) => {
                       return (
                         <IncidentUpdate
                           key={update.id}
@@ -89,7 +90,7 @@ const IncidentsBlock = ({ service, group }) => {
           })
         ) : (
           <div className="col-12">
-            <span class="font-14 text-muted">No recent incidents</span>
+            <span className="font-14 text-muted">No recent incidents</span>
           </div>
         )}
       </div>
