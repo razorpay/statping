@@ -65,17 +65,16 @@ func apiSubServiceActiveIncidentsHandler(w http.ResponseWriter, r *http.Request)
 func getVisibleIncidentsOfService(service *services.Service) []incidents.Incident {
 	var visibleIncidents []incidents.Incident
 	var visibleIncidentIds []int64
-	fmt.Println("##0")
 	for _, incident := range service.Incidents {
-		if checkVisibility(incident) == true {
-			fmt.Println("##3")
+		if hasZeroUpdates(incident.Updates) {
+			visibleIncidents = append(visibleIncidents, *incident)
+			visibleIncidentIds = append(visibleIncidentIds, incident.Id)
+		} else if checkResolvedVisibility(incident.Updates) {
 			incidentVar := *incident
 			reverse(incidentVar.Updates)
-			fmt.Println("##4")
 			visibleIncidents = append(visibleIncidents, incidentVar)
 			visibleIncidentIds = append(visibleIncidentIds, incident.Id)
 		}
-		fmt.Println("##5")
 	}
 	log.Info(fmt.Sprintf("Visible Incident Id's for the Service %v : %v", service.Name, visibleIncidentIds))
 	return visibleIncidents
@@ -85,19 +84,6 @@ func reverse(incidents []*incidents.IncidentUpdate) {
 	for i, j := 0, len(incidents)-1; i < j; i, j = i+1, j-1 {
 		incidents[i], incidents[j] = incidents[j], incidents[i]
 	}
-}
-
-func checkVisibility(incident *incidents.Incident) bool {
-	incidentUpdates := incident.Updates
-	log.Infof(fmt.Sprintf("Latest Incident Update: %v, Time Diff: %v ", &incidentUpdates[len(incidentUpdates)-1], getTimeDiff(incidentUpdates[len(incidentUpdates)-1])))
-	fmt.Println("##1")
-	fmt.Println(incidentUpdates)
-	fmt.Println(hasZeroUpdates(incidentUpdates))
-	fmt.Println("##2")
-	if hasZeroUpdates(incidentUpdates) || checkResolvedVisibility(incidentUpdates) {
-		return true
-	}
-	return false
 }
 
 func hasZeroUpdates(Updates []*incidents.IncidentUpdate) bool {
