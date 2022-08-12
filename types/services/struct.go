@@ -90,7 +90,7 @@ type ServiceOrder []Service
 // Sort interface for resroting the Services in order
 func (c ServiceOrder) Len() int           { return len(c) }
 func (c ServiceOrder) Swap(i, j int)      { c[int64(i)], c[int64(j)] = c[int64(j)], c[int64(i)] }
-func (c ServiceOrder) Less(i, j int) bool { return c[i].Order < c[j].Order }
+func (c ServiceOrder) Less(i, j int) bool { return c[i].Id < c[j].Id }
 
 type Stats struct {
 	Failures int       `gorm:"-" json:"failures"`
