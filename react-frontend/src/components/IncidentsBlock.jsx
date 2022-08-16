@@ -39,7 +39,7 @@ const IncidentsBlock = ({ service, group }) => {
             const latestUpdate =
               updates?.length > 0 && updates[0];
             const updatedAt = latestUpdate
-              ? latestUpdate.updated_at
+              ? latestUpdate.created_at
               : updated_at;
 
             return (
