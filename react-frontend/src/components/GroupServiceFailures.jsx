@@ -77,14 +77,14 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
         }
         const { series, downtime, uptime } = await fetchFailureSeries(url);
 
-        const failureData = series.map((d) => {
-          let date = DateUtils.parseISO(d.timeframe);
+        const failureData = series.map((item) => {
+          let date = DateUtils.parseISO(item.timeframe);
           date = DateUtils.format(date, "dd MMMM yyyy");
 
           return {
             timeframe: date,
-            status: d.status,
-            downtimes: groupByStatus(d.downtimes),
+            status: item.status,
+            downtimes: groupByStatus(item.downtimes),
           };
         });
 
