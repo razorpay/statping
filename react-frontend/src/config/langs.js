@@ -9,8 +9,6 @@ const english = {
   logout: "Logout",
   online: "Online",
   degraded: "Degraded",
-  up: "Online",
-  down: "Offline",
   offline: "Offline",
   configs: "Configuration",
   username: "Username",

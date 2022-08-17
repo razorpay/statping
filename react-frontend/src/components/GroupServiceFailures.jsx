@@ -57,12 +57,7 @@ async function fetchFailureSeries(url) {
   return data;
 }
 
-const GroupServiceFailures = ({
-  group = null,
-  service,
-  collapse,
-  setStatus,
-}) => {
+const GroupServiceFailures = ({ group = null, service, collapse }) => {
   const [hoverText, setHoverText] = useState("");
   const [loaded, setLoaded] = useState(true);
   const [failureData, setFailureData] = useState([]);
@@ -96,7 +91,6 @@ const GroupServiceFailures = ({
         const percentage = calcPer(uptime, downtime);
         setFailureData(failureData);
         setUptime(percentage);
-        setStatus(failureData[failureData.length - 1]?.status || "");
       } catch (e) {
         toast(errorToastConfig(e.message));
       } finally {
@@ -104,7 +98,7 @@ const GroupServiceFailures = ({
       }
     }
     fetchData();
-  }, [service, group, setStatus, toast]);
+  }, [service, group, toast]);
 
   const handleTooltip = (d) => {
     let txt = "";

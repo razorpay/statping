@@ -15,7 +15,6 @@ const GroupItem = ({ service, showPlusButton }) => {
   const [subServices, setSubServices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hoverText, setHoverText] = useState("");
-  const [status, setStatus] = useState("");
 
   const fetchSubServices = async () => {
     const data = await API.fetchSubServices(service.id);
@@ -116,16 +115,14 @@ const GroupItem = ({ service, showPlusButton }) => {
           )}
         </div>
         {!collapse && (
-          <div className="service_item--left">{getServiceStatus(status)}</div>
+          <div className="service_item--left">
+            {getServiceStatus(service.online)}
+          </div>
         )}
       </div>
 
       {!collapse && (
-        <GroupServiceFailures
-          service={service}
-          collapse={collapse}
-          setStatus={setStatus}
-        />
+        <GroupServiceFailures service={service} collapse={collapse} />
       )}
 
       {!collapse && <IncidentsBlock service={service} />}

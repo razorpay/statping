@@ -7,7 +7,6 @@ import { getServiceStatus } from "../utils/helper";
 
 const SubServiceCard = ({ group, service }) => {
   const [hoverText, setHoverText] = useState("");
-  const [status, setStatus] = useState("");
 
   const handleMouseOver = (service) => {
     setHoverText(service.description || service.name);
@@ -44,14 +43,13 @@ const SubServiceCard = ({ group, service }) => {
             </>
           )}
         </div>
-        <div className="service_item--left">{getServiceStatus(status)}</div>
+        <div className="service_item--left">
+          {getServiceStatus(service.online)}
+        </div>
       </div>
 
-      <GroupServiceFailures
-        group={group}
-        service={service}
-        setStatus={setStatus}
-      />
+      <GroupServiceFailures group={group} service={service} />
+
       <IncidentsBlock group={group} service={service} />
     </div>
   );

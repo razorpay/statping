@@ -27,24 +27,17 @@ export function getIncidentTextType(type) {
 
 export const getServiceStatus = (status) => {
   let className = "";
+  console.log(status);
 
-  switch (status) {
-    case "up":
-      className = " uptime";
-      break;
-    case "degraded":
-      className = " degraded";
-      break;
-    case "down":
-      className = " downtime";
-      break;
-    default:
-      className = "";
+  if (status) {
+    className = " uptime";
+  } else {
+    className = " downtime";
   }
 
   return (
     <span className={`badge float-right font-12${className}`}>
-      {langs(status)}
+      {status ? langs("online") : langs("offline")}
     </span>
   );
 };
