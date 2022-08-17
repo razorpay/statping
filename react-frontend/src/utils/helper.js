@@ -1,3 +1,5 @@
+import langs from "../config/langs";
+
 export function findStatus(data) {
   if (!Array.isArray(data)) return null;
   if (data.length === 0) return null;
@@ -22,6 +24,30 @@ export function getIncidentTextType(type) {
       return "";
   }
 }
+
+export const getServiceStatus = (status) => {
+  let className = "";
+
+  switch (status) {
+    case "up":
+      className = " uptime";
+      break;
+    case "degraded":
+      className = " degraded";
+      break;
+    case "down":
+      className = " downtime";
+      break;
+    default:
+      className = "";
+  }
+
+  return (
+    <span className={`badge float-right font-12${className}`}>
+      {langs(status)}
+    </span>
+  );
+};
 
 export const isObject = (obj) => {
   if (Object.prototype.toString.call(obj) === "[object Object]") {
