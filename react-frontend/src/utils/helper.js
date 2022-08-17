@@ -27,7 +27,6 @@ export function getIncidentTextType(type) {
 
 export const getServiceStatus = (status) => {
   let className = "";
-  console.log(status);
 
   if (status) {
     className = " uptime";
