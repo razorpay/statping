@@ -1,7 +1,7 @@
 module github.com/statping/statping
 
 // +heroku goVersion go1.14
-go 1.14
+go 1.18
 
 require (
 	github.com/GeertJohan/go.rice v1.0.0
