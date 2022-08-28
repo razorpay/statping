@@ -63,7 +63,6 @@ require (
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
-	github.com/gomarkdown/markdown v0.0.0-20220825072242-90efaac57fb4 // indirect
 	github.com/google/go-cmp v0.5.1 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/google/uuid v1.1.1 // indirect
