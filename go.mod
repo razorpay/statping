@@ -4,7 +4,7 @@ module github.com/statping/statping
 go 1.18
 
 require (
-	github.com/GeertJohan/go.rice v1.0.2
+	github.com/GeertJohan/go.rice v1.0.0
 	github.com/aws/aws-sdk-go v1.30.20
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/structs v1.1.0
