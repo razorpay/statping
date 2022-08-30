@@ -53,6 +53,7 @@ COPY . .
 RUN ls -l
 COPY --from=frontend /statping/dist/ ./source/dist/
 COPY --from=frontend /statping-react/build/ ./react/build/
+RUN ls -l
 RUN make clean generate embed
 RUN ls -l
 
