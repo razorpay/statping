@@ -24,7 +24,7 @@ RUN yarn build && yarn cache clean
 
 # Statping Golang BACKEND building from source
 # Creates "/go/bin/statping" and "/usr/local/bin/sass" for copying
-FROM golang:1.14-alpine AS backend
+FROM golang:1.18-alpine AS backend
 LABEL maintainer="Hunter Long (https://github.com/hunterlong)"
 ARG VERSION
 ARG COMMIT
