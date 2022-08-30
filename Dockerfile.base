@@ -49,10 +49,12 @@ RUN go get github.com/stretchr/testify/assert && \
     go get github.com/GeertJohan/go.rice/rice && \
     go get github.com/cortesi/modd/cmd/modd && \
     go get github.com/crazy-max/xgo
+COPY . .
 RUN ls -l
 COPY --from=frontend /statping/dist/ ./source/dist/
 COPY --from=frontend /statping-react/build/ ./react/build/
 RUN make clean generate embed
+RUN ls -l
 
 RUN go build -a -ldflags "-s -w -extldflags -static -X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT}" -o statping --tags "netgo linux" ./cmd
 RUN chmod a+x statping && mv statping /go/bin/statping
