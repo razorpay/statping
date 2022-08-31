@@ -46,8 +46,7 @@ ENV GO111MODULE on
 ENV CGO_ENABLED 1
 RUN echo printing gopath $GOPATH $PATH
 RUN ls -l $GOPATH/bin
-RUN export PATH=$PATH:$(go env GOPATH)/bin && \
-    go get github.com/stretchr/testify/assert && \
+RUN go get github.com/stretchr/testify/assert && \
     go get github.com/stretchr/testify/require && \
     go get github.com/GeertJohan/go.rice/rice && \
     go install github.com/GeertJohan/go.rice/rice && \
