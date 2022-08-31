@@ -53,7 +53,7 @@ RUN export PATH=$PATH:$(go env GOPATH)/bin && \
     go get github.com/cortesi/modd/cmd/modd && \
     go get github.com/crazy-max/xgo
 RUN echo printing after set gopath $GOPATH $PATH
-RUN ls -l $GOPATH/bin
+RUN ls -l /usr/local/go/bin
 COPY . .
 RUN ls -l
 COPY --from=frontend /statping/dist/ ./source/dist/
