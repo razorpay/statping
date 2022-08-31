@@ -45,6 +45,7 @@ RUN go mod download
 ENV GO111MODULE on
 ENV CGO_ENABLED 1
 RUN echo printing gopath $GOPATH $PATH
+RUN ls -l $GOPATH/bin
 RUN export PATH=$PATH:$(go env GOPATH)/bin && \
     go get github.com/stretchr/testify/assert && \
     go get github.com/stretchr/testify/require && \
@@ -52,6 +53,7 @@ RUN export PATH=$PATH:$(go env GOPATH)/bin && \
     go get github.com/cortesi/modd/cmd/modd && \
     go get github.com/crazy-max/xgo
 RUN echo printing after set gopath $GOPATH $PATH
+RUN ls -l $GOPATH/bin
 COPY . .
 RUN ls -l
 COPY --from=frontend /statping/dist/ ./source/dist/
