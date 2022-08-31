@@ -53,6 +53,7 @@ RUN export PATH=$PATH:$(go env GOPATH)/bin && \
     go get github.com/cortesi/modd/cmd/modd && \
     go get github.com/crazy-max/xgo
 RUN echo printing after set gopath $GOPATH $PATH
+RUN find / -name rice
 RUN ls -l /usr/local/go/bin
 COPY . .
 RUN ls -l
