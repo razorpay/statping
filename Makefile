@@ -163,7 +163,7 @@ compile: frontend-build
 	make generate
 
 embed:
-	cd source && ls -l && rice embed-go
+	cd source && rice embed-go
 
 install: build
 	mv $(BINARY_NAME) $(GOPATH)/bin/$(BINARY_NAME)
