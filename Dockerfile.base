@@ -1,3 +1,4 @@
+RUN echo '0q'
 FROM node:16.13.0 AS frontend
 LABEL maintainer="Hunter Long (https://github.com/hunterlong)"
 ARG BUILDPLATFORM
