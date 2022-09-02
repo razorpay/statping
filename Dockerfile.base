@@ -1,9 +1,9 @@
-RUN echo '0q'
 FROM node:16.13.0 AS frontend
 LABEL maintainer="Hunter Long (https://github.com/hunterlong)"
 ARG BUILDPLATFORM
 ARG GITHUB_ACCESS_TOKEN
 ENV GITHUB_ACCESS_TOKEN ${GITHUB_ACCESS_TOKEN}
+RUN echo '0q'
 # Build vue frontent
 WORKDIR /statping
 RUN echo '1q'
