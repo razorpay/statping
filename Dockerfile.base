@@ -2,44 +2,65 @@ FROM node:16.13.0 AS frontend
 LABEL maintainer="Hunter Long (https://github.com/hunterlong)"
 ARG BUILDPLATFORM
 ARG GITHUB_ACCESS_TOKEN
-
 ENV GITHUB_ACCESS_TOKEN ${GITHUB_ACCESS_TOKEN}
-
+RUN echo '0q'
 # Build vue frontent
 WORKDIR /statping
+RUN echo '1q'
 COPY ./frontend/package.json .
+RUN echo '1q'
 COPY ./frontend/yarn.lock .
+RUN echo '1q'
 RUN yarn install --pure-lockfile --network-timeout 1000000
+RUN echo '1q'
 COPY ./frontend/ .
+RUN echo '1q'
 RUN yarn build && yarn cache clean
+RUN echo '1q'
 
 # Build react frontent
 WORKDIR /statping-react
+RUN echo '2q'
 COPY ./react-frontend/package.json .
+RUN echo '2q'
 COPY ./react-frontend/yarn.lock .
+RUN echo '2q'
 COPY ./react-frontend/.npmrc .
+RUN echo '2q'
 RUN yarn install --pure-lockfile --network-timeout 1000000
+RUN echo '2q'
 COPY ./react-frontend/ .
+RUN echo '2q'
 RUN yarn build && yarn cache clean
+RUN echo '2q'
+
 
 # Statping Golang BACKEND building from source
 # Creates "/go/bin/statping" and "/usr/local/bin/sass" for copying
-FROM golang:1.19-alpine AS backend
+RUN echo '3q'
+FROM golang:1.18-alpine AS backend
+RUN echo '3q'
 LABEL maintainer="Hunter Long (https://github.com/hunterlong)"
+RUN echo '3q'
 ARG VERSION
 ARG COMMIT
 ARG BUILDPLATFORM
 ARG TARGETARCH
+RUN echo '3q'
 RUN apk add --update --no-cache libstdc++ gcc g++ make git autoconf \
     libtool ca-certificates linux-headers wget curl jq && \
     update-ca-certificates
+RUN echo '3q'
 
 WORKDIR /root
+RUN echo '4q'
 RUN git clone https://github.com/sass/sassc.git
 RUN . sassc/script/bootstrap && make -C sassc -j4
 # sassc binary: /root/sassc/bin/sassc
+RUN echo '4q'
 
-WORKDIR /go/src/github.com/statping/statping
+RUN echo '5q'
+WORKDIR /go/src/github.com/razorpay/statping
 ADD go.mod go.sum ./
 RUN go mod download
 ENV GO111MODULE on
@@ -55,15 +76,17 @@ RUN echo printing after set gopath $GOPATH $PATH
 RUN find / -name rice
 RUN ls -l /usr/local/go/bin
 COPY . .
-RUN ls -l
+RUN echo '5q'
 COPY --from=frontend /statping/dist/ ./source/dist/
+RUN echo '5doubt'
 COPY --from=frontend /statping-react/build/ ./react/build/
-RUN ls -l
 RUN make clean generate embed
-RUN ls -l
+RUN echo '5q'
 
+RUN echo '6q'
 RUN go build -a -ldflags "-s -w -extldflags -static -X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT}" -o statping --tags "netgo linux" ./cmd
 RUN chmod a+x statping && mv statping /go/bin/statping
 # /go/bin/statping - statping binary
 # /root/sassc/bin/sassc - sass binary
 # /statping - Vue frontend (from frontend)
+RUN echo '6q'
