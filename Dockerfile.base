@@ -60,7 +60,7 @@ RUN . sassc/script/bootstrap && make -C sassc -j4
 RUN echo '4q'
 
 RUN echo '5q'
-WORKDIR /go/src/github.com/statping/statping
+WORKDIR /go/src/github.com/razorpay/statping
 ADD go.mod go.sum ./
 RUN go mod download
 ENV GO111MODULE on
