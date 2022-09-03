@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/razorpay/statping/source"
 	"github.com/statping/statping/database"
 	"github.com/statping/statping/handlers"
 	"github.com/statping/statping/notifiers"
-	"github.com/statping/statping/source"
 	"github.com/statping/statping/types/configs"
 	"github.com/statping/statping/types/core"
 	"github.com/statping/statping/types/metrics"

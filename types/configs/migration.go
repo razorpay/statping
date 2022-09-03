@@ -6,7 +6,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
-	"github.com/statping/statping/source"
+	"github.com/razorpay/statping/source"
 	"github.com/statping/statping/types/downtimes"
 	"github.com/statping/statping/types/notifications"
 	"github.com/statping/statping/utils"
