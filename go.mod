@@ -1,4 +1,4 @@
-module github.com/statping/statping
+module github.com/razorpay/statping
 
 go 1.18
 
