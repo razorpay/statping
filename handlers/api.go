@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/razorpay/statping/types/downtimes"
 	"github.com/statping/statping/types/checkins"
 	"github.com/statping/statping/types/configs"
 	"github.com/statping/statping/types/core"
-	"github.com/statping/statping/types/downtimes"
 	"github.com/statping/statping/types/errors"
 	"github.com/statping/statping/types/groups"
 	"github.com/statping/statping/types/incidents"

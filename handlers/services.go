@@ -3,8 +3,8 @@ package handlers
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/razorpay/statping/types/downtimes"
 	"github.com/statping/statping/database"
-	"github.com/statping/statping/types/downtimes"
 	"github.com/statping/statping/types/errors"
 	"github.com/statping/statping/types/failures"
 	"github.com/statping/statping/types/hits"

@@ -7,7 +7,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
 	"github.com/razorpay/statping/source"
-	"github.com/statping/statping/types/downtimes"
+	"github.com/razorpay/statping/types/downtimes"
 	"github.com/statping/statping/types/notifications"
 	"github.com/statping/statping/utils"
 

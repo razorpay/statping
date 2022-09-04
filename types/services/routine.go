@@ -5,7 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/statping/statping/types/downtimes"
+	"github.com/razorpay/statping/types/downtimes"
 	"net"
 	"net/http"
 	"net/url"
