@@ -65,16 +65,11 @@ ADD go.mod go.sum ./
 RUN go mod download
 ENV GO111MODULE on
 ENV CGO_ENABLED 1
-RUN echo printing gopath $GOPATH $PATH
-RUN ls -l $GOPATH/bin
 RUN go get github.com/stretchr/testify/assert && \
     go get github.com/stretchr/testify/require && \
     go install github.com/GeertJohan/go.rice/rice@latest && \
     go get github.com/cortesi/modd/cmd/modd && \
     go get github.com/crazy-max/xgo
-RUN echo printing after set gopath $GOPATH $PATH
-RUN find / -name rice
-RUN ls -l /usr/local/go/bin
 COPY . .
 RUN echo '5q'
 COPY --from=frontend /statping/dist/ ./source/dist/
