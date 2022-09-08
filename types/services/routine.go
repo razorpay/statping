@@ -5,7 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/statping/statping/types/downtimes"
+	"github.com/razorpay/statping/types/downtimes"
 	"net"
 	"net/http"
 	"net/url"
@@ -14,13 +14,13 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/statping/statping/types/metrics"
+	"github.com/razorpay/statping/types/metrics"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/statping/statping/types/failures"
-	"github.com/statping/statping/types/hits"
-	"github.com/statping/statping/utils"
+	"github.com/razorpay/statping/types/failures"
+	"github.com/razorpay/statping/types/hits"
+	"github.com/razorpay/statping/utils"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
@@ -73,7 +73,7 @@ CheckLoop:
 			if er == nil {
 				if err == nil && !s.ManualDowntime {
 
-					log.Infof("Service Run Started : %s %s", s.Id, s.Name)
+					log.Infof("Service Run Started : %v %s", s.Id, s.Name)
 
 					ce := s.CheckService(record)
 					//s.UpdateStats()
@@ -442,13 +442,13 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 
 	for id, subServiceDetail := range s.SubServicesDetails {
 		if subService, err := FindFirstFromDB(id); err != nil {
-			log.Errorf("[Ignored]Failed to find Sub Service : %s %s %s %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
+			log.Errorf("[Ignored]Failed to find Sub Service : %v %s %v %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
 			continue
 		} else {
 			if !subService.Online && subService.CurrentDowntime > 0 {
 				downtimeType := STATUS_DOWN
 				if d, de := downtimes.Find(subService.CurrentDowntime); de != nil {
-					log.Errorf("[Ignored]Failed to find Sub Service Downtime : %s %s %s %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
+					log.Errorf("[Ignored]Failed to find Sub Service Downtime : %v %s %v %s", s.Id, s.Name, id, subServiceDetail.DisplayName)
 					continue
 				} else {
 					downtimeType = d.SubStatus
@@ -482,13 +482,13 @@ func CheckCollection(s *Service, record bool) (*Service, error) {
 		if record {
 			RecordFailureWithType(s, fmt.Sprintf("Sub Service Impacted : %s", impactedSubService.DisplayName), "", combinedStatus)
 		}
-		return s, fmt.Errorf("Sub Service Impacted: %s %s %s", s.Id, s.Name, impactedSubService.DisplayName)
+		return s, fmt.Errorf("Sub Service Impacted: %v %s %s", s.Id, s.Name, impactedSubService.DisplayName)
 	}
 
 	if record {
 		RecordSuccess(s)
 	}
-	log.Infof("Collection Check Done : %s %s %s %s", s.Id, s.Name, s.LastFailureType)
+	log.Infof("Collection Check Done : %v %s %s", s.Id, s.Name, s.LastFailureType)
 	//s.Online = true
 	return s, nil
 }
@@ -568,7 +568,7 @@ func (s *Service) CheckService(record bool) (err error) {
 	case "collection":
 		_, err = CheckCollection(s, record)
 	}
-	log.Infof("Health Check Executed : %s %s %s %s %s", s.Id, s.Name, s.Type, s.Online, err)
+	log.Infof("Health Check Executed : %v %s %s %v %s", s.Id, s.Name, s.Type, s.Online, err)
 	return
 }
 
@@ -588,7 +588,7 @@ func (s *Service) HandleDowntime(err error, record bool) {
 
 			if s.CurrentDowntime > 0 {
 				if downtime, err = downtimes.Find(s.CurrentDowntime); err != nil {
-					log.Errorf("[Failure]Failed to find downtime : %s %s", s.Id, s.CurrentDowntime)
+					log.Errorf("[Failure]Failed to find downtime : %v %v", s.Id, s.CurrentDowntime)
 					s.LastFailureType = ""
 					s.CurrentDowntime = 0
 					s.FailureCounter = 0
@@ -614,11 +614,11 @@ func (s *Service) HandleDowntime(err error, record bool) {
 
 			if downtime.Id > 0 {
 				if e := downtime.Update(); e != nil {
-					log.Errorf("Failed to update downtime : %s %s %s", s.Id, s.Name, e)
+					log.Errorf("Failed to update downtime : %v %s %s", s.Id, s.Name, e)
 				}
 			} else {
 				if e := downtime.Create(); e != nil {
-					log.Errorf("Failed to create downtime : %s %s %s", s.Id, s.Name, e)
+					log.Errorf("Failed to create downtime : %v %s %s", s.Id, s.Name, e)
 				}
 			}
 			s.CurrentDowntime = downtime.Id

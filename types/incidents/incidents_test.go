@@ -1,8 +1,8 @@
 package incidents
 
 import (
-	"github.com/statping/statping/database"
-	"github.com/statping/statping/utils"
+	"github.com/razorpay/statping/database"
+	"github.com/razorpay/statping/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -39,7 +39,7 @@ func TestInit(t *testing.T) {
 }
 
 func TestFind(t *testing.T) {
-	item, err := Find(1)
+	item, err := Find(28)
 	require.Nil(t, err)
 	assert.Equal(t, "Example", item.Title)
 }

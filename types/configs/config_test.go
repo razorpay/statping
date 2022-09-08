@@ -1,7 +1,7 @@
 package configs
 
 import (
-	"github.com/statping/statping/utils"
+	"github.com/razorpay/statping/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -30,7 +30,7 @@ func TestMySQLConfig(t *testing.T) {
 		DbConn: "mysql",
 		DbHost: "localhost",
 		DbUser: "root",
-		DbPass: "password123",
+		DbPass: "1234",
 		DbData: "statping",
 		DbPort: 3306,
 	}
@@ -43,8 +43,8 @@ func TestPostgresConfig(t *testing.T) {
 	postgres := &DbConfig{
 		DbConn: "postgres",
 		DbHost: "localhost",
-		DbUser: "root",
-		DbPass: "password123",
+		DbUser: "rhythm",
+		DbPass: "Terminate@1225",
 		DbData: "statping",
 		DbPort: 5432,
 	}
