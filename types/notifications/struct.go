@@ -1,9 +1,9 @@
 package notifications
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/razorpay/statping/types/null"
 	"github.com/razorpay/statping/utils"
+	"github.com/sirupsen/logrus"
 	"time"
 )
 
