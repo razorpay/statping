@@ -49,12 +49,13 @@ func (g *Group) AfterCreate() {
 }
 
 func Find(id int64) (*Group, error) {
-	var group Group
-	q := db.Where("id = ?", id).Find(&group)
+	//var group Group
+	group := new(Group)
+	q := db.Where("id = ?", id).Find(group)
 	if q.Error() != nil {
-		return nil, errors.Missing(group, id)
+		return nil, errors.Missing(*group, id)
 	}
-	return &group, q.Error()
+	return group, q.Error()
 }
 
 func All() []*Group {

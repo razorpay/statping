@@ -198,7 +198,7 @@ func Openw(dialect string, args ...interface{}) (db Database, err error) {
 }
 
 func OpenTester() (Database, error) {
-	testDB := utils.Params.GetString("DB_CONN")
+	testDB := "postgres"
 	var dbString string
 
 	switch testDB {
@@ -211,19 +211,16 @@ func OpenTester() (Database, error) {
 			utils.Params.GetString("DB_DATABASE"),
 		)
 	case "postgres":
-		dbString = fmt.Sprintf("host=%s port=%v user=%s dbname=%s password=%s sslmode=disable",
-			utils.Params.GetString("DB_HOST"),
-			utils.Params.GetInt("DB_PORT"),
-			utils.Params.GetString("DB_USER"),
-			utils.Params.GetString("DB_DATABASE"),
-			utils.Params.GetString("DB_PASS"))
+		dbString = fmt.Sprintf("host=localhost port=5432 user=rhythm dbname=statping password=Terminate@1225 sslmode=disable")
 	default:
 		dbString = fmt.Sprintf("file:%s?mode=memory&cache=shared", utils.RandomString(12))
 	}
-	if utils.Params.IsSet("DB_DSN") {
+	/*if utils.Params.IsSet("DB_DSN") {
 		dbString = utils.Params.GetString("DB_DSN")
-	}
+	}*/
+	fmt.Println(dbString)
 	newDb, err := Openw(testDB, dbString)
+
 	if err != nil {
 		return nil, err
 	}

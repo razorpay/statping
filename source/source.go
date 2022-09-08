@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/GeertJohan/go.rice"
 	"github.com/pkg/errors"
-	"github.com/razorpay/statping/utils"
+	"github.com/statping/statping/utils"
 	"os"
 	"os/exec"
 	"path/filepath"

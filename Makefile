@@ -28,7 +28,7 @@ go-build: clean
 	rm -rf source/rice-box.go
 	wget https://assets.statping.com/source.tar.gz
 	tar -xvf source.tar.gz
-	go build -a -ldflags "-s -w -extldflags -static -X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT}" -o statping --tags "netgo osusergo" ./cmd
+	CGO_ENABLED=0 go build -a -ldflags "-s -w -extldflags -static -X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT}" -o statping --tags "netgo osusergo" -buildvcs=false ./cmd
 
 lint:
 	go fmt ./...

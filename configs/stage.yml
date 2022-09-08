@@ -6,11 +6,11 @@ base_path: ""
 cleanup_interval: 0h30m0s
 cmd_file: /bin/bash
 db_conn: postgres
-db_database: ${DATABASE_NAME}
-db_host: ${DATABASE_URL}
+db_database: statping
+db_host: localhost
 db_port: 5432
-db_user: ${DATABASE_USERNAME}
-db_pass: ${DATABASE_PASSWORD}
+db_user: rhythm
+db_pass: 1234
 description: Razorpay Status Page
 disable_logs: false
 domain: statping.stage.razorpay.in

@@ -39,7 +39,7 @@ func TestInit(t *testing.T) {
 }
 
 func TestFind(t *testing.T) {
-	item, err := Find(1)
+	item, err := Find(28)
 	require.Nil(t, err)
 	assert.Equal(t, "Example", item.Title)
 }
