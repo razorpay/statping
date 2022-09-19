@@ -2,8 +2,8 @@ package downtimes
 
 import (
 	"fmt"
-	"github.com/statping/statping/database"
-	"github.com/statping/statping/utils"
+	"github.com/razorpay/statping/database"
+	"github.com/razorpay/statping/utils"
 	"strconv"
 	"time"
 )
@@ -72,6 +72,20 @@ func FindLatestDowntimeOfService(service int64) Downtime {
 	q := db.Where("service = ?", service)
 	q = q.Order("start desc").First(&downtime)
 	return downtime
+}
+
+func (c *Downtime) CheckOverlapping() bool {
+	var downtimes []Downtime
+	q := db.Where("service = ?", c.ServiceId)
+	q = q.Where("\"end\" IS NULL or \"end\" >= ?", c.Start)
+	if c.End != nil {
+		q = q.Where("start <= ?", c.End)
+	}
+	q = q.Find(&downtimes)
+	if len(downtimes) > 0 {
+		return true
+	}
+	return false
 }
 
 func FindAll(vars map[string]string) (*[]Downtime, error) {

@@ -3,13 +3,13 @@ package handlers
 import (
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/statping/statping/source"
-	"github.com/statping/statping/types/core"
-	"github.com/statping/statping/utils"
+	"github.com/razorpay/statping/source"
+	"github.com/razorpay/statping/types/core"
+	"github.com/razorpay/statping/utils"
 	"net/http"
 	"net/http/pprof"
 
-	_ "github.com/statping/statping/types/metrics"
+	_ "github.com/razorpay/statping/types/metrics"
 )
 
 var (
@@ -155,8 +155,11 @@ func Router() *mux.Router {
 	api.Handle("/api/services/{id}/sub_services/{sub_id}/block_series", http.HandlerFunc(apiSubServiceBlockSeriesHandler)).Methods("GET")
 
 	// API INCIDENTS Routes
+	api.Handle("/api/services/{id}/active_incidents", http.HandlerFunc(apiServiceActiveIncidentsHandler)).Methods("GET")
+	api.Handle("/api/services/{id}/sub_services/{sub_id}/active_incidents", http.HandlerFunc(apiSubServiceActiveIncidentsHandler)).Methods("GET")
 	api.Handle("/api/services/{id}/incidents", authenticated(apiServiceIncidentsHandler, false)).Methods("GET")
 	api.Handle("/api/services/{id}/incidents", authenticated(apiCreateIncidentHandler, false)).Methods("POST")
+	api.Handle("/api/incidents/{id}", authenticated(apiUpdateIncidentHandler, false)).Methods("PATCH")
 	api.Handle("/api/incidents/{id}", authenticated(apiIncidentUpdateHandler, false)).Methods("POST")
 	api.Handle("/api/incidents/{id}", authenticated(apiDeleteIncidentHandler, false)).Methods("DELETE")
 

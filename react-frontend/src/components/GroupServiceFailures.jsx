@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-// import useIntersectionObserver from "../hooks/useIntersectionObserver";
+import { useToast } from "@chakra-ui/react";
 import DateUtils from "../utils/DateUtils";
 import langs from "../config/langs";
 import API from "../config/API";
@@ -7,6 +7,7 @@ import ServiceLoader from "./ServiceLoader";
 import ReactTooltip from "react-tooltip";
 import { STATUS_CLASS } from "../utils/constants";
 import { calcPer, isObjectEmpty } from "../utils/helper";
+import { errorToastConfig } from "../utils/toast";
 
 const STATUS_TEXT = {
   up: "Uptime",
@@ -52,25 +53,22 @@ async function fetchFailureSeries(url) {
     "24h",
     true
   );
-  // console.log(data);
+
   return data;
 }
 
 const GroupServiceFailures = ({ group = null, service, collapse }) => {
-  // const [containerRef, isVisible] = useIntersectionObserver({
-  //   root: null,
-  //   rootMargin: "0px",
-  //   threshold: 1.0,
-  // });
-
   const [hoverText, setHoverText] = useState("");
   const [loaded, setLoaded] = useState(true);
   const [failureData, setFailureData] = useState([]);
   const [uptime, setUptime] = useState(0);
 
+  const toast = useToast();
+
   useEffect(() => {
     async function fetchData() {
       let url = "/services";
+
       try {
         if (group) {
           url += `/${group.id}/sub_services/${service.id}/block_series`;
@@ -78,27 +76,29 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
           url += `/${service.id}/block_series`;
         }
         const { series, downtime, uptime } = await fetchFailureSeries(url);
-        const failureData = [];
-        series.forEach((d) => {
-          let date = DateUtils.parseISO(d.timeframe);
+
+        const failureData = series.map((item) => {
+          let date = DateUtils.parseISO(item.timeframe);
           date = DateUtils.format(date, "dd MMMM yyyy");
-          failureData.push({
+
+          return {
             timeframe: date,
-            status: d.status,
-            downtimes: groupByStatus(d.downtimes),
-          });
+            status: item.status,
+            downtimes: groupByStatus(item.downtimes),
+          };
         });
+
         const percentage = calcPer(uptime, downtime);
         setFailureData(failureData);
         setUptime(percentage);
       } catch (e) {
-        console.log(e.message);
+        toast(errorToastConfig(e.message));
       } finally {
         setLoaded(false);
       }
     }
     fetchData();
-  }, [service]);
+  }, [service, group, toast]);
 
   const handleTooltip = (d) => {
     let txt = "";
@@ -133,7 +133,6 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
   if (loaded) return <ServiceLoader text="Loading series.." />;
 
   return (
-    // transition div
     <div name="fade" style={{ display: collapse ? "none" : "block" }}>
       <div className="block-chart">
         <ReactTooltip
@@ -150,8 +149,7 @@ const GroupServiceFailures = ({ group = null, service, collapse }) => {
                 onMouseOver={() => handleMouseOver(d)}
                 onMouseOut={handleMouseOut}
                 key={i}
-                data-tip={hoverText}
-              >
+                data-tip={hoverText}>
                 {d.status !== 0 && (
                   <span className="d-none d-md-block text-center small"></span>
                 )}

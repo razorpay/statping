@@ -3,9 +3,9 @@ package handlers
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/statping/statping/types/downtimes"
-	"github.com/statping/statping/types/services"
-	"github.com/statping/statping/utils"
+	"github.com/razorpay/statping/types/downtimes"
+	"github.com/razorpay/statping/types/services"
+	"github.com/razorpay/statping/utils"
 	"net/http"
 	"net/url"
 	"time"
@@ -104,6 +104,12 @@ func apiAllDowntimesForServiceHandler(w http.ResponseWriter, r *http.Request) {
 func apiCreateDowntimeHandler(w http.ResponseWriter, r *http.Request) {
 	var downtime *downtimes.Downtime
 	if err := DecodeJSON(r, &downtime); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	if downtime.CheckOverlapping() {
+		err := fmt.Errorf("downtime interval overlapping error")
 		sendErrorJson(err, w, r)
 		return
 	}

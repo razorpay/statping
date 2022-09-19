@@ -2,10 +2,10 @@ package services
 
 import (
 	"fmt"
-	"github.com/statping/statping/database"
-	"github.com/statping/statping/types/errors"
-	"github.com/statping/statping/types/metrics"
-	"github.com/statping/statping/utils"
+	"github.com/razorpay/statping/database"
+	"github.com/razorpay/statping/types/errors"
+	"github.com/razorpay/statping/types/metrics"
+	"github.com/razorpay/statping/utils"
 	"sort"
 	"time"
 )
@@ -92,7 +92,7 @@ func FindOne(id int64) (*Service, error) {
 		return nil, errors.Missing(&Service{}, id)
 	}
 	service := &Service{}
-	db.First(&service, id)
+	db.Preload(INCIDENTS).First(&service, id)
 	return service, nil
 }
 

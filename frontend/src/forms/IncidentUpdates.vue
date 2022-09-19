@@ -1,6 +1,5 @@
 <template>
     <div class="card-body pt-3">
-
         <div v-if="updates.length===0" class="alert alert-link text-danger">
             No updates found, create a new Incident Update below.
         </div>
@@ -12,9 +11,8 @@
         <form class="row" @submit.prevent="createIncidentUpdate">
             <div class="col-12 col-md-3 mb-3 mb-md-0">
                 <select v-model="incident_update.type" class="form-control">
-                    <option value="Investigating">Investigating</option>
+                    <option value="Issue summary">Issue summary</option>
                     <option value="Update">Update</option>
-                    <option value="Unknown">Unknown</option>
                     <option value="Resolved">Resolved</option>
                 </select>
             </div>
@@ -24,9 +22,9 @@
 
             <div class="col-12 col-md-2">
                 <button @click.prevent="createIncidentUpdate"
-                        :disabled="!incident_update.message"
+                        :disabled="!incident_update.message || isLoading"
                         type="submit" class="btn btn-block btn-primary">
-                    Add
+                    Add <FontAwesomeIcon v-if="isLoading" icon="circle-notch" spin />
                 </button>
             </div>
         </form>
@@ -50,37 +48,41 @@
         data () {
             return {
                 updates: [],
+                isLoading: false,
                 incident_update: {
                     incident: this.incident.id,
                     message: "",
-                    type: "Investigating" // TODO: default to something.. theres is no error checking for blank submission...
+                    type: "Issue summary"
                 }
             }
         },
 
         async mounted() {
-            await this.loadUpdates()
+            this.loadUpdates()
         },
 
         methods: {
             async createIncidentUpdate() {
+                this.isLoading = true;
+
                 this.res = await Api.incident_update_create(this.incident_update)
                 if (this.res.status === "success") {
-                    this.updates.push(this.res.output) // this is better in terms of not having to querry the db to get a fresh copy of all updates
+                    this.updates.push(this.res.output); // this is better in terms of not having to querry the db to get a fresh copy of all updates
                     //await this.loadUpdates()
+                    this.isLoading = false;
                 } // TODO: further error checking here... maybe alert user it failed with modal or so
 
                 // reset the form data
                 this.incident_update = {
                     incident: this.incident.id,
                     message: "",
-                    type: "Investigating"
+                    type: "Issue summary"
                 }
 
             },
 
             async loadUpdates() {
-                this.updates = await Api.incident_updates(this.incident)
+                this.updates = await Api.incident_updates(this.incident);
             }
         }
     }
