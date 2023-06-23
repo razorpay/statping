@@ -88,7 +88,8 @@ func ToString(s interface{}) string {
 }
 
 // Command will run a terminal command with 'sh -c COMMAND' and return stdout and errOut as strings
-//		in, out, err := Command("sass assets/scss assets/css/base.css")
+//
+//	in, out, err := Command("sass assets/scss assets/css/base.css")
 func Command(name string, args ...string) (string, string, error) {
 	testCmd := exec.Command(name, args...)
 	var stdout, stderr []byte
