@@ -99,9 +99,9 @@ func (d *DbConfig) BackupAssets() error {
 	return nil
 }
 
-//MigrateDatabase will migrate the database structure to current version.
-//This function will NOT remove previous records, tables or columns from the database.
-//If this function has an issue, it will ROLLBACK to the previous state.
+// MigrateDatabase will migrate the database structure to current version.
+// This function will NOT remove previous records, tables or columns from the database.
+// If this function has an issue, it will ROLLBACK to the previous state.
 func (d *DbConfig) MigrateDatabase() error {
 	var DbModels = []interface{}{&services.Service{}, &users.User{}, &hits.Hit{}, &failures.Failure{}, &messages.Message{}, &groups.Group{}, &downtimes.Downtime{}, &checkins.Checkin{}, &checkins.CheckinHit{}, &notifications.Notification{}, &incidents.Incident{}, &incidents.IncidentUpdate{}}
 

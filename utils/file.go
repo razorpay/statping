@@ -7,14 +7,16 @@ import (
 )
 
 // DeleteDirectory will attempt to delete a directory and all contents inside
-//		DeleteDirectory("assets")
+//
+//	DeleteDirectory("assets")
 func DeleteDirectory(directory string) error {
 	Log.Debugln("removing directory: " + directory)
 	return os.RemoveAll(directory)
 }
 
 // CreateDirectory will attempt to create a directory
-//		CreateDirectory("assets")
+//
+//	CreateDirectory("assets")
 func CreateDirectory(directory string) error {
 	Log.Debugln("creating directory: " + directory)
 	if err := os.Mkdir(directory, os.ModePerm); err != os.ErrExist {
@@ -41,7 +43,8 @@ func FileExtension(path string) string {
 }
 
 // FileExists returns true if a file exists
-//		exists := FileExists("assets/css/base.css")
+//
+//	exists := FileExists("assets/css/base.css")
 func FileExists(name string) bool {
 	if _, err := os.Stat(name); err != nil {
 		Log.Debugf("file exist: %v (%v)", name, !os.IsNotExist(err))
@@ -53,7 +56,8 @@ func FileExists(name string) bool {
 }
 
 // DeleteFile will attempt to delete a file
-//		DeleteFile("newfile.json")
+//
+//	DeleteFile("newfile.json")
 func DeleteFile(file string) error {
 	Log.Warn("deleting file: " + file)
 	return os.Remove(file)
@@ -66,7 +70,8 @@ func RenameDirectory(fromDir string, toDir string) error {
 }
 
 // SaveFile will create a new file with data inside it
-//		SaveFile("newfile.json", []byte('{"data": "success"}')
+//
+//	SaveFile("newfile.json", []byte('{"data": "success"}')
 func SaveFile(filename string, data []byte) error {
 	err := ioutil.WriteFile(filename, data, os.FileMode(0755))
 	return err
