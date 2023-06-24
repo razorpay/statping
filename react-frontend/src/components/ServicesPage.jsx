@@ -52,7 +52,7 @@ const ServicesPage = () => {
 
       <div className="app-content">
         <div className="service">
-          <h2 className="title font-20 fw-700">Razorpay Payments</h2>
+          <h2 className="title font-20 fw-700">Razorpay Products</h2>
         </div>
 
         {loading && <ServiceLoader text="Loading Services" />}
