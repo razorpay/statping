@@ -27,7 +27,7 @@
     "js-beautify": "^1.11.0",
     "querystring": "^0.2.0",
     "sass": "^1.26.10",
-    "semver": "^7.3.2",
+    "semver": "^7.5.2",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.6.0",
     "vue-clipboard2": "^0.3.1",
