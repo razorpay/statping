@@ -10,7 +10,7 @@ import ServiceLoader from "./ServiceLoader";
 // import ServiceBlock from "./ServiceBlock";
 // import ServicesList from "./ServicesList";
 import API from "../config/API";
-import { STATUS_COLOR, STATUS_ICON, STATUS_TEXT } from "../utils/constants";
+import { STATUS_COLOR, STATUS_ICON, STATUS_TEXT, REGION } from "../utils/constants";
 import { findStatus } from "../utils/helper";
 
 const ServicesPage = () => {
@@ -50,7 +50,7 @@ const ServicesPage = () => {
       <ContentHeader />
       <div className="app-content">
         <div className="service">
-          <h2 className="title font-20 fw-700">Razorpay Payments</h2>
+          <h2 className="title font-20 fw-700">{REGION.sectionTitle}</h2>
           <div className="d-flex align-items-center subtitle font-12 mt-2">
             <FontAwesomeIcon
               icon={STATUS_ICON[status]}

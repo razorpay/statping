@@ -30,8 +30,12 @@ var (
 
 func init() {
 
-	os.Setenv("TZ", "Asia/Kolkata")
-	if loc, err := time.LoadLocation("Asia/Kolkata"); err != nil {
+	tz := os.Getenv("TIMEZONE")
+	if tz == "" {
+		tz = "Asia/Kolkata"
+	}
+	os.Setenv("TZ", tz)
+	if loc, err := time.LoadLocation(tz); err != nil {
 		log.Errorf("setting timezone globally : %s", loc)
 		time.Local = loc
 	}

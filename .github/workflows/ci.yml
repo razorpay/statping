@@ -84,6 +84,58 @@ jobs:
           entrypoint: /bin/sh
           args: ./scripts/run_tests.sh fmt drone
 
+  build-statping-us-docker-image:
+    name: Docker image - statping US
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: checkout
+        id: checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache-us
+          key: ${{ runner.os }}-buildx-us-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-us-
+      - name: docker login
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.PUBLIC_DOCKER_USERNAME }}
+          password: ${{ secrets.PUBLIC_DOCKER_PASSWORD }}
+      - name: build statping US base_image
+        uses: docker/build-push-action@v2
+        with:
+          tags: razorpay/statping:base_us_${{ github.sha }}
+          push: true
+          file: ./Dockerfile.base
+          build-args: |
+            GIT_COMMIT_HASH=${{ github.sha }}
+            REACT_APP_REGION=US
+          cache-from: type=local,src=/tmp/.buildx-cache-us
+          cache-to: type=local,dest=/tmp/.buildx-cache-us
+        env:
+          GIT_COMMIT_HASH: ${{ github.sha }}
+          APP_ENV: dev_docker
+          EXEC_MODE: test
+      - name: build statping US image
+        uses: docker/build-push-action@v2
+        with:
+          tags: razorpay/statping:service_us_${{ github.sha }}
+          push: true
+          file: ./Dockerfile
+          build-args: GIT_COMMIT_HASH=${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache-us
+          cache-to: type=local,dest=/tmp/.buildx-cache-us
+        env:
+          GIT_COMMIT_HASH: ${{ github.sha }}
+          APP_ENV: dev_docker
+          EXEC_MODE: test
+
   workflow_status:
     runs-on: [ubuntu-latest]
     name: Update Status Check

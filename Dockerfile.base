@@ -12,6 +12,8 @@ RUN yarn build && yarn cache clean
 
 # Build react frontent
 WORKDIR /statping-react
+ARG REACT_APP_REGION
+ENV REACT_APP_REGION=$REACT_APP_REGION
 COPY ./react-frontend/package.json .
 COPY ./react-frontend/yarn.lock .
 RUN yarn install --pure-lockfile --network-timeout 1000000

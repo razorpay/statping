@@ -22,7 +22,9 @@ ENV SASS=/usr/local/bin/sassc
 ENV STATPING_DIR=/app
 ENV PORT=80
 ENV PROMETHEUS_PORT=9000
+# Default timezone for India deployment. Override with -e TIMEZONE=America/Los_Angeles for US
 ENV TZ="Asia/Kolkata"
+ENV TIMEZONE="Asia/Kolkata"
 
 EXPOSE $PORT
 EXPOSE $PROMETHEUS_PORT

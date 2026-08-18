@@ -1,21 +1,18 @@
 import React from "react";
+import { REGION } from "../utils/constants";
 
 const ContentHeader = () => {
   return (
     <div className="header">
       <h1 className="header-title mt-4 mb-3 font-24 fw-700">
-        Razorpay Status Page
+        {REGION.headerTitle}
       </h1>
       <h5 className="header-description font-12">
-        Razorpay status page publishes the most up-to-the-minute information on
-        product availability. Check back here any time to get current
-        status/information on individual products. If you are experiencing a
-        real-time, operational issue with one of our products that is not
-        described below, please reach out to{" "}
+        {REGION.headerDescription}{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://razorpay.com/support/"
+          href={REGION.supportUrl}
         >
           our support team
         </a>{" "}
